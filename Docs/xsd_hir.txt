@@ -1,0 +1,25 @@
+Element
+	complexType
+		choice
+			group
+			element
+			choice
+			sequence
+		sequence
+			group
+			element
+			choice
+			sequence
+		group
+			element
+			choice
+			sequence
+		attribute
+			simpleType
+		complexContent
+			restriction
+			extension
+		simpleContent
+	simpleType
+		union
+			simpleType
