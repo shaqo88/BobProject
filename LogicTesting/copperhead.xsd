@@ -1,0 +1,487 @@
+<!--   XML Copperhead Schema   -->
+<schema xmlns:ch="http://pkwiki/2005/copperhead" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://pkwiki/2005/copperhead" elementFormDefault="unqualified" attributeFormDefault="unqualified">
+	<!-- ________________________________ General Types _________________________________ -->
+	<!-- uriType: define URI's as specified in the RFCs 2396 and 2732                     -->
+	<simpleType name="uriType">
+		<restriction base="xsd:anyURI"/>
+	</simpleType>
+	<!-- identifierType: Variable type. In addition can not start with "_" or contain "__" -->
+	<simpleType name="identifierType">
+		<restriction base="xsd:string">
+			<pattern value="[A-Za-z]_?([A-Za-z0-9]+_*)*"/>
+		</restriction>
+	</simpleType>
+	<!-- integerLiteralType: Numeric integer type + Hexadecimal type                       -->
+	<simpleType name="integerLiteralType">
+		<restriction base="xsd:string">
+			<pattern value="-?([0-9]+|0[xX][0-9A-Fa-f]+)"/>
+		</restriction>
+	</simpleType>
+	<!-- versionType: digit.digit                                                          -->
+	<simpleType name="versionType">
+		<restriction base="xsd:string">
+			<pattern value="[0-9]+(\.[0-9]+)*"/>
+		</restriction>
+	</simpleType>
+	<!-- tempQualifiedIdentifierType: Identifier.Identifier                                -->
+	<simpleType name="tempQualifiedIdentifierType">
+		<restriction base="xsd:string">
+			<pattern value="([A-Za-z]_?([A-Za-z0-9]+_?)*)\.([A-Za-z]_?([A-Za-z0-9]+_?)*)"/>
+		</restriction>
+	</simpleType>
+	<!-- qualifiedIdentifierType: Identifier or Identifier.Identifier                      -->
+	<simpleType name="qualifiedIdentifierType">
+		<union memberTypes="ch:identifierType ch:tempQualifiedIdentifierType"/>
+	</simpleType>
+	<!-- fullPathIdentifierType: Identifier;Identifier|Identifier\..\Identifier            -->
+	<simpleType name="fullPathIdentifierType">
+		<restriction base="xsd:string">
+			<pattern value="([A-Za-z]_?([A-Za-z0-9]+_*)*[;|\\])*([A-Za-z]_?([A-Za-z0-9]+_*)*)"/>
+		</restriction>
+	</simpleType>
+	<!-- expressionType: integerLiteralType or  qualifiedIdentifierType                    -->
+	<!-- uses: for elements or attributes which get value and should be defined as         -->
+	<!-- Numeric or Hexadecimal types or qualifiedIdentifierType for using Consts.         -->
+	<simpleType name="expressionType">
+		<union memberTypes="ch:integerLiteralType ch:qualifiedIdentifierType"/>
+	</simpleType>
+	<simpleType name="constExpressionType">
+		<restriction base="xsd:string">
+			<pattern value="-?(\()*([0-9]+|0[xX][0-9A-Fa-f]+|[A-Za-z_0-9]+(.[A-Za-z_0-9]+)*)(\))*(\s*([-+/*]|//|\*\*)\s*(\()*([0-9]+|0[xX][0-9A-Fa-f]+|[A-Za-z_0-9]+)(.[A-Za-z_0-9]+)*(\))*)*"/>
+		</restriction>
+	</simpleType>
+	<!-- alignmentType: packed or  unpacked                                                -->
+	<simpleType name="alignmentType">
+		<restriction base="xsd:string">
+			<enumeration value="packed"/>
+			<enumeration value="unpacked"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="endiannessType">
+		<restriction base="xsd:string">
+			<enumeration value="big"/>
+			<enumeration value="little"/>
+		</restriction>
+	</simpleType>
+	<!-- ________________________________ Document Type __________________________________ -->
+	<!-- documentType: Documentation of an element. 							                         -->
+	<!-- Documentation's type is string and should be inserted under the element which     -->
+	<!-- we want to document. 													                                   -->
+	<simpleType name="documentType">
+		<restriction base="xsd:string"/>
+	</simpleType>
+	<!-- ________________________________ Import Type ____________________________________ -->
+	<!-- CopperheadSpecification allows us to import other specifications into the module. -->
+	<!-- Importing is done using import element inside the module.							           -->
+	<complexType name="importType">
+		<attribute name="namespace" type="ch:identifierType" use="required"/>
+		<attribute name="href" type="ch:uriType" use="required"/>
+	</complexType>
+	<!-- ________________________________ Const Type _____________________________________ -->
+	<!-- Constants allow us to specify a name for a given numeric value, which can be an   -->
+	<!-- expression using the const element. Consts can be used later for defining other   -->
+	<!-- elements or attributes values.													                           -->
+	<complexType name="constType">
+		<sequence>
+			<element name="doc" type="ch:documentType" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+		<attribute name="name" type="ch:identifierType" use="required"/>
+		<attribute name="value" type="ch:constExpressionType" use="required"/>
+	</complexType>
+	<!-- _______________________________  Based Types ____________________________________ -->
+	<complexType name="Container"/>
+	<complexType name="Repeating"/>
+	<!-- _______________________________ TypeRef Type ____________________________________ -->
+	<!-- This is a reference to a predefined typedef. It is used associate a common        -->
+	<!-- typedef into several locations in the module's -->
+	<complexType name="typeRefType">
+		<attribute name="ref" type="ch:qualifiedIdentifierType" use="required"/>
+	</complexType>
+	<!-- _______________________________ Record Types ____________________________________ -->
+	<!-- Record is a list of fields, called members, grouped together into a single        -->
+	<!-- logical group.                                                                    -->
+	<!-- Member defines a field to the record and attach a name to it. Members can contain -->
+	<!-- any type so nested records are allowed.                                           -->
+	<complexType name="memberType">
+		<sequence>
+			<group ref="ch:allTypes"/>
+		</sequence>
+		<attribute name="name" type="ch:identifierType" use="required"/>
+		<attribute name="offset" type="ch:expressionType" use="optional"/>
+	</complexType>
+	<!-- Pad defines specific number of bits as a constant value                           -->
+	<complexType name="padType">
+		<attribute name="bits" type="ch:expressionType" use="required"/>
+		<attribute name="value" type="ch:expressionType" use="optional"/>
+		<attribute name="endianness" type="ch:endiannessType" use="optional"/>
+	</complexType>
+	<!-- Skip is used when those bits are really don't care's.                             -->
+	<complexType name="skipType">
+		<attribute name="bits" type="ch:expressionType" use="required"/>
+	</complexType>
+	<!-- Contains one of the elements: member, pad, skip.                                  -->
+	<group name="recordElement">
+		<choice>
+			<element name="member" type="ch:memberType"/>
+			<element name="pad" type="ch:padType"/>
+			<element name="skip" type="ch:skipType"/>
+		</choice>
+	</group>
+	<!-- Record is a list of fields, called members, grouped together into a single        -->
+	<!-- logical group.                                                                    -->
+	<complexType name="recordType">
+		<complexContent>
+			<extension base="ch:Container">
+				<sequence>
+					<element name="doc" type="ch:documentType" minOccurs="0" maxOccurs="unbounded"/>
+					<element name="cookie" type="ch:cookieType" minOccurs="0" maxOccurs="unbounded"/>
+					<group ref="ch:recordElement" minOccurs="0" maxOccurs="unbounded"/>
+				</sequence>
+				<attribute name="extends" type="ch:qualifiedIdentifierType" use="optional"/>
+				<attribute name="align" type="ch:alignmentType" use="optional"/>
+			</extension>
+		</complexContent>
+	</complexType>
+	<!-- _______________________________Choice Types _____________________________________ -->
+	<!-- Variant is a single option for a choice.                                          -->
+	<complexType name="variantElement">
+		<sequence>
+			<element name="doc" type="ch:documentType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="cookie" type="ch:cookieType" minOccurs="0" maxOccurs="unbounded"/>
+			<group ref="ch:allDataTypes" minOccurs="0"/>
+		</sequence>
+		<attribute name="name" type="ch:identifierType" use="required"/>
+		<attribute name="tag_bits" type="ch:constExpressionType" use="optional"/>
+		<attribute name="tag" type="ch:constExpressionType" use="optional"/>
+		<attribute name="response" type="ch:fullPathIdentifierType" use="optional"/>
+	</complexType>
+	<!-- Choice defines a branch in the message structure. Choice contain a tag which      -->
+	<!-- definens to which if the options, called variants, the choice refers.             -->
+	<complexType name="choiceType">
+		<complexContent>
+			<extension base="ch:Container">
+				<sequence>
+					<element name="doc" type="ch:documentType" minOccurs="0" maxOccurs="unbounded"/>
+					<element name="cookie" type="ch:cookieType" minOccurs="0" maxOccurs="unbounded"/>
+					<element name="variant" type="ch:variantElement" minOccurs="0" maxOccurs="unbounded"/>
+				</sequence>
+				<attribute name="tag_bits" type="ch:expressionType" use="optional"/>
+				<attribute name="align" type="ch:alignmentType" use="optional"/>
+				<attribute name="endianness" type="ch:endiannessType" use="optional"/>
+			</extension>
+		</complexContent>
+	</complexType>
+	<!-- ____________________________  Primitive Types _______________________________ -->
+	<!-- base primitive type                                                           -->
+	<complexType name="primitiveType" abstract="true"/>
+	<!-- ordinalType: defines integer, boolean and char types.                         -->
+	<complexType name="ordinalType" abstract="true">
+		<complexContent>
+			<extension base="ch:primitiveType">
+				<attribute name="bits" type="ch:expressionType" use="optional"/>
+				<attribute name="endianness" type="ch:endiannessType" use="optional"/>
+			</extension>
+		</complexContent>
+	</complexType>
+	<!-- integerType: defines general integer type.                                    -->
+	<complexType name="integerType" abstract="true">
+		<complexContent>
+			<extension base="ch:ordinalType">
+				<attribute name="max" type="ch:constExpressionType" use="optional"/>
+				<attribute name="min" type="ch:constExpressionType" use="optional"/>
+			</extension>
+		</complexContent>
+	</complexType>
+	<!-- integerType: defines specific integer type - unsigned int.                    -->
+	<complexType name="uintType">
+		<complexContent>
+			<extension base="ch:integerType"/>
+		</complexContent>
+	</complexType>
+	<!-- integerType: defines specific integer type - signed int.                    -->
+	<complexType name="sintType">
+		<complexContent>
+			<extension base="ch:ordinalType">
+				<attribute name="max" type="ch:integerLiteralType" use="optional"/>
+				<attribute name="min" type="ch:integerLiteralType" use="optional"/>
+			</extension>
+		</complexContent>
+	</complexType>
+	<!-- floatType: defines floating point type                                       -->
+	<complexType name="floatType">
+		<complexContent>
+			<extension base="ch:primitiveType"/>
+		</complexContent>
+	</complexType>
+	<!-- boolType: defines boolean type - 'true' or 'false' value                      -->
+	<complexType name="boolType">
+		<complexContent>
+			<extension base="ch:primitiveType">
+				<attribute name="bits" type="ch:expressionType" use="optional"/>
+			</extension>
+		</complexContent>
+	</complexType>
+	<!-- charType: unsigned number,spanned over 8 bits, that defines an ASCII character -->
+	<complexType name="charType">
+		<complexContent>
+			<restriction base="ch:primitiveType"/>
+		</complexContent>
+	</complexType>
+	<!-- Zero terminated string of ASCII characters, like C char*. Every character is -->
+	<!-- encoded in 8 bits, including the zero at the end.                            -->
+	<complexType name="stringType">
+		<complexContent>
+			<extension base="ch:primitiveType">
+				<attribute name="max_length" type="ch:expressionType" use="required"/>
+			</extension>
+		</complexContent>
+	</complexType>
+	<!-- _______________________________Array Type ___________________________________-->
+	<!-- Arrays are lists with predefined length. All the items in the array are from -->
+	<!-- the same type, which is defined as part of the array definition. Array is    -->
+	<!-- encoded as a stream of all it's items encoded one after another.             -->
+	<complexType name="arrayType">
+		<complexContent>
+			<extension base="ch:Repeating">
+				<sequence>
+					<group ref="ch:allTypes"/>
+				</sequence>
+				<attribute name="length" type="ch:expressionType" use="required"/>
+				<attribute name="align" type="ch:alignmentType" use="optional"/>
+			</extension>
+		</complexContent>
+	</complexType>
+	<!-- _______________________________Sequence Type _______________________________ -->
+	<!-- Sequence is basically an Array with variable length. Sequence is encoded as  -->
+	<!-- it's length as the first n bits, followed by a stream of all it's items.     -->
+	<complexType name="sequenceType">
+		<complexContent>
+			<extension base="ch:Repeating">
+				<sequence>
+					<group ref="ch:allTypes"/>
+				</sequence>
+				<attribute name="max_length" type="ch:expressionType" use="optional"/>
+				<attribute name="length_bits" type="ch:expressionType" use="optional"/>
+				<attribute name="align" type="ch:alignmentType" use="optional"/>
+				<attribute name="omit_length" type="xsd:boolean" use="optional"/>
+				<attribute name="endianness" type="ch:endiannessType" use="optional"/>
+			</extension>
+		</complexContent>
+	</complexType>
+	<!-- ______________________________Enum Types _____________________________________ -->
+	<!-- A list of (symbolic value, numerical value) pairs.                             -->
+	<complexType name="enumType">
+		<sequence>
+			<element name="symbol" type="ch:symbolType" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+		<attribute name="bits" type="ch:expressionType" use="optional"/>
+		<attribute name="endianness" type="ch:endiannessType" use="optional"/>
+	</complexType>
+	<!-- Each symbol represents a (logical value, numerical value) pair in the enum.   -->
+	<complexType name="symbolType">
+		<sequence>
+			<element name="doc" type="ch:documentType" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+		<attribute name="name" type="ch:identifierType" use="required"/>
+		<attribute name="tag" type="ch:expressionType" use="optional"/>
+	</complexType>
+	<!-- ________________________________ Cookie Type _____________________________________ -->
+	<complexType name="cookieType">
+		<sequence>
+			<element name="doc" type="ch:documentType" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+		<attribute name="name" type="ch:identifierType" use="required"/>
+		<attribute name="value" type="xsd:string" use="optional"/>
+	</complexType>
+	<!-- ______________________________All Types _____________________________________ -->
+	<!-- allTypes: group which contains all types which useful for some complex types  -->
+	<!-- as sequence, array, etc. Plus the optional doc and cookie elements.            -->
+	<group name="allTypes">
+		<sequence>
+			<choice minOccurs="0" maxOccurs="unbounded">
+				<element name="doc" type="ch:documentType" minOccurs="0" maxOccurs="unbounded"/>
+				<element name="cookie" type="ch:cookieType" minOccurs="0" maxOccurs="unbounded"/>
+			</choice>
+			<group ref="ch:allDataTypes"/>
+		</sequence>
+	</group>
+	<!-- ______________________________All Types _____________________________________ -->
+	<!-- allDataTypes: group which contains all types which useful for some complex types  -->
+	<!-- as sequence, array, etc.                                                      -->
+	<group name="allDataTypes">
+		<sequence>
+			<choice>
+				<element name="type" type="ch:typeRefType"/>
+				<element name="record" type="ch:recordType"/>
+				<element name="choice" type="ch:choiceType"/>
+				<element name="array" type="ch:arrayType"/>
+				<element name="sequence" type="ch:sequenceType"/>
+				<element name="enum" type="ch:enumType"/>
+				<element name="uint" type="ch:uintType"/>
+				<element name="sint" type="ch:sintType"/>
+				<element name="float" type="ch:floatType"/>
+				<element name="bool" type="ch:boolType"/>
+				<element name="char" type="ch:charType"/>
+				<element name="string" type="ch:stringType"/>
+				<element name="pad" type="ch:padType"/>
+				<element name="skip" type="ch:skipType"/>
+			</choice>
+		</sequence>
+	</group>
+	<!-- ________________________________ Typedef Type _______________________________ -->
+	<!-- Types define how binary raw data is spanned across one or more logical fields.-->
+	<!-- Using TypeDef, one can assign a name to a type so it can be used later on in  -->
+	<!-- more then one occasion.                                                       -->
+	<complexType name="typedefType">
+		<sequence>
+			<group ref="ch:allTypes"/>
+		</sequence>
+		<attribute name="name" type="ch:identifierType" use="required"/>
+	</complexType>
+	<!-- _______________________________Aggregate Type _______________________________ -->
+	<!-- Aggregate defines a component with several members which may be different in  -->
+	<!-- their types (similar to record members).Each member has a specific and unique -->
+	<!-- tag inside the aggr and this tag is used when reading or types (similar to    -->
+	<!-- record members).Each member has a specific and unique tag inside the aggregate-->
+	<!-- and this tag is used when reading or creating the component key.              -->
+	<complexType name="aggregateType">
+		<sequence>
+			<choice minOccurs="0" maxOccurs="unbounded">		
+				<element name="doc" type="ch:documentType" minOccurs="0" maxOccurs="unbounded"/>
+				<element name="cookie" type="ch:cookieType" minOccurs="0" maxOccurs="unbounded"/>
+			</choice>
+			<element name="part" type="ch:partType" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+		<attribute name="tag_bits" type="ch:expressionType" use="optional"/>
+	</complexType>
+	<!-- _______________________________Part Type __________________________________   -->
+	<!-- Part is one of the members of an aggregated component.                        -->
+	<complexType name="partType">
+		<sequence>
+			<group ref="ch:compType" minOccurs="0"/>
+		</sequence>
+		<attribute name="name" type="ch:identifierType" use="required"/>
+		<attribute name="tag" type="ch:expressionType" use="optional"/>
+		<attribute name="tag_bits" type="ch:expressionType" use="optional"/>
+		<attribute name="tag_pad" type="ch:expressionType" use="optional"/>
+	</complexType>
+	<!-- _______________________________Vector Type __________________________________ -->
+	<!-- vector is another container component that signifies that the containd        -->
+	<!-- component repeats itself several times (similar to array).                    -->
+	<complexType name="vectorType">
+		<sequence>
+			<!--<element name="cookie" type="ch:cookieType" minOccurs="0" maxOccurs="unbounded"/> -->
+			<group ref="ch:compType" minOccurs="0"/>
+		</sequence>
+		<attribute name="length" type="ch:expressionType" use="required"/>
+		<attribute name="bits" type="ch:expressionType" use="optional"/>
+		<attribute name="base" type="ch:expressionType" use="optional"/>
+		<attribute name="step" type="ch:expressionType" use="optional"/>
+	</complexType>
+	<!-- ________________________________ Command Type ________________________________ -->
+	<!-- defines a function call for command.                                           -->
+	<complexType name="commandType">
+		<sequence>
+			<group ref="ch:allTypes" minOccurs="0"/>
+		</sequence>
+	</complexType>
+	<!-- ________________________________ Telem Type __________________________________ -->
+	<!-- defines an event (telemetry).                                                  -->
+	<complexType name="telemType">
+		<sequence>
+			<group ref="ch:allTypes" minOccurs="0"/>
+		</sequence>
+	</complexType>
+	<!-- ________________________________ State Type __________________________________ -->
+	<!-- defines enum for state types.                                                  -->
+	<simpleType name="stateUseTypes">
+		<restriction base="xsd:string">
+			<enumeration value="read"/>
+			<enumeration value="write"/>
+			<enumeration value="notify"/>
+			<enumeration value="r"/>
+			<enumeration value="w"/>
+			<enumeration value="write read"/>
+			<enumeration value="read write"/>
+			<enumeration value="rw"/>
+		</restriction>
+	</simpleType>
+	<!-- State stands for a component property. Each state should define it's possible  -->
+	<!-- set of opetrations (opcodes) from the group: read, write, notify, rw.          -->
+	<complexType name="stateType">
+		<sequence>
+			<group ref="ch:allTypes" minOccurs="0"/>
+		</sequence>
+		<attribute name="use" type="ch:stateUseTypes" use="required"/>
+		<attribute name="client_op" type="ch:identifierType" use="optional"/>
+		<attribute name="server_op" type="ch:identifierType" use="optional"/>
+	</complexType>
+	<!-- ________________________________ CompRef Type ________________________________  -->
+	<!-- This is a reference to a predefined compdef. It is used associate a common      -->
+	<!-- compdef into several locations in the module's                                  -->
+	<complexType name="compRefType">
+		<attribute name="ref" type="ch:qualifiedIdentifierType" use="required"/>
+	</complexType>
+	<!-- ________________________________ Component Type _______________________________ -->
+	<!-- Component Type: group which contains all types which useful for some component  -->
+	<!-- type as vector,aggregate, command, etc.                                         -->
+	<group name="compType">
+		<sequence>
+			<choice minOccurs="0" maxOccurs="unbounded">
+				<element name="doc" type="ch:documentType" minOccurs="0" maxOccurs="unbounded"/>
+				<element name="cookie" type="ch:cookieType" minOccurs="0" maxOccurs="unbounded"/>
+			</choice>
+		 	<choice>
+				<element name="aggr" type="ch:aggregateType"/>
+				<element name="vector" type="ch:vectorType"/>
+				<element name="command" type="ch:commandType"/>
+				<element name="telem" type="ch:telemType"/>
+				<element name="state" type="ch:stateType"/>
+				<element name="comp" type="ch:compRefType"/>
+			</choice>
+		</sequence>
+	</group>
+	<!-- ________________________________ Compdef Type _________________________________ -->
+	<!-- Copperhead components, or CHC, is used as higher level abstractions of a module.-->
+	<!-- CHC allows us to define the logical structure of the module and it's parts from -->
+	<!-- which we cad derive directly a way to manipulate and part of the module         -->
+	<!-- according to it's own capabilities.                                             -->
+	<complexType name="compdefType">
+		<sequence>
+			<group ref="ch:compType" minOccurs="0"/>
+		</sequence>
+		<attribute name="name" type="ch:identifierType" use="required"/>
+	</complexType>
+	<!-- _________________________________  Default Type _______________________________ -->
+	<complexType name="defaultType">
+		<attribute name="elem" type="ch:identifierType" use="required"/>
+		<attribute name="attr" type="ch:identifierType" use="required"/>
+		<attribute name="value" type="ch:expressionType" use="required"/>
+	</complexType>
+	<!-- _________________________________  Module Type ________________________________ -->
+	<!-- Any CopperheadSpecification file must srart with a root element called module.  -->
+	<!-- The module element is designed to gather all the module into a single element,  -->
+	<!-- with a given name and version.                                                  -->
+	<element name="module">
+		<complexType>
+			<sequence>
+				<choice minOccurs="0" maxOccurs="unbounded">
+					<element name="doc" type="ch:documentType" minOccurs="0" maxOccurs="unbounded"/>
+					<element name="import" type="ch:importType" minOccurs="0" maxOccurs="unbounded"/>
+					<element name="cookie" type="ch:cookieType" minOccurs="0" maxOccurs="unbounded"/>
+				</choice>
+				<choice minOccurs="0" maxOccurs="unbounded"> <!-- without choice the order should be implied and typedef cannot be after compdef for example -->
+					<element name="const" type="ch:constType" minOccurs="0" maxOccurs="unbounded"/>
+					<element name="typedef" type="ch:typedefType" minOccurs="0" maxOccurs="unbounded"/>
+					<element name="compdef" type="ch:compdefType" minOccurs="0" maxOccurs="unbounded"/>
+					<element name="default" type="ch:defaultType" minOccurs="0" maxOccurs="unbounded"/>
+				</choice>
+			</sequence>
+			<attribute name="name" type="ch:identifierType" use="required"/>
+			<attribute name="version" type="ch:versionType" use="optional"/>
+			<attribute name="endianness" type="ch:endiannessType" use="optional"/>
+			<attribute name="inherits" type="ch:identifierType" use="optional"/>
+		</complexType>
+	</element>
+</schema>
+

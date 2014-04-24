@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="iso-8859-8"?>
+<ch:module name="Norris" version="1.0" xmlns:ch="http://pwiki/2005/copperhead" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pkwiki/2005/copperhead c:\copperhead.xsd">
+	<typedef name="FullName_t">
+		<record>
+			<member name="First">
+				<type ref="NameEntity_t"/>
+			</member>
+			<member name="Second">
+				<type ref="NameEntity_t"/>
+			</member>
+			<member name="Last">
+				<type ref="NameEntity_t"/>
+			</member>
+		</record>
+	</typedef>
+	<typedef name="NameEntity_t">
+		<string max_length="20" />
+	</typedef>
+	<typedef name="NameType_t">
+		<enum bits="8">
+			<symbol name="First" tag="0" />
+			<symbol name="Second" tag="1" />
+			<symbol name="Last" tag="2" />
+		</enum>
+	</typedef>
+	<typedef name= "SetNameCommand_t">
+		<record>
+			<member name="FullName">
+				<cookie name="linker" value="data=Name,type=direct"/>
+				<type ref="FullName_t" />
+			</member>
+		</record>
+	</typedef>
+	<typedef name= "FulltNameAndAgeTelememetry_t">
+		<record>
+			<member name="FullName">
+				<cookie name="linker" value="data=Name,type=direct"/>
+				<type ref="FullName_t" />
+			</member>
+			<member name="Age">
+				<unit bits="16"/>	
+			</member>
+		</record>
+	</typedef>
+</ch:module>
