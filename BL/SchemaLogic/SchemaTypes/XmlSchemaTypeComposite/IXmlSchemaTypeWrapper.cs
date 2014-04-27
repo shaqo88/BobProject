@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Xml.Schema;
 
-namespace BL.SchemaLogic.XmlSchemaTypeComposite
+namespace BL.SchemaLogic.SchemaTypes.XmlSchemaTypeComposite
 {
     public interface IXmlSchemaTypeWrapper
     {

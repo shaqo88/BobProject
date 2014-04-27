@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Schema;
 
-namespace BL.SchemaLogic.XmlSchemaTypeComposite
+namespace BL.SchemaLogic.SchemaTypes.XmlSchemaTypeComposite
 {
     public class XmlSchemaSimpleTypeWrapper : IXmlSchemaTypeWrapper
     {

@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Schema;
-using BL.SchemaLogic.XmlSchemaTypeComposite;
+using BL.SchemaLogic.SchemaTypes.XmlSchemaTypeComposite;
 
-namespace BL.SchemaLogic
+namespace BL.SchemaLogic.SchemaTypes
 {
     public class XmlSchemaElementWrapper : XmlSchemaWrapper
     {
-        private XmlSchemaElement Element { get; set; }
+        private XmlSchemaElement ElementObject { get; set; }
 
         public string Name { get; private set; }
 
@@ -26,13 +26,13 @@ namespace BL.SchemaLogic
 
         public XmlSchemaElementWrapper(XmlSchemaElement element, XmlSchemaElementWrapper parent)
         {
-            Element = element;
+            ElementObject = element;
             Name = element.Name;
             MinOccursString = element.MinOccursString;
             MaxOccursString = element.MaxOccursString;
             Parent = parent;
 
-            Type = XmlSchemaSimpleTypeWrapper.SchemaWrappersFactory(Element.ElementSchemaType);
+            Type = XmlSchemaSimpleTypeWrapper.SchemaWrappersFactory(ElementObject.ElementSchemaType);
         }
 
         public void PrintElement(string offset="", int? index=null)

@@ -41,12 +41,12 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SchemaLogic\SchemaDescriber.cs" />
-    <Compile Include="SchemaLogic\XmlSchemaAttributeInfo.cs" />
-    <Compile Include="SchemaLogic\XmlSchemaElementWrapper.cs" />
-    <Compile Include="SchemaLogic\XmlSchemaGroupsWrapper.cs" />
-    <Compile Include="SchemaLogic\XmlSchemaTypeComposite\IXmlSchemaTypeWrapper.cs" />
-    <Compile Include="SchemaLogic\XmlSchemaTypeComposite\XmlSchemaComplexTypeWrapper.cs" />
-    <Compile Include="SchemaLogic\XmlSchemaTypeComposite\XmlSchemaSimpleTypeWrapper.cs" />
+    <Compile Include="SchemaLogic\SchemaTypes\XmlSchemaAttributeInfo.cs" />
+    <Compile Include="SchemaLogic\SchemaTypes\XmlSchemaElementWrapper.cs" />
+    <Compile Include="SchemaLogic\SchemaTypes\XmlSchemaGroupsWrapper.cs" />
+    <Compile Include="SchemaLogic\SchemaTypes\XmlSchemaTypeComposite\IXmlSchemaTypeWrapper.cs" />
+    <Compile Include="SchemaLogic\SchemaTypes\XmlSchemaTypeComposite\XmlSchemaComplexTypeWrapper.cs" />
+    <Compile Include="SchemaLogic\SchemaTypes\XmlSchemaTypeComposite\XmlSchemaSimpleTypeWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DAL\DAL.csproj">

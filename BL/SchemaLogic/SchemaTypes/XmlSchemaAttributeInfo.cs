@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Schema;
 
-namespace BL.SchemaLogic
+namespace BL.SchemaLogic.SchemaTypes
 {
     public class XmlSchemaAttributeInfo
     {
