@@ -13,6 +13,8 @@ namespace BL.SchemaLogic.SchemaTypes
 
         public XmlSchemaUse Use { get; set; }
 
+        public bool IsRequired { get { return Use == XmlSchemaUse.Required; } }
+
         public Type SimpleType { get; set; }
 
         public string Value { get; set; }
