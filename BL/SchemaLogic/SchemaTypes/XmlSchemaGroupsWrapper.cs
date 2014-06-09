@@ -7,10 +7,12 @@ using System.Xml.Schema;
 
 namespace BL.SchemaLogic.SchemaTypes
 {
+    public enum GroupType { Choice, Sequence }
+
     public class XmlSchemaChoiceWrapper : XmlSchemaGroupBaseWrapper
     {
         public XmlSchemaChoiceWrapper(XmlSchemaChoice choice)
-            : base(choice)
+            : base(choice, GroupType.Choice)
         {
         }
     }
@@ -18,7 +20,7 @@ namespace BL.SchemaLogic.SchemaTypes
     public class XmlSchemaSequenceWrapper : XmlSchemaGroupBaseWrapper
     {
         public XmlSchemaSequenceWrapper(XmlSchemaSequence sequence)
-            : base(sequence)
+            : base(sequence, GroupType.Sequence)
         {
         }
     }
@@ -31,10 +33,13 @@ namespace BL.SchemaLogic.SchemaTypes
 
         public List<XmlSchemaWrapper> InnerItems { get; set; }
 
-        public XmlSchemaGroupBaseWrapper(XmlSchemaGroupBase group)
+        public GroupType GroupType { get; protected set; }
+
+        public XmlSchemaGroupBaseWrapper(XmlSchemaGroupBase group, GroupType groupType)
         {
             Group = group;
             InnerItems = new List<XmlSchemaWrapper>();
+            GroupType = groupType;
         }
 
         public static XmlSchemaGroupBaseWrapper SchemaGroupWrappersFactory(XmlSchemaGroupBase group)
@@ -97,8 +102,6 @@ namespace BL.SchemaLogic.SchemaTypes
 
             return elements;
         }
-
-        
     }
 
     public abstract class XmlSchemaWrapper
