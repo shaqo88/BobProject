@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Xml.Schema;
 
 namespace BL.SchemaLogic.SchemaTypes.XmlSchemaTypeComposite
@@ -11,7 +12,7 @@ namespace BL.SchemaLogic.SchemaTypes.XmlSchemaTypeComposite
         Type DotNetType { get; } // The restriction base, relevant only for simple type
 
         void PrintAttrs(string offset);
-        List<XmlSchemaAttributeInfo> Attributes { get; }
+        ObservableCollection<XmlSchemaAttributeInfo> Attributes { get; }
         XmlSchemaGroupBaseWrapper DrillOnce(XmlSchemaElementWrapper parent);
     }
 }

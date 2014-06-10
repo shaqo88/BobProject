@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Xml.Schema;
 using DAL.SchemaDataAccess;
 using BL.SchemaLogic.SchemaTypes;
+using System.Collections.ObjectModel;
 
 namespace BL.SchemaLogic
 {
@@ -13,13 +14,13 @@ namespace BL.SchemaLogic
     {
         private XsdReader XsdReader { get; set; }
 
-        public List<XmlSchemaElementWrapper> Elements { get; set; }
+        public ObservableCollection<XmlSchemaElementWrapper> Elements { get; set; }
 
         public SchemaDescriber(string schemaPath)
         {
             XsdReader = new XsdReader(schemaPath);
 
-            Elements = new List<XmlSchemaElementWrapper>();
+            Elements = new ObservableCollection<XmlSchemaElementWrapper>();
 
             foreach (var element in XsdReader.Schema.Elements.Values)
             {

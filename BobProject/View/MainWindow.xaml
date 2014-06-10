@@ -1,0 +1,107 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:self="clr-namespace:BobProject"          
+        xmlns:ViewModel="clr-namespace:BobProject.ViewModel"        
+        xmlns:ValueConverter="clr-namespace:BobProject.ViewModel.ValueConverters"
+        xmlns:Elements ="clr-namespace:BL.SchemaLogic.SchemaTypes;assembly=BL"
+        x:Class="BobProject.MainWindow"  
+        x:Name="_this"
+        Title="Bob" Height="350" Width="525" WindowState="Maximized" Icon="../Images/mainIcon.png" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <ValueConverter:BooleanToVisibilityConverter x:Key="BoolToVisConverter"/> 
+        
+        <HierarchicalDataTemplate x:Key="ChildTemplate" >
+                <TextBlock Text="{Binding Path=Name}" />
+        </HierarchicalDataTemplate>
+        <HierarchicalDataTemplate x:Key="NameTemplate" DataType="{x:Type Elements:XmlSchemaElementWrapper}" ItemsSource="{Binding Path=Children}" 
+                                    ItemTemplate="{StaticResource ChildTemplate}">
+                <TextBlock Text="{Binding Path=Name}"/>
+        </HierarchicalDataTemplate>        
+    </Window.Resources>
+    
+    <DockPanel>
+        <Menu DockPanel.Dock="Top" HorizontalAlignment="Left" BorderBrush="Black">
+            <MenuItem Header="File">
+                <MenuItem Header="New"/>
+                <MenuItem Header="Open"/>
+                <Separator/>
+                <MenuItem Header="Save As..." Click="OpenSaveAs"/>
+                <Separator/>
+                <MenuItem Header="Exit" Click="OnExit"/>
+            </MenuItem>
+            <MenuItem Header="View">
+                <MenuItem Header="Expand two levels"/>
+                <MenuItem Header="Collapse"/>
+            </MenuItem>
+            <MenuItem Header="Tools">
+                <MenuItem Header="Switch User" Click="OnSwitchUser"/>
+                <Separator/>
+                <MenuItem Header="Options" Click="OpenConfiguration"/>
+                <Separator/>
+                <MenuItem Header="Reports" Click="OpenReports"/>
+            </MenuItem>
+            <MenuItem Header="Help">
+                <MenuItem Header="About" Click="OpenAbout"/>
+            </MenuItem>
+        </Menu>
+        <Grid DockPanel.Dock="Bottom">
+            <StatusBar DockPanel.Dock="Left" Background="AliceBlue">
+                <StatusBarItem>                    
+                    <TextBlock>
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat=" {0} Permission">
+                                <Binding Path="Perm" ElementName="_this"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                </StatusBarItem>
+            </StatusBar>
+        </Grid>
+
+        <Grid DockPanel.Dock="Left">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="107*"  />
+                <ColumnDefinition Width="410*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" VerticalAlignment="Stretch">
+                <Label/>
+                <TreeView ItemsSource="{Binding}" ItemTemplate="{StaticResource NameTemplate}" x:Name="trvTypes" >
+                    <TreeView.ItemContainerStyle>
+                        <Style TargetType="{x:Type TreeViewItem}">
+                            <EventSetter Event="Control.MouseDoubleClick" Handler="OnTreeNodeDoubleClick"/>
+                        </Style>
+                    </TreeView.ItemContainerStyle>
+                </TreeView>
+               
+                <Label FontSize="14" FontWeight="Bold" Content="Legend:"/>
+                <ListView BorderBrush="White">
+                    <ListViewItem Content="sss" Foreground="Coral"/>
+                </ListView>
+            </StackPanel>
+            <Grid x:Name="RightPanel" Grid.Column="1">
+                <ListBox x:Name="FieldsListBox">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="{Binding Name}" VerticalAlignment="Center"/>
+                                <TextBox Width="{Binding Length}" Margin="5,0,0,0"/>
+                                <Label Content="*"  Visibility="{Binding Required, Converter={StaticResource BoolToVisConverter}}"/>
+                                <!--Visibility="{Binding Required, Converter={StaticResource BoolToVisConverter}}" -->
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" 
+								Height="{Binding ActualHeight, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
+								Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                </ListBox>
+            </Grid>
+        </Grid>
+    </DockPanel>
+</Window>
+
+    

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,14 +32,21 @@ namespace BL.SchemaLogic.SchemaTypes
     {
         private XmlSchemaGroupBase Group { get; set; }
 
-        public List<XmlSchemaWrapper> InnerItems { get; set; }
+        public ObservableCollection<XmlSchemaWrapper> InnerItems { get; set; }
 
         public GroupType GroupType { get; protected set; }
+
+        public string Name { get; private set; }
+
+        public override string ToString()
+        {
+            return Name;
+        }
 
         public XmlSchemaGroupBaseWrapper(XmlSchemaGroupBase group, GroupType groupType)
         {
             Group = group;
-            InnerItems = new List<XmlSchemaWrapper>();
+            InnerItems = new ObservableCollection<XmlSchemaWrapper>();
             GroupType = groupType;
         }
 
@@ -75,9 +83,9 @@ namespace BL.SchemaLogic.SchemaTypes
             }
         }
 
-        public List<XmlSchemaElementWrapper> IterateGroups(string offset, ref int index)
+        public ObservableCollection<XmlSchemaElementWrapper> IterateGroups(string offset, ref int index)
         {
-            List<XmlSchemaElementWrapper> elements = new List<XmlSchemaElementWrapper>();
+            ObservableCollection<XmlSchemaElementWrapper> elements = new ObservableCollection<XmlSchemaElementWrapper>();
 
             foreach (var innerItem in this.InnerItems)
             {
@@ -86,7 +94,9 @@ namespace BL.SchemaLogic.SchemaTypes
                 if (innerItem is XmlSchemaGroupBaseWrapper)
                 {
                     offset += "----";
-                    elements.AddRange((innerItem as XmlSchemaGroupBaseWrapper).IterateGroups(offset, ref index));
+                    var innerItems = (innerItem as XmlSchemaGroupBaseWrapper).IterateGroups(offset, ref index);
+                    foreach (var i in innerItems)
+                        elements.Add(i);
                 }
                 else
                 {

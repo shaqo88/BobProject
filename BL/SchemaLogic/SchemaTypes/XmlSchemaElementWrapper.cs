@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +25,13 @@ namespace BL.SchemaLogic.SchemaTypes
 
         public XmlSchemaElementWrapper Parent { get; private set; }
 
+        public ObservableCollection<XmlSchemaElementWrapper> Children { get; private set; }
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
         public XmlSchemaElementWrapper(XmlSchemaElement element, XmlSchemaElementWrapper parent)
         {
             ElementObject = element;
@@ -31,7 +39,8 @@ namespace BL.SchemaLogic.SchemaTypes
             MinOccursString = element.MinOccursString;
             MaxOccursString = element.MaxOccursString;
             Parent = parent;
-
+            int index = 0;            
+            HandleGroups(ref index);
             Type = XmlSchemaSimpleTypeWrapper.SchemaWrappersFactory(ElementObject.ElementSchemaType);
         }
 
@@ -42,12 +51,16 @@ namespace BL.SchemaLogic.SchemaTypes
             this.Type.PrintAttrs(offset);
         }
 
-        public List<XmlSchemaElementWrapper> HandleGroups(ref int index)
+        public ObservableCollection<XmlSchemaElementWrapper> HandleGroups(ref int index)
         {
-            var result = new List<XmlSchemaElementWrapper>();
+            var result = new ObservableCollection<XmlSchemaElementWrapper>();
             if (this.Group != null)
-                result.AddRange(this.Group.IterateGroups("----", ref index));
-
+            {
+                var group = this.Group.IterateGroups("----", ref index);
+               foreach (var i in group)
+                    result.Add(i);
+            }
+            Children = result;
             return result;
         }
 

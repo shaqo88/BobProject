@@ -1,0 +1,42 @@
+﻿<Window x:Class="BobProject.SplashScreen"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:BobProject" 
+        Title="SplashScreen" Height="500" Width="500" BorderBrush="Transparent" Icon="../Images/mainIcon.png" WindowStyle="None" AllowsTransparency="True" WindowStartupLocation="CenterScreen">
+    <Window.Background>
+        <ImageBrush/>
+    </Window.Background>
+    <Window.Resources>
+        <Style x:Key="MyButtonStyle" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                        VerticalAlignment="Center"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid MouseLeftButtonDown="Move">
+
+        <Grid.Background>
+            <ImageBrush ImageSource="../Images/backgroundMainSplash.png"/>
+        </Grid.Background>
+        <Label Content="{Binding Source={x:Static local:MessageListener.Instance},Path=Message}" HorizontalAlignment="Left" Height="28" Margin="397,253,0,0" VerticalAlignment="Top" Width="93"/>
+        <Image HorizontalAlignment="Left" Height="32" Margin="0,2,0,0" VerticalAlignment="Top" Width="32" Source="../Images/mainIcon.png" Opacity="0.7">
+            <Image.OpacityMask>
+                <ImageBrush ImageSource="../Images/mainIcon.png"/>
+            </Image.OpacityMask>
+        </Image>
+        <Line
+    X1="10" Y1="100"
+    X2="100" Y2="100"
+    Stroke="#FFC3D6FF"
+    StrokeThickness="2" Margin="-10,-216,1,215" Opacity="0.7" Stretch="Fill" RenderTransformOrigin="0,-2" />
+        <Label Content="Bob" HorizontalAlignment="Left" Height="34" Margin="32,0,0,0" VerticalAlignment="Top" Width="468" FontSize="14" FontFamily="Arial" FontWeight="Bold" FontStyle="Italic" Background="#FFBDDBF9"/>
+    </Grid>
+</Window>

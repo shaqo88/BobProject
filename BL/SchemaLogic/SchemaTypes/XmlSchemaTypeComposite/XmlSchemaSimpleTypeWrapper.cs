@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,14 +15,14 @@ namespace BL.SchemaLogic.SchemaTypes.XmlSchemaTypeComposite
         public Type DotNetType { get; private set; } // The restriction base, relevant only for simple type
         public string Pattern { get; private set; }
         public string InnerText { get; set; }
-        public List<XmlSchemaAttributeInfo> Attributes { get; private set; }
+        public ObservableCollection<XmlSchemaAttributeInfo> Attributes { get; private set; }
 
         public XmlSchemaSimpleTypeWrapper(XmlSchemaSimpleType type)
         {
             this.Name = type.Name;
             this.SchemaType = type;
             this.DotNetType = SchemaType.Datatype.ValueType;
-            this.Attributes = new List<XmlSchemaAttributeInfo>(); // Will Always be just an empty list, made for abstraction
+            this.Attributes = new ObservableCollection<XmlSchemaAttributeInfo>(); // Will Always be just an empty list, made for abstraction
             GetPattern();
         }
 
