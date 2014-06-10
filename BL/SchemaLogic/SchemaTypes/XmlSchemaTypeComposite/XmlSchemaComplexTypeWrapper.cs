@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace BL.SchemaLogic.SchemaTypes.XmlSchemaTypeComposite
 
         public IXmlSchemaTypeWrapper InnerType { get; set; }
 
-        public List<XmlSchemaAttributeInfo> Attributes { get; private set; }
+        public ObservableCollection<XmlSchemaAttributeInfo> Attributes { get; private set; }
 
         public XmlSchemaComplexTypeWrapper(XmlSchemaComplexType complexType)
         {
@@ -34,9 +35,9 @@ namespace BL.SchemaLogic.SchemaTypes.XmlSchemaTypeComposite
             Attributes = GetAllAttributes(this);
         }
 
-        private static List<XmlSchemaAttributeInfo> GetAllAttributes(IXmlSchemaTypeWrapper type)
+        private static ObservableCollection<XmlSchemaAttributeInfo> GetAllAttributes(IXmlSchemaTypeWrapper type)
         {
-            var result = new List<XmlSchemaAttributeInfo>();
+            var result = new ObservableCollection<XmlSchemaAttributeInfo>();
 
             if (type is XmlSchemaComplexTypeWrapper)
             {
@@ -52,7 +53,9 @@ namespace BL.SchemaLogic.SchemaTypes.XmlSchemaTypeComposite
                 if (compSchemaType.BaseXmlSchemaType.Name != null)
                 {
                     compType.InnerType = XmlSchemaSimpleTypeWrapper.SchemaWrappersFactory(compSchemaType.BaseXmlSchemaType);
-                    result.AddRange(GetAllAttributes(compType.InnerType));
+                    var innerTypes = GetAllAttributes(compType.InnerType);
+                    foreach (var i in innerTypes)
+                        result.Add(i);
                 }
 
                 if (compSchemaType.ContentModel != null)
