@@ -9,12 +9,19 @@
         x:Name="_this"
         Title="Bob" Height="350" Width="525" WindowState="Maximized" Icon="../Images/mainIcon.png" WindowStartupLocation="CenterScreen">
     <Window.Resources>
-        <ValueConverter:BooleanToVisibilityConverter x:Key="BoolToVisConverter"/> 
-        
-        <HierarchicalDataTemplate x:Key="ChildTemplate" >
+        <ValueConverter:BooleanToVisibilityConverter x:Key="BoolToVisConverter"/>
+
+        <DataTemplate x:Key="Child" DataType="{x:Type Elements:XmlSchemaWrapper}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding Path=Name}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <HierarchicalDataTemplate x:Key="ChildTemplate" DataType="{x:Type Elements:XmlSchemaGroupBaseWrapper}" ItemsSource="{Binding Path=InnerItems}"
+                                  ItemTemplate="{StaticResource Child}">
                 <TextBlock Text="{Binding Path=Name}" />
         </HierarchicalDataTemplate>
-        <HierarchicalDataTemplate x:Key="NameTemplate" DataType="{x:Type Elements:XmlSchemaElementWrapper}" ItemsSource="{Binding Path=Children}" 
+        <HierarchicalDataTemplate x:Key="NameTemplate" DataType="{x:Type Elements:XmlSchemaElementWrapper}" ItemsSource="{Binding Path=Group}" 
                                     ItemTemplate="{StaticResource ChildTemplate}">
                 <TextBlock Text="{Binding Path=Name}"/>
         </HierarchicalDataTemplate>        
@@ -73,6 +80,9 @@
                         </Style>
                     </TreeView.ItemContainerStyle>
                 </TreeView>
+                
+                <TreeView x:Name="trvTypes2" >                   
+                </TreeView> 
                
                 <Label FontSize="14" FontWeight="Bold" Content="Legend:"/>
                 <ListView BorderBrush="White">

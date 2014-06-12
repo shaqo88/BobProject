@@ -13,8 +13,6 @@ namespace BL.SchemaLogic.SchemaTypes
     {
         private XmlSchemaElement ElementObject { get; set; }
 
-        public string Name { get; private set; }
-
         public IXmlSchemaTypeWrapper Type { get; private set; }
 
         public string MinOccursString { get; set; }
@@ -32,10 +30,10 @@ namespace BL.SchemaLogic.SchemaTypes
             return Name;
         }
 
-        public XmlSchemaElementWrapper(XmlSchemaElement element, XmlSchemaElementWrapper parent)
+        public XmlSchemaElementWrapper(XmlSchemaElement element, XmlSchemaElementWrapper parent) : 
+            base(element.Name, NodeType.Element)
         {
             ElementObject = element;
-            Name = element.Name;
             MinOccursString = element.MinOccursString;
             MaxOccursString = element.MaxOccursString;
             Parent = parent;

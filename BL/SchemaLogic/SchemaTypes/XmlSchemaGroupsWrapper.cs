@@ -8,20 +8,35 @@ using System.Xml.Schema;
 
 namespace BL.SchemaLogic.SchemaTypes
 {
-    public enum GroupType { Choice, Sequence }
+    public enum NodeType { Element, Choice, Sequence }
 
     public class XmlSchemaChoiceWrapper : XmlSchemaGroupBaseWrapper
     {
+
+        public XmlSchemaWrapper Selected { get; set; }
+
         public XmlSchemaChoiceWrapper(XmlSchemaChoice choice)
-            : base(choice, GroupType.Choice)
+            : base(choice, NodeType.Choice)
         {
+            OnGroupDrill += XmlSchemaChoiceWrapper_OnGroupDrill;
+        }
+
+        private void XmlSchemaChoiceWrapper_OnGroupDrill()
+        {
+            if (InnerItems.Count != 0)
+                Selected = InnerItems[0];
+        }
+
+        public override string ToString()
+        {
+            return base.ToString() + "->" + Selected;
         }
     }
 
     public class XmlSchemaSequenceWrapper : XmlSchemaGroupBaseWrapper
     {
         public XmlSchemaSequenceWrapper(XmlSchemaSequence sequence)
-            : base(sequence, GroupType.Sequence)
+            : base(sequence, NodeType.Sequence)
         {
         }
     }
@@ -30,24 +45,16 @@ namespace BL.SchemaLogic.SchemaTypes
     /// </summary>
     public abstract class XmlSchemaGroupBaseWrapper : XmlSchemaWrapper
     {
+        protected event Action OnGroupDrill;
         private XmlSchemaGroupBase Group { get; set; }
 
         public ObservableCollection<XmlSchemaWrapper> InnerItems { get; set; }
 
-        public GroupType GroupType { get; protected set; }
-
-        public string Name { get; private set; }
-
-        public override string ToString()
-        {
-            return Name;
-        }
-
-        public XmlSchemaGroupBaseWrapper(XmlSchemaGroupBase group, GroupType groupType)
+        public XmlSchemaGroupBaseWrapper(XmlSchemaGroupBase group, NodeType nodeType)
+            : base(nodeType.ToString(), nodeType)
         {
             Group = group;
             InnerItems = new ObservableCollection<XmlSchemaWrapper>();
-            GroupType = groupType;
         }
 
         public static XmlSchemaGroupBaseWrapper SchemaGroupWrappersFactory(XmlSchemaGroupBase group)
@@ -81,6 +88,9 @@ namespace BL.SchemaLogic.SchemaTypes
                     ((XmlSchemaGroupBaseWrapper)InnerItems.Last()).DrillOnce(parent);
                 }
             }
+
+            if (OnGroupDrill != null)
+                OnGroupDrill();
         }
 
         public ObservableCollection<XmlSchemaElementWrapper> IterateGroups(string offset, ref int index)
@@ -116,5 +126,18 @@ namespace BL.SchemaLogic.SchemaTypes
 
     public abstract class XmlSchemaWrapper
     {
+        public string Name { get; private set; }
+
+        public NodeType NodeType { get; protected set; }
+
+        public XmlSchemaWrapper(string name, NodeType nodeType)
+        {
+            this.Name = name;
+        }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }
