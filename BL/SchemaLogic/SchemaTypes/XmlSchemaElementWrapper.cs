@@ -13,9 +13,9 @@ namespace BL.SchemaLogic.SchemaTypes
     {
         private XmlSchemaElement ElementObject { get; set; }
 
-        public IXmlSchemaTypeWrapper Type { get; private set; }
+        private IXmlSchemaTypeWrapper Type { get; set; }
 
-        public string MinOccursString { get; set; }
+        public decimal MinOccurs { get; set; }
 
         public string MaxOccursString { get; set; }
 
@@ -34,7 +34,7 @@ namespace BL.SchemaLogic.SchemaTypes
             base(element.Name, NodeType.Element)
         {
             ElementObject = element;
-            MinOccursString = element.MinOccursString;
+            MinOccurs = element.MinOccurs;
             MaxOccursString = element.MaxOccursString;
             Parent = parent;
             int index = 0;            
@@ -45,7 +45,7 @@ namespace BL.SchemaLogic.SchemaTypes
         public void PrintElement(string offset="", int? index=null)
         {
             Console.WriteLine("{0}|{1}|==>Element: {2}", offset, index.HasValue ? index.Value.ToString() : "", this.Name);
-            Console.WriteLine("{0}Min/Max Occurs: {1}/{2}\n", offset, this.MinOccursString, this.MaxOccursString);
+            Console.WriteLine("{0}Min/Max Occurs: {1}/{2}\n", offset, this.MinOccurs, this.MaxOccursString);
             this.Type.PrintAttrs(offset);
         }
 

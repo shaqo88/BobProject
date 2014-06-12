@@ -46,9 +46,9 @@ namespace BL
                 }
                 else
                 {
-                    if (operation == -2)
+                    if (operation == -2) // Go up one layer
                         currElement = currElement.Parent;
-                    else if (operation == -1)
+                    else if (operation == -1) // Exit
                         return;
                     else
                     {
