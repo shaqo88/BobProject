@@ -6,6 +6,9 @@ using System.Xml.Schema;
 using System.Linq;
 using BL.SchemaLogic;
 using DAL.XmlWrapper;
+using BL.SchemaLogic.SchemaTypes;
+using BL.SchemaLogic.SchemaTypes.XmlSchemaTypeComposite;
+using System.Collections.ObjectModel;
 
 namespace BL
 {
@@ -30,13 +33,13 @@ namespace BL
 
             int operation = 1;
 
-            var currElement = describer.Elements[0];
+            XmlSchemaWrapper currElement = describer.Elements[0];
 
             do
             {
-                currElement.PrintElement();
+                PrintElement(currElement as XmlSchemaElementWrapper);
 
-                var elements = currElement.HandleGroups(ref index);
+                var elements = HandleGroups(currElement as XmlSchemaElementWrapper, ref index);
 
                 PrintInstructions();
 
@@ -73,6 +76,77 @@ namespace BL
             Console.WriteLine("or -2 parent");
             Console.WriteLine("or -1 to exit");
             Console.WriteLine("==================================");
+        }
+
+        private static void PrintAttrs(XmlSchemaElementWrapper element, string offset)
+        {
+            offset += "++";
+            Console.WriteLine("{0}Attributes", offset);
+            Console.WriteLine("{0}==========", offset);
+
+            foreach (var attr in element.Attributes)
+            {
+                Console.WriteLine("{0}{1}, \t Type: {2}", offset, attr.Name, attr.SimpleType);
+            }
+            Console.WriteLine("{0}==========", offset);
+
+            if (element.DotNetType != null)
+            {
+                offset += "++";
+
+                Console.WriteLine("{0}Simple Type: {1}", offset, element.DotNetType);
+                Console.WriteLine("{0}==========", offset);
+            }
+        }
+
+        private static void PrintElement(XmlSchemaElementWrapper element, string offset = "", int? index = null)
+        {
+            Console.WriteLine("{0}|{1}|==>Element: {2}", offset, index.HasValue ? index.Value.ToString() : "", element.Name);
+            Console.WriteLine("{0}Min/Max Occurs: {1}/{2}\n", offset, element.MinOccurs, element.MaxOccursString);
+            PrintAttrs(element, offset);
+        }
+
+        private static ObservableCollection<XmlSchemaElementWrapper> IterateGroups(XmlSchemaGroupBaseWrapper group, string offset, ref int index)
+        {
+            ObservableCollection<XmlSchemaElementWrapper> elements = new ObservableCollection<XmlSchemaElementWrapper>();
+
+            foreach (var innerItem in group.Children)
+            {
+                Console.WriteLine("{0}Element group type: {1}", offset, group.GetType());
+
+                if (innerItem is XmlSchemaGroupBaseWrapper)
+                {
+                    offset += "----";
+                    var innerItems = IterateGroups(innerItem as XmlSchemaGroupBaseWrapper, offset, ref index);
+                    foreach (var i in innerItems)
+                        elements.Add(i);
+                }
+                else
+                {
+                    if (innerItem is XmlSchemaElementWrapper)
+                    {
+                        var element = innerItem as XmlSchemaElementWrapper;
+                        elements.Add(element);
+                        PrintElement(element, offset, index);
+                        ++index;
+                    }
+                }
+            }
+
+            return elements;
+        }
+
+        private static ObservableCollection<XmlSchemaElementWrapper> HandleGroups(XmlSchemaElementWrapper element, ref int index)
+        {
+            var result = new ObservableCollection<XmlSchemaElementWrapper>();
+            if (element.Children.Count > 0)
+            {
+                var groupList = IterateGroups(element.Children[0] as XmlSchemaGroupBaseWrapper, "----", ref index);
+                foreach (var i in groupList)
+                    result.Add(i);
+            }
+
+            return result;
         }
     }
 }

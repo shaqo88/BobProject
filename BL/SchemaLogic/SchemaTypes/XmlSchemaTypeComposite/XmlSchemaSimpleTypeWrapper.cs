@@ -15,14 +15,12 @@ namespace BL.SchemaLogic.SchemaTypes.XmlSchemaTypeComposite
         public Type DotNetType { get; private set; } // The restriction base, relevant only for simple type
         public string Pattern { get; private set; }
         public string InnerText { get; set; }
-        public ObservableCollection<XmlSchemaAttributeInfo> Attributes { get; private set; }
 
         public XmlSchemaSimpleTypeWrapper(XmlSchemaSimpleType type)
         {
             this.Name = type.Name;
             this.SchemaType = type;
             this.DotNetType = SchemaType.Datatype.ValueType;
-            this.Attributes = new ObservableCollection<XmlSchemaAttributeInfo>(); // Will Always be just an empty list, made for abstraction
             GetPattern();
         }
 
@@ -36,19 +34,6 @@ namespace BL.SchemaLogic.SchemaTypes.XmlSchemaTypeComposite
                 throw new Exception(string.Format("Unknown type: {0}", baseType.Name));
         }
 
-        public void PrintAttrs(string offset)
-        {
-            offset += "++";
-
-            Console.WriteLine("{0}Simple Type: {1}", offset, this.DotNetType);
-            Console.WriteLine("{0}==========", offset);
-        }
-
-        public XmlSchemaGroupBaseWrapper DrillOnce(XmlSchemaElementWrapper parent)
-        {
-            return null;
-        }
-
         private void GetPattern()
         {
             var restriction = this.SchemaType.Content as XmlSchemaSimpleTypeRestriction;
@@ -58,6 +43,14 @@ namespace BL.SchemaLogic.SchemaTypes.XmlSchemaTypeComposite
                 var pattern = restriction.Facets[0] as XmlSchemaPatternFacet;
                 Pattern = pattern.Value;
             }
+        }
+
+        public static Type GetDotNetType(IXmlSchemaTypeWrapper type)
+        {
+            if (type is XmlSchemaSimpleType)
+                return type.DotNetType;
+
+            return null;
         }
     }
 }

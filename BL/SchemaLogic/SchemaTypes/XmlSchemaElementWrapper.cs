@@ -15,76 +15,57 @@ namespace BL.SchemaLogic.SchemaTypes
 
         private IXmlSchemaTypeWrapper Type { get; set; }
 
+        public Type DotNetType { get; private set; }
+
         public decimal MinOccurs { get; set; }
 
         public string MaxOccursString { get; set; }
 
-        public XmlSchemaGroupBaseWrapper Group { get; set; }
+        private XmlSchemaGroupBaseWrapper Group { get; set; }
 
-        public XmlSchemaElementWrapper Parent { get; private set; }
-
-        public ObservableCollection<XmlSchemaElementWrapper> Children { get; private set; }
+        public ObservableCollection<XmlSchemaAttributeInfo> Attributes { get; private set; }
 
         public override string ToString()
         {
             return Name;
         }
 
-        public XmlSchemaElementWrapper(XmlSchemaElement element, XmlSchemaElementWrapper parent) : 
-            base(element.Name, NodeType.Element)
+        public XmlSchemaElementWrapper(XmlSchemaElement element, XmlSchemaWrapper parent) :
+            base(element.Name, NodeType.Element, parent)
         {
             ElementObject = element;
             MinOccurs = element.MinOccurs;
             MaxOccursString = element.MaxOccursString;
             Parent = parent;
-            int index = 0;            
-            HandleGroups(ref index);
             Type = XmlSchemaSimpleTypeWrapper.SchemaWrappersFactory(ElementObject.ElementSchemaType);
+            Attributes = XmlSchemaComplexTypeWrapper.GetAllAttributes(Type);
+            DotNetType = XmlSchemaSimpleTypeWrapper.GetDotNetType(Type);
         }
 
-        public void PrintElement(string offset="", int? index=null)
+        public override void DrillOnce()
         {
-            Console.WriteLine("{0}|{1}|==>Element: {2}", offset, index.HasValue ? index.Value.ToString() : "", this.Name);
-            Console.WriteLine("{0}Min/Max Occurs: {1}/{2}\n", offset, this.MinOccurs, this.MaxOccursString);
-            this.Type.PrintAttrs(offset);
-        }
-
-        public ObservableCollection<XmlSchemaElementWrapper> HandleGroups(ref int index)
-        {
-            var result = new ObservableCollection<XmlSchemaElementWrapper>();
-            if (this.Group != null)
+            if (Type is XmlSchemaComplexTypeWrapper)
             {
-                var group = this.Group.IterateGroups("----", ref index);
-               foreach (var i in group)
-                    result.Add(i);
+                var complexType = Type as XmlSchemaComplexTypeWrapper;
+
+                if (complexType.SchemaType.ContentTypeParticle != null)
+                {
+                    if (complexType.SchemaType.ContentTypeParticle is XmlSchemaSequence)
+                    {
+                        var seq = complexType.SchemaType.ContentTypeParticle as XmlSchemaSequence;
+                        Group = XmlSchemaGroupBaseWrapper.SchemaGroupWrappersFactory(seq, this);
+                        Children.Add(Group);
+                        Group.DrillOnce();
+                    }
+                    else if (complexType.SchemaType.ContentTypeParticle is XmlSchemaChoice)
+                    {
+                        var choice = complexType.SchemaType.ContentTypeParticle as XmlSchemaChoice;
+                        Group = XmlSchemaGroupBaseWrapper.SchemaGroupWrappersFactory(choice, this);
+                        Children.Add(Group);
+                        Group.DrillOnce();
+                    }
+                }
             }
-            Children = result;
-            return result;
-        }
-
-        public void DrillOnce()
-        {
-            Group = Type.DrillOnce(this);
-            //if (this.Type.SchemaType is XmlSchemaComplexType)
-            //{
-            //    var compType = this.Type.SchemaType as XmlSchemaComplexType;
-
-            //    if (compType.ContentTypeParticle != null)
-            //    {
-            //        if (compType.ContentTypeParticle is XmlSchemaSequence)
-            //        {
-            //            var seq = compType.ContentTypeParticle as XmlSchemaSequence;
-            //            this.Group = XmlSchemaGroupBaseWrapper.SchemaGroupWrappersFactory(seq);
-            //            this.Group.DrillOnce(this);
-            //        }
-            //        else if (compType.ContentTypeParticle is XmlSchemaChoice)
-            //        {
-            //            var choice = compType.ContentTypeParticle as XmlSchemaChoice;
-            //            this.Group = XmlSchemaGroupBaseWrapper.SchemaGroupWrappersFactory(choice);
-            //            this.Group.DrillOnce(this);
-            //        }
-            //    }
-            //}
         }
     }
 }

@@ -87,11 +87,11 @@ namespace BobProject.ViewModel
                 var describer = new SchemaDescriber(SchemaPath);
                 RootTypesLst = describer.Elements;
                 CurrTypesLst = describer.Elements; 
-                int index = 0;
-                ObservableCollection<XmlSchemaElementWrapper> elements = CurrTypesLst[0].HandleGroups(ref index);                
-
-                var currElement2 = elements[3];
-                currElement2.DrillOnce();
+                // TODO : complete logic
+                //int index = 0;
+                //ObservableCollection<XmlSchemaElementWrapper> elements = CurrTypesLst[0].HandleGroups(ref index);                
+                //var currElement2 = elements[3];
+                //currElement2.DrillOnce();
                                                
                 GetCurrtypesList = CurrTypesLst;
 
