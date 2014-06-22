@@ -14,6 +14,10 @@ namespace BL
 {
     class LogicTesting
     {
+        static ObservableCollection<XmlSchemaWrapper> flatChildrenList = new ObservableCollection<XmlSchemaWrapper>();
+        static int index = 0;
+        static string offset = string.Empty;
+
         static void Main()
         {
             var describer = new SchemaDescriber("../../copperhead.xsd");
@@ -33,41 +37,68 @@ namespace BL
 
             int operation = 1;
 
-            XmlSchemaWrapper currElement = describer.Elements[0];
+            XmlSchemaWrapper currNode = describer.Elements[0];
 
             do
             {
-                PrintElement(currElement as XmlSchemaElementWrapper);
+                PrintNode(currNode, true);
 
-                var elements = HandleGroups(currElement as XmlSchemaElementWrapper, ref index);
+                if (currNode is XmlSchemaElementWrapper)
+                    PrintAttrs(currNode as XmlSchemaElementWrapper);
 
                 PrintInstructions();
 
-                if (!int.TryParse(Console.ReadLine(), out operation) || operation < -2 || operation >= elements.Count)
+                if (!int.TryParse(Console.ReadLine(), out operation) || operation < -2 || operation >= flatChildrenList.Count)
                 {
                     Console.WriteLine("Invalid choice!");
                 }
                 else
                 {
                     if (operation == -2) // Go up one layer
-                        currElement = currElement.Parent;
+                    {
+                        if (currNode.Parent == null)
+                            Console.WriteLine("This is the root, can't go up");
+                        else
+                            currNode = currNode.Parent;
+                    }
                     else if (operation == -1) // Exit
                         return;
                     else
                     {
-                        currElement = elements[operation];
-                        currElement.DrillOnce();
+                        currNode = flatChildrenList[operation];
+                        currNode.DrillOnce();
                     }
                 }
                 Console.WriteLine("****************************");
 
+                flatChildrenList.Clear();
                 index = 0;
-                elements.Clear();
 
             } while (operation != -1);
         }
 
-        static int index = 0;
+        private static void PrintNode(XmlSchemaWrapper node, bool isRoot = false)
+        {
+            if (node.Children.Count > 0 || isRoot)
+                Console.WriteLine("{0}|X|==>{1}", offset, node.ToString());
+            else
+                Console.WriteLine("{0}|{1}|==>{2}", offset, index, node.ToString());
+
+            offset += "----";
+
+            if (isRoot || node is XmlSchemaGroupBaseWrapper)
+                foreach (var child in node.Children)
+                {
+                    PrintNode(child);
+                    if (child.Children.Count == 0)
+                    {
+                        flatChildrenList.Add(child);
+                        ++index;
+                    }
+                }
+
+            offset = offset.Remove(0, 4);
+        }
 
         private static void PrintInstructions()
         {
@@ -78,75 +109,26 @@ namespace BL
             Console.WriteLine("==================================");
         }
 
-        private static void PrintAttrs(XmlSchemaElementWrapper element, string offset)
+        private static void PrintAttrs(XmlSchemaElementWrapper element)
         {
-            offset += "++";
-            Console.WriteLine("{0}Attributes", offset);
-            Console.WriteLine("{0}==========", offset);
+            Console.WriteLine("\t\t\t||==============================================||");
+            Console.WriteLine("\t\t\t||Attributes of the element {0}\t\t||", element.Name);
+            Console.WriteLine("\t\t\t||==============================================||");
 
             foreach (var attr in element.Attributes)
             {
-                Console.WriteLine("{0}{1}, \t Type: {2}", offset, attr.Name, attr.SimpleType);
+                Console.WriteLine("\t\t\t||{0}, \t Type: {1}\t\t||", attr.Name, attr.SimpleType);
             }
-            Console.WriteLine("{0}==========", offset);
+            Console.WriteLine("\t\t\t||==========\t\t\t\t\t||", offset);
 
             if (element.DotNetType != null)
             {
-                offset += "++";
-
-                Console.WriteLine("{0}Simple Type: {1}", offset, element.DotNetType);
-                Console.WriteLine("{0}==========", offset);
-            }
-        }
-
-        private static void PrintElement(XmlSchemaElementWrapper element, string offset = "", int? index = null)
-        {
-            Console.WriteLine("{0}|{1}|==>Element: {2}", offset, index.HasValue ? index.Value.ToString() : "", element.Name);
-            Console.WriteLine("{0}Min/Max Occurs: {1}/{2}\n", offset, element.MinOccurs, element.MaxOccursString);
-            PrintAttrs(element, offset);
-        }
-
-        private static ObservableCollection<XmlSchemaElementWrapper> IterateGroups(XmlSchemaGroupBaseWrapper group, string offset, ref int index)
-        {
-            ObservableCollection<XmlSchemaElementWrapper> elements = new ObservableCollection<XmlSchemaElementWrapper>();
-
-            foreach (var innerItem in group.Children)
-            {
-                Console.WriteLine("{0}Element group type: {1}", offset, group.GetType());
-
-                if (innerItem is XmlSchemaGroupBaseWrapper)
-                {
-                    offset += "----";
-                    var innerItems = IterateGroups(innerItem as XmlSchemaGroupBaseWrapper, offset, ref index);
-                    foreach (var i in innerItems)
-                        elements.Add(i);
-                }
-                else
-                {
-                    if (innerItem is XmlSchemaElementWrapper)
-                    {
-                        var element = innerItem as XmlSchemaElementWrapper;
-                        elements.Add(element);
-                        PrintElement(element, offset, index);
-                        ++index;
-                    }
-                }
+                Console.WriteLine("\t\t\t||Simple Type: {0}||", element.DotNetType);
+                Console.WriteLine("\t\t\t||==========\t\t\t\t\t||");
             }
 
-            return elements;
-        }
+            Console.WriteLine("\t\t\t||==============================================||");
 
-        private static ObservableCollection<XmlSchemaElementWrapper> HandleGroups(XmlSchemaElementWrapper element, ref int index)
-        {
-            var result = new ObservableCollection<XmlSchemaElementWrapper>();
-            if (element.Children.Count > 0)
-            {
-                var groupList = IterateGroups(element.Children[0] as XmlSchemaGroupBaseWrapper, "----", ref index);
-                foreach (var i in groupList)
-                    result.Add(i);
-            }
-
-            return result;
         }
     }
 }
