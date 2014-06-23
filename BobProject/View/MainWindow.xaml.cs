@@ -28,65 +28,40 @@ namespace BobProject
     public partial class MainWindow : Window
     {
 
-        public class Field {
-            public string Name { get; set; }
-            public int Length { get; set; }
-            public bool Required { get; set; }
-        }
+        public MainWindowViewModel ViewModel { get; private set; }
 
 
-        private MainWindowViewModel ViewModel;
+        public bool IsFirstEnter { get; set; }
+        private static MainWindow instance;
 
-        public ObservableCollection<Field> Fields { get; set; }
-
-
-        public static readonly DependencyProperty CompanyNameProperty =
-        DependencyProperty.Register("Perm", typeof(string), typeof(MainWindow), new UIPropertyMetadata(string.Empty));
-
-        public string Perm
+        public static MainWindow Instance
         {
-            get { return (string)this.GetValue(CompanyNameProperty); }
-            set { this.SetValue(CompanyNameProperty, value); }
+            get
+            {
+                if (instance == default(MainWindow))
+                    instance = new MainWindow();
+                return instance;
+            }
         }
 
 
-        public MainWindow()
+        private MainWindow()
         {
             ViewModel = new MainWindowViewModel();
-            Perm = Permission.Instance.GetCurrPermisssion().ToString();
-
-            InitializeComponent();
-                    
-            trvTypes.DataContext = ViewModel.GetCurrtypesList;
-      
-
-            Fields = new ObservableCollection<Field>();
-            Fields.Add(new Field() { Name = "Username", Length = 100, Required = true });
-            Fields.Add(new Field() { Name = "Password", Length = 80, Required = true });
-            Fields.Add(new Field() { Name = "City", Length = 100, Required = false });
-            Fields.Add(new Field() { Name = "State", Length = 40, Required = false });
-            Fields.Add(new Field() { Name = "Zipcode", Length = 60, Required = false });
-
-            FieldsListBox.ItemsSource = Fields;
-
+            DataContext = ViewModel;
+            IsFirstEnter = true;
             
-        }
+            InitializeComponent();
 
-        private void OnExit(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
-        private void OpenAbout(object sender, RoutedEventArgs e)
-        {
-            About about = new About();
-            about.Show();
+            LstColors.ItemsSource = ViewModel.TypesColor;
+            HierarchyTreeView.ItemsSource = ViewModel.GetCurrtypesList;      
+            
         }
 
         private void OnSwitchUser(object sender, RoutedEventArgs e)
         {
-            /*Login login = new Login();
-            login.Show();*/
+            IsFirstEnter = false;
+            this.Hide();
         }
 
         private void OpenConfiguration(object sender, RoutedEventArgs e)
@@ -103,7 +78,7 @@ namespace BobProject
 
         private void OpenSaveAs(object sender, RoutedEventArgs e)
         {
-            SaveXML saveXml = new SaveXML(); 
+            SaveXML saveXml = new SaveXML();
 
             saveXml.Show();
         }
@@ -118,12 +93,19 @@ namespace BobProject
                 }
             }
 
-           /* ObservableCollection<XmlSchemaElementWrapper> x = ViewModel.GetCurrtypesList;
-            x[0].DrillOnce();            
-            x.Add(x[0]);
-            ViewModel.GetCurrtypesList = x;*/
+        }
+
+        public void OnExit(object sender, EventArgs e)
+        {
+            Close();
+            foreach (Window w in Application.Current.Windows)
+            {
+                w.Close();
+            }
 
         }
+
+
 
     }
 

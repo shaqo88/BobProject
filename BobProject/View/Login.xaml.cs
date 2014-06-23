@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using BL.RegistryConfig;
 using BobProject.UtilityClasses;
 using Microsoft.Win32;
 
@@ -23,30 +24,30 @@ namespace BobProject
     /// </summary>
     public partial class Login : Window
     {
-        
-       
+
         public Login()
         {
-            if (Permission.Instance.IsErrorLoading())
+            if (Permission.Instance.IsErrorLoading() || ConfigurationData.Instance.IsErrorLoadingSchema ||
+                ConfigurationData.Instance.IsErrorLoadingColors)
             {
                 MessageBox.Show("Configuration Error. Please ReInstall Application", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 this.Close();
             }
             InitializeComponent();
 
-
             /////////////DEBUG
             Send_Click(this, null);
             ////////////END DEBUG
         }
 
-        
+
 
 
         [STAThread()]
         private void ShowSplashScreen()
         {
             this.Hide();
+            MainWindow.Instance.IsFirstEnter = true;
             Splasher.Splash = new SplashScreen();
             Splasher.ShowSplash();
 
@@ -64,21 +65,32 @@ namespace BobProject
             }
 
             Splasher.CloseSplash();
-            MainWindow m = new MainWindow();
-            m.Show();
+            MainWindow.Instance.Show();
             this.Close();
         }
-        
-        
+
+
         private void Send_Click(object sender, RoutedEventArgs e)
         {
-            if (Permission.Instance.CheckPermission(userNameTxt.Text,passwordTxt.Password))
+            bool okPermission = Permission.Instance.CheckPermission(userNameTxt.Text, passwordTxt.Password);
+
+            if (okPermission && ConfigurationData.Instance.SchemaPath == "" && Permission.Instance.GetCurrPermisssion() != Permission.PermissionType.Manager)
+            {
+                MessageBox.Show("Schema Path Empty. Please Contact Manager.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (okPermission)
                 failLogin.Visibility = Visibility.Hidden;
-            else 
+            else
                 failLogin.Visibility = Visibility.Visible;
-                
+
             if (failLogin.Visibility == Visibility.Hidden)
+            {
+                MainWindow.Instance.ViewModel.Permit = Permission.Instance.GetCurrPermisssion().ToString();
                 ShowSplashScreen();
+
+            }
         }
 
         private void Clear_Click(object sender, RoutedEventArgs e)
@@ -92,8 +104,14 @@ namespace BobProject
         {
             if (e.Key == Key.Enter)
             {
-                Send_Click(sender,e);
+                Send_Click(sender, e);
             }
+        }
+
+        private void OnExit(object sender, EventArgs e)
+        {
+            if (!MainWindow.Instance.IsFirstEnter)
+                MainWindow.Instance.OnExit(this, e);
         }
 
     }

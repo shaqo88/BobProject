@@ -34,8 +34,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ColorPicker">
+      <HintPath>ExternalDlls\ColorPicker.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -53,12 +57,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="UtilityClasses\Permission.cs" />
+    <Compile Include="UtilityClasses\HierarchyDataTemplateSelector.cs" />
     <Compile Include="UtilityClasses\ViewModelBase.cs" />
+    <Compile Include="ViewModel\Commands\LoadNewSchemaCommand.cs" />
+    <Compile Include="ViewModel\Commands\PickerColorCommand.cs" />
+    <Compile Include="ViewModel\Commands\SaveConfigCommand.cs" />
+    <Compile Include="ViewModel\Commands\ShowAboutCommand.cs" />
+    <Compile Include="ViewModel\Commands\SwitchUserCommand.cs" />
+    <Compile Include="ViewModel\ConfigurationViewModel.cs" />
     <Compile Include="ViewModel\Commands\ShowPropertiesCommand.cs" />
     <Compile Include="ViewModel\Commands\UpdateTreeCommand.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\ValueConverters\BooleanToVisibilityConverter.cs" />
+    <Compile Include="ViewModel\ValueConverters\ColorToBrushConverter.cs" />
     <Compile Include="View\About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>

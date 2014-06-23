@@ -30,6 +30,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -40,6 +41,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Registry\ConfigurationData.cs" />
+    <Compile Include="Registry\Permission.cs" />
     <Compile Include="SchemaLogic\SchemaDescriber.cs" />
     <Compile Include="SchemaLogic\SchemaTypes\XmlSchemaAttributeInfo.cs" />
     <Compile Include="SchemaLogic\SchemaTypes\XmlSchemaElementWrapper.cs" />
@@ -47,6 +50,7 @@
     <Compile Include="SchemaLogic\SchemaTypes\XmlSchemaTypeComposite\IXmlSchemaTypeWrapper.cs" />
     <Compile Include="SchemaLogic\SchemaTypes\XmlSchemaTypeComposite\XmlSchemaComplexTypeWrapper.cs" />
     <Compile Include="SchemaLogic\SchemaTypes\XmlSchemaTypeComposite\XmlSchemaSimpleTypeWrapper.cs" />
+    <Compile Include="UtilityClasses\ObservableDictionary.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DAL\DAL.csproj">

@@ -11,6 +11,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using BobProject.ViewModel;
+
 
 namespace BobProject
 {
@@ -19,9 +21,22 @@ namespace BobProject
     /// </summary>
     public partial class Configuration : Window
     {
+
+        public ConfigurationViewModel ViewModel { get; private set; }
+
         public Configuration()
         {
+
+            ViewModel = new ConfigurationViewModel();
+            ViewModel.Parent = this;
+            DataContext = ViewModel;
+
             InitializeComponent();
+
+            LstColors.ItemsSource = ViewModel.TypesColor;
+
         }
+
+
     }
 }

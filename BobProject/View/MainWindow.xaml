@@ -3,30 +3,20 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:self="clr-namespace:BobProject"          
         xmlns:ViewModel="clr-namespace:BobProject.ViewModel"        
+        xmlns:Commands="clr-namespace:BobProject.ViewModel.Commands"        
         xmlns:ValueConverter="clr-namespace:BobProject.ViewModel.ValueConverters"
-        xmlns:Elements ="clr-namespace:BL.SchemaLogic.SchemaTypes;assembly=BL"
+        xmlns:Helper="clr-namespace:BobProject.UtilityClasses"
+        xmlns:Elements ="clr-namespace:BL.SchemaLogic.SchemaTypes;assembly=BL"                              
         x:Class="BobProject.MainWindow"  
         x:Name="_this"
-        Title="Bob" Height="350" Width="525" WindowState="Maximized" Icon="../Images/mainIcon.png" WindowStartupLocation="CenterScreen">
+        
+        Title="Bob" Height="350" Width="525" WindowState="Maximized" Icon="../Images/mainIcon.png" WindowStartupLocation="CenterScreen" Closed="OnExit">
     <Window.Resources>
+        <ValueConverter:ColorToBrushConverter x:Key="colorToBrushConverter"/>
         <ValueConverter:BooleanToVisibilityConverter x:Key="BoolToVisConverter"/>
-
-        <DataTemplate x:Key="Child" DataType="{x:Type Elements:XmlSchemaWrapper}">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{Binding Path=Name}" />
-            </StackPanel>
-        </DataTemplate>
-
-        <HierarchicalDataTemplate x:Key="ChildTemplate" DataType="{x:Type Elements:XmlSchemaGroupBaseWrapper}" ItemsSource="{Binding Path=InnerItems}"
-                                  ItemTemplate="{StaticResource Child}">
-                <TextBlock Text="{Binding Path=Name}" />
-        </HierarchicalDataTemplate>
-        <HierarchicalDataTemplate x:Key="NameTemplate" DataType="{x:Type Elements:XmlSchemaElementWrapper}" ItemsSource="{Binding Path=Group}" 
-                                    ItemTemplate="{StaticResource ChildTemplate}">
-                <TextBlock Text="{Binding Path=Name}"/>
-        </HierarchicalDataTemplate>        
+        <Helper:HierarchyDataTemplateSelector x:Key="hierarchyDataTemplateSelector" />
     </Window.Resources>
-    
+
     <DockPanel>
         <Menu DockPanel.Dock="Top" HorizontalAlignment="Left" BorderBrush="Black">
             <MenuItem Header="File">
@@ -37,33 +27,26 @@
                 <Separator/>
                 <MenuItem Header="Exit" Click="OnExit"/>
             </MenuItem>
-            <MenuItem Header="View">
+            <MenuItem Header="View" >
                 <MenuItem Header="Expand two levels"/>
                 <MenuItem Header="Collapse"/>
             </MenuItem>
             <MenuItem Header="Tools">
-                <MenuItem Header="Switch User" Click="OnSwitchUser"/>
+                <MenuItem Header="Switch User" Click="OnSwitchUser"  Command="{Binding SwitchUser}"/>
                 <Separator/>
                 <MenuItem Header="Options" Click="OpenConfiguration"/>
                 <Separator/>
                 <MenuItem Header="Reports" Click="OpenReports"/>
             </MenuItem>
             <MenuItem Header="Help">
-                <MenuItem Header="About" Click="OpenAbout"/>
+                <MenuItem Header="About" Command="{Binding ShowAbout}" />
             </MenuItem>
         </Menu>
         <Grid DockPanel.Dock="Bottom">
-            <StatusBar DockPanel.Dock="Left" Background="AliceBlue">
-                <StatusBarItem>                    
-                    <TextBlock>
-                        <TextBlock.Text>
-                            <MultiBinding StringFormat=" {0} Permission">
-                                <Binding Path="Perm" ElementName="_this"/>
-                            </MultiBinding>
-                        </TextBlock.Text>
-                    </TextBlock>
-                </StatusBarItem>
-            </StatusBar>
+            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Background="AliceBlue">
+                <TextBlock Text="{Binding Permit}" TextWrapping="NoWrap"/>
+                <TextBlock Text=" Permission" TextWrapping="Wrap"/>
+            </StackPanel>
         </Grid>
 
         <Grid DockPanel.Dock="Left">
@@ -73,21 +56,50 @@
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0" VerticalAlignment="Stretch">
                 <Label/>
-                <TreeView ItemsSource="{Binding}" ItemTemplate="{StaticResource NameTemplate}" x:Name="trvTypes" >
+
+                <TreeView Name="HierarchyTreeView" ItemTemplateSelector="{StaticResource hierarchyDataTemplateSelector}" ItemsSource="{Binding}">
                     <TreeView.ItemContainerStyle>
-                        <Style TargetType="{x:Type TreeViewItem}">
-                            <EventSetter Event="Control.MouseDoubleClick" Handler="OnTreeNodeDoubleClick"/>
+                        <Style TargetType="{x:Type TreeViewItem}">                         
+                            <Setter Property="IsExpanded" Value="True" />
+                            <Setter Property="FontWeight" Value="Normal" />                            
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="FontWeight" Value="Bold" />                                    
+                                </Trigger>
+                            </Style.Triggers>
                         </Style>
                     </TreeView.ItemContainerStyle>
+                    <TreeView.Resources>
+                        <HierarchicalDataTemplate x:Key="XmlSchemaSequenceWrapperTemplate" DataType="{x:Type Elements:XmlSchemaSequenceWrapper}" ItemsSource="{Binding Path=Children}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Path=Name}" Margin="0 0 5 0"/>                               
+                            </StackPanel>
+                        </HierarchicalDataTemplate>
+                        <HierarchicalDataTemplate x:Key="XmlSchemaElementWrapperTemplate" DataType="{x:Type Elements:XmlSchemaElementWrapper}" ItemsSource="{Binding Path=Children}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Path=Name}"/>
+                            </StackPanel>
+                        </HierarchicalDataTemplate>
+                        <HierarchicalDataTemplate x:Key="XmlSchemaChoiceWrapperTemplate" DataType="{x:Type Elements:XmlSchemaChoiceWrapper}" ItemsSource="{Binding Path=Children}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Path=Name}"/>
+                                <TextBlock Text="->"/>
+                                <TextBlock Text="{Binding Path=Selected.Name}"/>
+                            </StackPanel>
+                        </HierarchicalDataTemplate>
+                    </TreeView.Resources>
                 </TreeView>
-                
-                <TreeView x:Name="trvTypes2" >                   
-                </TreeView> 
-               
+
+                <Line></Line>
                 <Label FontSize="14" FontWeight="Bold" Content="Legend:"/>
-                <ListView BorderBrush="White">
-                    <ListViewItem Content="sss" Foreground="Coral"/>
-                </ListView>
+                <ListBox Name="LstColors" Grid.Row="0" ItemsSource="{Binding}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Path=Key}" Foreground="{Binding Path=Value, Converter={StaticResource colorToBrushConverter}}"/>
+                        </DataTemplate>
+
+                    </ListBox.ItemTemplate>
+                </ListBox>
             </StackPanel>
             <Grid x:Name="RightPanel" Grid.Column="1">
                 <ListBox x:Name="FieldsListBox">
@@ -97,7 +109,6 @@
                                 <Label Content="{Binding Name}" VerticalAlignment="Center"/>
                                 <TextBox Width="{Binding Length}" Margin="5,0,0,0"/>
                                 <Label Content="*"  Visibility="{Binding Required, Converter={StaticResource BoolToVisConverter}}"/>
-                                <!--Visibility="{Binding Required, Converter={StaticResource BoolToVisConverter}}" -->
                             </StackPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>

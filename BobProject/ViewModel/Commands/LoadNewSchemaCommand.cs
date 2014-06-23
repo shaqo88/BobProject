@@ -4,21 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BL.RegistryConfig;
+using BL.UtilityClasses;
 
 namespace BobProject.ViewModel.Commands
 {
-    public class ShowPropertiesCommand : ICommand
+    public class LoadNewSchemaCommand : ICommand
     {
         #region Fields
 
         // Member variables
-        private readonly MainWindowViewModel viewModel;
+        private readonly ConfigurationViewModel viewModel;
 
         #endregion
 
         #region Constructor
 
-        public ShowPropertiesCommand(MainWindowViewModel _viewModel)
+        public LoadNewSchemaCommand(ConfigurationViewModel _viewModel)
         {
             viewModel = _viewModel;
         }
@@ -32,7 +34,7 @@ namespace BobProject.ViewModel.Commands
         /// </summary>
         public bool CanExecute(object parameter)
         {
-            return true;//(ViewModel.SelectedItem != null);
+            return (Permission.Instance.GetCurrPermisssion() == Permission.PermissionType.Manager);
         }
 
         /// <summary>
@@ -49,8 +51,29 @@ namespace BobProject.ViewModel.Commands
         /// </summary>
         public void Execute(object parameter)
         {
-            /*var selectedItem = m_ViewModel.SelectedItem;
-            m_ViewModel.GroceryList.Remove(selectedItem);*/
+            // Create OpenFileDialog 
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+
+
+            // Set filter for file extension and default file extension 
+            dlg.DefaultExt = ".xsd";
+            dlg.Filter = "Schema Files (*.xsd)|*.xsd";
+
+
+            // Display OpenFileDialog by calling ShowDialog method 
+            Nullable<bool> result = dlg.ShowDialog();
+
+
+            // Get the selected file name and display in a TextBox 
+            if (result == true)
+            {
+                // Open document 
+                string filename = dlg.FileName;
+
+                ////////////////////////////////check valid schema
+
+                viewModel.SchemaPath = filename;
+            }
         }
 
         #endregion

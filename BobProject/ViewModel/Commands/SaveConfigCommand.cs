@@ -4,23 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BL.RegistryConfig;
 
 namespace BobProject.ViewModel.Commands
 {
-    public class ShowPropertiesCommand : ICommand
+    public class SaveConfigCommand : ICommand
     {
-        #region Fields
-
-        // Member variables
-        private readonly MainWindowViewModel viewModel;
-
-        #endregion
 
         #region Constructor
 
-        public ShowPropertiesCommand(MainWindowViewModel _viewModel)
+        public SaveConfigCommand()
         {
-            viewModel = _viewModel;
         }
 
         #endregion
@@ -32,7 +26,7 @@ namespace BobProject.ViewModel.Commands
         /// </summary>
         public bool CanExecute(object parameter)
         {
-            return true;//(ViewModel.SelectedItem != null);
+            return (Permission.Instance.GetCurrPermisssion() == Permission.PermissionType.Manager);
         }
 
         /// <summary>
@@ -49,8 +43,7 @@ namespace BobProject.ViewModel.Commands
         /// </summary>
         public void Execute(object parameter)
         {
-            /*var selectedItem = m_ViewModel.SelectedItem;
-            m_ViewModel.GroceryList.Remove(selectedItem);*/
+            ConfigurationData.Instance.SaveConfig();
         }
 
         #endregion

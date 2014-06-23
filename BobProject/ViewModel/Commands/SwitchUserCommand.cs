@@ -7,20 +7,20 @@ using System.Windows.Input;
 
 namespace BobProject.ViewModel.Commands
 {
-    public class ShowPropertiesCommand : ICommand
+    public class SwitchUserCommand : ICommand
     {
         #region Fields
 
         // Member variables
-        private readonly MainWindowViewModel viewModel;
+        private Login login;
 
         #endregion
 
         #region Constructor
 
-        public ShowPropertiesCommand(MainWindowViewModel _viewModel)
+        public SwitchUserCommand()
         {
-            viewModel = _viewModel;
+
         }
 
         #endregion
@@ -38,19 +38,18 @@ namespace BobProject.ViewModel.Commands
         /// <summary>
         /// Fires when the CanExecute status of this command changes.
         /// </summary>
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
+        public event EventHandler CanExecuteChanged;
 
         /// <summary>
         /// Invokes this command to perform its intended task.
         /// </summary>
         public void Execute(object parameter)
         {
-            /*var selectedItem = m_ViewModel.SelectedItem;
-            m_ViewModel.GroceryList.Remove(selectedItem);*/
+            login = new Login();
+            /////////////DEBUG
+            //login.Show();     
+            //end debug
+
         }
 
         #endregion

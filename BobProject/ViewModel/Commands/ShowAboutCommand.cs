@@ -3,24 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace BobProject.ViewModel.Commands
 {
-    public class ShowPropertiesCommand : ICommand
+    class ShowAboutCommand : ICommand
     {
         #region Fields
 
         // Member variables
         private readonly MainWindowViewModel viewModel;
+        private About about;
 
         #endregion
 
         #region Constructor
 
-        public ShowPropertiesCommand(MainWindowViewModel _viewModel)
+        public ShowAboutCommand(MainWindowViewModel _viewModel)
         {
             viewModel = _viewModel;
+
+
         }
 
         #endregion
@@ -35,22 +39,26 @@ namespace BobProject.ViewModel.Commands
             return true;//(ViewModel.SelectedItem != null);
         }
 
-        /// <summary>
-        /// Fires when the CanExecute status of this command changes.
-        /// </summary>
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-
+        public event EventHandler CanExecuteChanged;
         /// <summary>
         /// Invokes this command to perform its intended task.
         /// </summary>
         public void Execute(object parameter)
         {
-            /*var selectedItem = m_ViewModel.SelectedItem;
-            m_ViewModel.GroceryList.Remove(selectedItem);*/
+
+            foreach (Window w in Application.Current.Windows)
+            {
+                if (w is About)
+                {
+                    w.Activate();
+                }
+            }
+
+            if (!viewModel.isAboutOpen)
+            {
+                about = new About();
+                about.Show();
+            }
         }
 
         #endregion

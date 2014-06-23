@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Win32;
 
-namespace BobProject.UtilityClasses
+namespace BL.RegistryConfig
 {
     public partial class Permission
     {
-        public  enum   PermissionType { Viewer, Editor, Manager };
-        private enum   Regkeys { EditorUser, ViewerUser, ManagerUser, EditorPass, ViewerPass, ManagerPass };
+        public enum PermissionType { Viewer, Editor, Manager };
+        private enum Regkeys { EditorUser, ViewerUser, ManagerUser, EditorPass, ViewerPass, ManagerPass };
         private static Permission instance;
         private string editorUser;
         private string viewerUser;
@@ -18,30 +18,29 @@ namespace BobProject.UtilityClasses
         private string editorPass;
         private string viewerPass;
         private string managerPass;
-        private bool   isError; 
+        private bool isError;
         private PermissionType currPermission;
         private const string pathReg = "Bob\\Users";
 
-        public static Permission Instance 
-        { 
-            get 
-            { 
-                    if (instance == default(Permission)) 
-                        instance = new Permission(); 
-                    return instance; 
-            } 
-        } 
-    
+        public static Permission Instance
+        {
+            get
+            {
+                if (instance == default(Permission))
+                    instance = new Permission();
+                return instance;
+            }
+        }
+
 
         #region ctor
- 
-        private Permission() 
+
+        private Permission()
         {
-            ReadPermissionFromRegistry(); 
-        } 
+            ReadPermissionFromRegistry();
+        }
 
         #endregion
-
 
         #region public method
 
@@ -84,11 +83,11 @@ namespace BobProject.UtilityClasses
 
         private void ReadPermissionFromRegistry()
         {
-            editorUser  = GetRegisterValue(Regkeys.EditorUser);
-            viewerUser  = GetRegisterValue(Regkeys.ViewerUser);
+            editorUser = GetRegisterValue(Regkeys.EditorUser);
+            viewerUser = GetRegisterValue(Regkeys.ViewerUser);
             managerUser = GetRegisterValue(Regkeys.ManagerUser);
-            editorPass  = GetRegisterValue(Regkeys.EditorPass);
-            viewerPass  = GetRegisterValue(Regkeys.ViewerPass);
+            editorPass = GetRegisterValue(Regkeys.EditorPass);
+            viewerPass = GetRegisterValue(Regkeys.ViewerPass);
             managerPass = GetRegisterValue(Regkeys.ManagerPass);
 
             if ((editorUser == null) || (viewerUser == null) || (managerUser == null) ||

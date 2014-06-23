@@ -4,9 +4,13 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
+using BL.RegistryConfig;
 using BL.SchemaLogic;
 using BL.SchemaLogic.SchemaTypes;
+using BL.UtilityClasses;
 using BobProject.UtilityClasses;
 using BobProject.ViewModel.Commands;
 using Microsoft.Win32;
@@ -21,9 +25,35 @@ namespace BobProject.ViewModel
         // Property variables
         private ObservableCollection<XmlSchemaElementWrapper> RootTypesLst;
         private ObservableCollection<XmlSchemaElementWrapper> CurrTypesLst;
+        private ObservableDictionary<string, Color> typesColor;
         public string SchemaPath { get; set; }
-        private const string PathReg = "Bob\\Configuration";
         private string LastError = "";
+        private string permission;
+        public ICommand ShowAbout { get; set; }
+        public ICommand SwitchUser { get; set; }
+        public string Permit
+        {
+            get { return Permission.Instance.GetCurrPermisssion().ToString(); }
+            set
+            {
+                permission = Permission.Instance.GetCurrPermisssion().ToString();
+                base.RaisePropertyChangedEvent("Permit");
+            }
+        }
+        public bool isAboutOpen
+        {
+            get
+            {
+                foreach (Window w in Application.Current.Windows)
+                {
+                    if (w is About)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
 
         #endregion
 
@@ -36,11 +66,21 @@ namespace BobProject.ViewModel
 
         #endregion
 
+        public ObservableDictionary<string, Color> TypesColor
+        {
+            get { return typesColor; }
+            set
+            {
+                typesColor = value;
+                base.RaisePropertyChangedEvent("TypesColor");
+            }
+        }
+
 
         #region Constructor
 
         public MainWindowViewModel()
-        {            
+        {
             this.Initialize();
         }
 
@@ -63,7 +103,7 @@ namespace BobProject.ViewModel
             }
         }
         #endregion
-           
+
 
 
         #region Methods
@@ -71,28 +111,25 @@ namespace BobProject.ViewModel
         {
             // Initialize commands
             this.UpdateTypes = new UpdateTreeCommand(this);
+            ShowAbout = new ShowAboutCommand(this);
+            SwitchUser = new SwitchUserCommand();
 
             // Create types List
             CurrTypesLst = new ObservableCollection<XmlSchemaElementWrapper>();
             RootTypesLst = new ObservableCollection<XmlSchemaElementWrapper>();
+            typesColor = ConfigurationData.Instance.TypesColor;
+            SchemaPath = ConfigurationData.Instance.SchemaPath;
 
-            
-            //get schema path
-            if (!ReadSchemaPath())
-                return;
 
             //Load schema
             try
             {
                 var describer = new SchemaDescriber(SchemaPath);
                 RootTypesLst = describer.Elements;
-                CurrTypesLst = describer.Elements; 
-                // TODO : complete logic
-                //int index = 0;
-                //ObservableCollection<XmlSchemaElementWrapper> elements = CurrTypesLst[0].HandleGroups(ref index);                
-                //var currElement2 = elements[3];
-                //currElement2.DrillOnce();
-                                               
+                CurrTypesLst = describer.Elements;
+                var r = describer.Elements[0].Children[0].Children[1].Children[1];
+                r.DrillOnce();
+
                 GetCurrtypesList = CurrTypesLst;
 
             }
@@ -101,10 +138,9 @@ namespace BobProject.ViewModel
                 LastError = "Error loading schema";
                 return;
             }
-
             // Update bindings
             base.RaisePropertyChangedEvent("GetCurrtypesList");
-               
+
         }
 
 
@@ -113,24 +149,16 @@ namespace BobProject.ViewModel
             return LastError != "";
         }
 
-        private bool ReadSchemaPath()
-        {
-            RegistryKey regKey = Registry.CurrentUser.OpenSubKey(PathReg);
-            if (regKey != null)
-                SchemaPath = (string)regKey.GetValue("SchemaPath");
-            else
-            {
-                LastError = "Error get value from registry";
-                return false;
-            }
-            return true;
-        }
+
 
 
         #endregion
 
 
-        
-
     }
 }
+
+
+
+
+
