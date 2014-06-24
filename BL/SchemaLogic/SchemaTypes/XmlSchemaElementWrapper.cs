@@ -25,6 +25,8 @@ namespace BL.SchemaLogic.SchemaTypes
 
         public ObservableCollection<XmlSchemaAttributeInfo> Attributes { get; private set; }
 
+        public override bool IsDrillable { get { return GetDrillableComplexType() != null; } }
+
         public override string ToString()
         {
             return Name;
@@ -44,28 +46,28 @@ namespace BL.SchemaLogic.SchemaTypes
 
         public override void DrillOnce()
         {
+            var groupBase = GetDrillableComplexType();
+
+            if (groupBase == null)
+                return;
+
+            Group = XmlSchemaGroupBaseWrapper.SchemaGroupWrappersFactory(groupBase, this);
+            Children.Add(Group);
+            Group.DrillOnce();
+        }
+
+        private XmlSchemaGroupBase GetDrillableComplexType()
+        {
             if (Type is XmlSchemaComplexTypeWrapper)
             {
                 var complexType = Type as XmlSchemaComplexTypeWrapper;
 
-                if (complexType.SchemaType.ContentTypeParticle != null)
-                {
-                    if (complexType.SchemaType.ContentTypeParticle is XmlSchemaSequence)
-                    {
-                        var seq = complexType.SchemaType.ContentTypeParticle as XmlSchemaSequence;
-                        Group = XmlSchemaGroupBaseWrapper.SchemaGroupWrappersFactory(seq, this);
-                        Children.Add(Group);
-                        Group.DrillOnce();
-                    }
-                    else if (complexType.SchemaType.ContentTypeParticle is XmlSchemaChoice)
-                    {
-                        var choice = complexType.SchemaType.ContentTypeParticle as XmlSchemaChoice;
-                        Group = XmlSchemaGroupBaseWrapper.SchemaGroupWrappersFactory(choice, this);
-                        Children.Add(Group);
-                        Group.DrillOnce();
-                    }
-                }
+                if (complexType.SchemaType.ContentTypeParticle is XmlSchemaSequence ||
+                    complexType.SchemaType.ContentTypeParticle is XmlSchemaChoice)
+                    return complexType.SchemaType.ContentTypeParticle as XmlSchemaGroupBase;
             }
+
+            return null;
         }
     }
 }

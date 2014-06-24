@@ -10,36 +10,6 @@ namespace BL.SchemaLogic.SchemaTypes
 {
     public enum NodeType { Element, Choice, Sequence }
 
-    public class XmlSchemaChoiceWrapper : XmlSchemaGroupBaseWrapper
-    {
-
-        public XmlSchemaWrapper Selected { get; set; }
-
-        public XmlSchemaChoiceWrapper(XmlSchemaChoice choice, XmlSchemaWrapper parent)
-            : base(choice, NodeType.Choice, parent)
-        {
-            OnGroupDrill += XmlSchemaChoiceWrapper_OnGroupDrill;
-        }
-
-        private void XmlSchemaChoiceWrapper_OnGroupDrill()
-        {
-            if (Children.Count != 0)
-                Selected = Children[0];
-        }
-
-        public override string ToString()
-        {
-            return base.ToString() + "->" + Selected;
-        }
-    }
-
-    public class XmlSchemaSequenceWrapper : XmlSchemaGroupBaseWrapper
-    {
-        public XmlSchemaSequenceWrapper(XmlSchemaSequence sequence, XmlSchemaWrapper parent)
-            : base(sequence, NodeType.Sequence, parent)
-        {
-        }
-    }
     /// <summary>
     /// For <choice> and <sequence> tags
     /// </summary>
@@ -47,6 +17,13 @@ namespace BL.SchemaLogic.SchemaTypes
     {
         protected event Action OnGroupDrill;
         private XmlSchemaGroupBase Group { get; set; }
+        public override bool IsDrillable
+        {
+            get
+            {
+                return true;
+            }
+        }
 
         public XmlSchemaGroupBaseWrapper(XmlSchemaGroupBase group, NodeType nodeType, XmlSchemaWrapper parent)
             : base(nodeType.ToString(), nodeType, parent)
@@ -91,28 +68,34 @@ namespace BL.SchemaLogic.SchemaTypes
         }
     }
 
-    public abstract class XmlSchemaWrapper
+    public class XmlSchemaChoiceWrapper : XmlSchemaGroupBaseWrapper
     {
-        public string Name { get; private set; }
 
-        public NodeType NodeType { get; protected set; }
+        public XmlSchemaWrapper Selected { get; set; }
 
-        public ObservableCollection<XmlSchemaWrapper> Children { get; protected set; }
-
-        public XmlSchemaWrapper Parent { get; set; }
-
-        public XmlSchemaWrapper(string name, NodeType nodeType, XmlSchemaWrapper parent)
+        public XmlSchemaChoiceWrapper(XmlSchemaChoice choice, XmlSchemaWrapper parent)
+            : base(choice, NodeType.Choice, parent)
         {
-            this.Name = name;
-            this.Parent = parent;
-            Children = new ObservableCollection<XmlSchemaWrapper>();
+            OnGroupDrill += XmlSchemaChoiceWrapper_OnGroupDrill;
+        }
+
+        private void XmlSchemaChoiceWrapper_OnGroupDrill()
+        {
+            if (Children.Count != 0)
+                Selected = Children[0];
         }
 
         public override string ToString()
         {
-            return Name;
+            return base.ToString() + "->" + Selected;
         }
+    }
 
-        public abstract void DrillOnce();
+    public class XmlSchemaSequenceWrapper : XmlSchemaGroupBaseWrapper
+    {
+        public XmlSchemaSequenceWrapper(XmlSchemaSequence sequence, XmlSchemaWrapper parent)
+            : base(sequence, NodeType.Sequence, parent)
+        {
+        }
     }
 }

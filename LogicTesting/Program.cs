@@ -80,9 +80,9 @@ namespace BL
         private static void PrintNode(XmlSchemaWrapper node, bool isRoot = false)
         {
             if (node.Children.Count > 0 || isRoot)
-                Console.WriteLine("{0}|X|==>{1}", offset, node.ToString());
+                Console.WriteLine("{0}|X|==>{1}, IsDrillable: {2}", offset, node.ToString(), node.IsDrillable);
             else
-                Console.WriteLine("{0}|{1}|==>{2}", offset, index, node.ToString());
+                Console.WriteLine("{0}|{1}|==>{2}, IsDrillable: {3}", offset, index, node.ToString(), node.IsDrillable);
 
             offset += "----";
 
