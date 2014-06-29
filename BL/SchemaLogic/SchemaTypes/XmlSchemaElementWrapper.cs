@@ -25,6 +25,32 @@ namespace BL.SchemaLogic.SchemaTypes
 
         public ObservableCollection<XmlSchemaAttributeInfo> Attributes { get; private set; }
 
+        public bool AllAttributesFilled
+        {
+            get
+            {
+                foreach (var attr in Attributes)
+                {
+                    if (attr.IsRequired && (attr.Value == null))
+                        return false;
+                }
+
+                return true;
+            }
+        }
+
+        // TODO : doesn't work yet
+        public override bool AllChildAttributesFilled
+        {
+            get
+            {
+                if (!this.AllAttributesFilled)
+                    return false;
+
+                return base.AllChildAttributesFilled;
+            }
+        }
+
         public override bool IsDrillable { get { return GetDrillableComplexType() != null; } }
 
         public override string ToString()
@@ -44,7 +70,7 @@ namespace BL.SchemaLogic.SchemaTypes
             DotNetType = XmlSchemaSimpleTypeWrapper.GetDotNetType(Type);
         }
 
-        public override void DrillOnce()
+        protected override void InternalDrill()
         {
             var groupBase = GetDrillableComplexType();
 

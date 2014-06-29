@@ -19,11 +19,43 @@ namespace BL.SchemaLogic.SchemaTypes
 
         public abstract bool IsDrillable { get; }
 
-        public XmlSchemaWrapper(string name, NodeType nodeType, XmlSchemaWrapper parent)
+        public bool HasBeenDrilled { get; private set; }
+
+        public bool AllChildrenDrilled
+        {
+            get
+            {
+                foreach (var child in Children)
+                {
+                    if ((child.IsDrillable && !child.HasBeenDrilled))
+                        return false;
+                }
+
+                return !(IsDrillable && !HasBeenDrilled);
+            }
+        }
+
+        public virtual bool AllChildAttributesFilled
+        {
+            get
+            {
+                foreach (var child in Children)
+                {
+                    if (!child.AllChildAttributesFilled)
+                        return false;
+                }
+
+                return true;
+            }
+        }
+
+        public XmlSchemaWrapper(string name, NodeType nodeType, XmlSchemaWrapper parent, bool nonDrillable = false)
         {
             this.Name = name;
             this.Parent = parent;
             Children = new ObservableCollection<XmlSchemaWrapper>();
+            HasBeenDrilled = nonDrillable;
+            NodeType = nodeType;
         }
 
         public override string ToString()
@@ -31,6 +63,17 @@ namespace BL.SchemaLogic.SchemaTypes
             return Name;
         }
 
-        public abstract void DrillOnce();
+        protected abstract void InternalDrill();
+
+        public void DrillOnce()
+        {
+            if (HasBeenDrilled)
+                return;
+            else
+            {
+                InternalDrill();
+                HasBeenDrilled = true;
+            }
+        }
     }
 }

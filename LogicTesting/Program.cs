@@ -17,6 +17,7 @@ namespace BL
         static ObservableCollection<XmlSchemaWrapper> flatChildrenList = new ObservableCollection<XmlSchemaWrapper>();
         static int index = 0;
         static string offset = string.Empty;
+        const string OFFSET_STR = "--";
 
         static void Main()
         {
@@ -79,25 +80,25 @@ namespace BL
 
         private static void PrintNode(XmlSchemaWrapper node, bool isRoot = false)
         {
-            if (node.Children.Count > 0 || isRoot)
-                Console.WriteLine("{0}|X|==>{1}, IsDrillable: {2}", offset, node.ToString(), node.IsDrillable);
+            if (!(node is XmlSchemaElementWrapper) || isRoot)
+                Console.WriteLine("{0}|X|==>{1}, IsDrill: {2}, HasBeen: {3}, All: {4}, Attrs: {5}", offset, node.ToString(), node.IsDrillable, node.HasBeenDrilled, node.AllChildrenDrilled, node.AllChildAttributesFilled);
             else
-                Console.WriteLine("{0}|{1}|==>{2}, IsDrillable: {3}", offset, index, node.ToString(), node.IsDrillable);
+                Console.WriteLine("{0}|{1}|==>{2}, IsDrill: {3}, HasBeen: {4}, All: {5}, Attrs: {5}", offset, index, node.ToString(), node.IsDrillable, node.HasBeenDrilled, node.AllChildrenDrilled, node.AllChildAttributesFilled);
 
-            offset += "----";
+            offset += OFFSET_STR;
 
             if (isRoot || node is XmlSchemaGroupBaseWrapper)
                 foreach (var child in node.Children)
                 {
                     PrintNode(child);
-                    if (child.Children.Count == 0)
+                    if (child is XmlSchemaElementWrapper)
                     {
                         flatChildrenList.Add(child);
                         ++index;
                     }
                 }
 
-            offset = offset.Remove(0, 4);
+            offset = offset.Remove(0, OFFSET_STR.Length);
         }
 
         private static void PrintInstructions()

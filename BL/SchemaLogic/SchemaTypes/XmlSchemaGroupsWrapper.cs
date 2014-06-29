@@ -8,7 +8,7 @@ using System.Xml.Schema;
 
 namespace BL.SchemaLogic.SchemaTypes
 {
-    public enum NodeType { Element, Choice, Sequence }
+    public enum NodeType { Element, Choice, Sequence, NULL }
 
     /// <summary>
     /// For <choice> and <sequence> tags
@@ -41,7 +41,7 @@ namespace BL.SchemaLogic.SchemaTypes
             return null;
         }
 
-        public override void DrillOnce()
+        protected override void InternalDrill()
         {
             foreach (var item in Group.Items)
             {
@@ -68,14 +68,42 @@ namespace BL.SchemaLogic.SchemaTypes
         }
     }
 
+    public class XmlSchemaNullChoice : XmlSchemaWrapper
+    {
+        public XmlSchemaNullChoice(XmlSchemaChoiceWrapper parent)
+            : base("NULL", NodeType.NULL, parent, true)
+        {
+        }
+
+        public override bool IsDrillable
+        {
+            get { return false; }
+        }
+
+        protected override void InternalDrill()
+        {
+        }
+    }
+
     public class XmlSchemaChoiceWrapper : XmlSchemaGroupBaseWrapper
     {
+        private XmlSchemaChoice m_choice;
 
         public XmlSchemaWrapper Selected { get; set; }
+
+        protected override void InternalDrill()
+        {
+            // Check if this choice is optional, if so - add NULL by default
+            if (m_choice.MinOccurs == 0)
+                Children.Add(new XmlSchemaNullChoice(this));
+            
+            base.InternalDrill();
+        }
 
         public XmlSchemaChoiceWrapper(XmlSchemaChoice choice, XmlSchemaWrapper parent)
             : base(choice, NodeType.Choice, parent)
         {
+            m_choice = choice;
             OnGroupDrill += XmlSchemaChoiceWrapper_OnGroupDrill;
         }
 
