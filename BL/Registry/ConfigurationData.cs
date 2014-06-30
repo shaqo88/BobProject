@@ -17,7 +17,7 @@ namespace BL.RegistryConfig
         public String SchemaPath { get; set; }
         private const string pathColorConf = "Bob\\Colors";
         private const string pathSchemaConf = "Bob\\Configuration";
-        private enum Regkeys { Choice, ChoiceNull, Element, Error, Sequence, SchemaPath };
+        public enum Regkeys { Choice, ChoiceNull, Element, Error, Sequence, SchemaPath, Search };
         public bool IsErrorLoadingColors { get; private set; }
         public bool IsErrorLoadingSchema { get; private set; }
         private static ConfigurationData instance;
@@ -46,7 +46,13 @@ namespace BL.RegistryConfig
             GetSetRegisterValue(Regkeys.Element, ((Color)TypesColor[Regkeys.Element.ToString()]).ToString(), false);
             GetSetRegisterValue(Regkeys.Error, ((Color)TypesColor[Regkeys.Error.ToString()]).ToString(), false);
             GetSetRegisterValue(Regkeys.Sequence, ((Color)TypesColor[Regkeys.Sequence.ToString()]).ToString(), false);
+            GetSetRegisterValue(Regkeys.Search, ((Color)TypesColor[Regkeys.Search.ToString()]).ToString(), false);
             GetSetRegisterValue(Regkeys.SchemaPath, SchemaPath, false);
+        }
+
+        public Color GetColorConfiguration(Regkeys item)
+        {
+            return ((Color)TypesColor[item.ToString()]);
         }
 
         #region private method
@@ -59,10 +65,11 @@ namespace BL.RegistryConfig
             string element = GetSetRegisterValue(Regkeys.Element);
             string error = GetSetRegisterValue(Regkeys.Error);
             string sequence = GetSetRegisterValue(Regkeys.Sequence);
+            string search = GetSetRegisterValue(Regkeys.Search);
             SchemaPath = GetSetRegisterValue(Regkeys.SchemaPath);
 
             //check if error occured while reading from the registry
-            if ((choice == null) || (choiceNull == null) ||
+            if ((choice == null) || (choiceNull == null) || (search == null) ||
                 (element == null) || (error == null) || (sequence == null))
                 IsErrorLoadingColors = true;
             else
@@ -79,13 +86,15 @@ namespace BL.RegistryConfig
             Color colorElement = (Color)ColorConverter.ConvertFromString(element);
             Color colorError = (Color)ColorConverter.ConvertFromString(error);
             Color colorSequence = (Color)ColorConverter.ConvertFromString(sequence);
+            Color colorSearch = (Color)ColorConverter.ConvertFromString(search);
 
-            //update list
-            TypesColor["Choice"] = colorChoice;
+            //update list            
             TypesColor["ChoiceNull"] = colorChoiceNull;
+            TypesColor["Choice"] = colorChoice;
             TypesColor["Element"] = colorElement;
             TypesColor["Sequence"] = colorSequence;
             TypesColor["Error"] = colorError;
+            TypesColor["Search"] = colorSearch;
 
         }
 
@@ -114,6 +123,10 @@ namespace BL.RegistryConfig
                     break;
                 case Regkeys.Sequence:
                     subkey = Regkeys.Sequence.ToString();
+                    path = pathColorConf;
+                    break;
+                case Regkeys.Search:
+                    subkey = Regkeys.Search.ToString();
                     path = pathColorConf;
                     break;
                 case Regkeys.SchemaPath:

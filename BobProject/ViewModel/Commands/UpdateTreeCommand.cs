@@ -4,23 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BL.SchemaLogic.SchemaTypes;
 
 namespace BobProject.ViewModel.Commands
 {
     public class UpdateTreeCommand : ICommand
     {
-        #region Fields
-
-        // Member variables
-        private readonly MainWindowViewModel ViewModel;
-
-        #endregion
 
         #region Constructor
 
-        public UpdateTreeCommand(MainWindowViewModel _viewModel)
+        public UpdateTreeCommand()
         {
-            ViewModel = _viewModel;
         }
 
         #endregion
@@ -32,7 +26,7 @@ namespace BobProject.ViewModel.Commands
         /// </summary>
         public bool CanExecute(object parameter)
         {
-            return true;// (m_ViewModel.SelectedItem != null);
+            return true;
         }
 
         /// <summary>
@@ -49,12 +43,12 @@ namespace BobProject.ViewModel.Commands
         /// </summary>
         public void Execute(object parameter)
         {
-            /*var selectedItem = m_ViewModel.SelectedItem;
-            m_ViewModel.GroceryList.Remove(selectedItem);*/
+            //Update Properties GUI
+            MainWindow.Instance.HierarchyTreeTypesView.Items.Refresh();
+            MainWindow.Instance.HierarchyTreeTypesView.UpdateLayout();
+
         }
 
         #endregion
-
-
     }
 }

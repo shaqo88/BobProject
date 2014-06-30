@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BL.SchemaLogic.SchemaTypes;
 
 namespace BobProject.ViewModel.Commands
 {
@@ -32,7 +33,7 @@ namespace BobProject.ViewModel.Commands
         /// </summary>
         public bool CanExecute(object parameter)
         {
-            return true;//(ViewModel.SelectedItem != null);
+            return true;
         }
 
         /// <summary>
@@ -49,8 +50,24 @@ namespace BobProject.ViewModel.Commands
         /// </summary>
         public void Execute(object parameter)
         {
-            /*var selectedItem = m_ViewModel.SelectedItem;
-            m_ViewModel.GroceryList.Remove(selectedItem);*/
+            XmlSchemaWrapper schemaWr = (XmlSchemaWrapper)parameter;
+            viewModel.SelectedItem = schemaWr.NodeType;
+
+            if (schemaWr.NodeType == NodeType.Element)
+                viewModel.LastElementSelected = (XmlSchemaElementWrapper)schemaWr;
+            else if (schemaWr.NodeType == NodeType.Choice)
+                viewModel.LastChoiceSelected = (XmlSchemaChoiceWrapper)schemaWr;
+            else if (schemaWr.NodeType == NodeType.Sequence)
+                viewModel.LastSequenceSelected = (XmlSchemaSequenceWrapper)schemaWr;
+
+
+            //Update Properties GUI
+            MainWindow.Instance.ElementName.DataContext = viewModel.LastElementSelected;
+            MainWindow.Instance.ElementAttributes.DataContext = viewModel.LastElementSelected.Attributes;
+            MainWindow.Instance.ElementAttributes.ItemsSource = viewModel.LastElementSelected.Attributes;
+            MainWindow.Instance.ChoiceComboBox.DataContext = viewModel.LastChoiceSelected;
+
+
         }
 
         #endregion

@@ -67,6 +67,10 @@ namespace BobProject.ViewModel.Commands
                 Color selectedColor = cPicker.SelectedColor;
                 viewModelConf.TypesColor[selectedItem.Key] = selectedColor;
                 viewModelMain.TypesColor[selectedItem.Key] = selectedColor;
+
+                //update treeview GUI
+                MainWindow.Instance.HierarchyTreeTypesView.Items.Refresh();
+                MainWindow.Instance.HierarchyTreeTypesView.UpdateLayout();
             }
         }
 

@@ -22,15 +22,68 @@ namespace BobProject.ViewModel
 
         #region Fields
 
+
         // Property variables
-        private ObservableCollection<XmlSchemaElementWrapper> RootTypesLst;
-        private ObservableCollection<XmlSchemaElementWrapper> CurrTypesLst;
+        private ObservableCollection<XmlSchemaWrapper> typesLst;
         private ObservableDictionary<string, Color> typesColor;
-        public string SchemaPath { get; set; }
+        private NodeType selectedItem;
+        private XmlSchemaElementWrapper lastElementSelected;
+        private XmlSchemaChoiceWrapper lastChoiceSelected;
+        private XmlSchemaSequenceWrapper lastSequenceSelected;
         private string LastError = "";
         private string permission;
-        public ICommand ShowAbout { get; set; }
-        public ICommand SwitchUser { get; set; }
+        private bool isShowSearchBar = true;
+        public ICommand ShowProperties { get; set; }
+        public ICommand UpdateTree { get; set; } 
+        public bool IsShowSearchBar
+        {
+            get { return isShowSearchBar; }
+            set
+            {
+                isShowSearchBar = value;
+                base.RaisePropertyChangedEvent("IsShowSearchBar");
+            }
+        }
+        public NodeType SelectedItem
+        {
+            get { return selectedItem; }
+            set
+            {
+                selectedItem = value;
+                base.RaisePropertyChangedEvent("SelectedItem");
+            }
+        }
+
+        public XmlSchemaElementWrapper LastElementSelected
+        {
+            get { return lastElementSelected; }
+            set
+            {
+                lastElementSelected = value;
+                base.RaisePropertyChangedEvent("LastElementSelected");
+            }
+        }
+
+        public XmlSchemaChoiceWrapper LastChoiceSelected
+        {
+            get { return lastChoiceSelected; }
+            set
+            {
+                lastChoiceSelected = value;
+                base.RaisePropertyChangedEvent("LastChoiceSelected");
+            }
+        }
+
+        public XmlSchemaSequenceWrapper LastSequenceSelected
+        {
+            get { return lastSequenceSelected; }
+            set
+            {
+                lastSequenceSelected = value;
+                base.RaisePropertyChangedEvent("LastSequenceSelected");
+            }
+        }
+
         public string Permit
         {
             get { return Permission.Instance.GetCurrPermisssion().ToString(); }
@@ -40,31 +93,10 @@ namespace BobProject.ViewModel
                 base.RaisePropertyChangedEvent("Permit");
             }
         }
-        public bool isAboutOpen
-        {
-            get
-            {
-                foreach (Window w in Application.Current.Windows)
-                {
-                    if (w is About)
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        }
+
 
         #endregion
 
-        #region Command Properties
-
-        /// <summary>
-        /// Deletes the currently-selected item from the types list.
-        /// </summary>
-        public ICommand UpdateTypes { get; set; }
-
-        #endregion
 
         public ObservableDictionary<string, Color> TypesColor
         {
@@ -89,16 +121,14 @@ namespace BobProject.ViewModel
 
         #region Data Properties
 
-        /// <summary>
-        /// A types list.
-        /// </summary>
-        public ObservableCollection<XmlSchemaElementWrapper> GetCurrtypesList
+
+        public ObservableCollection<XmlSchemaWrapper> TypesList
         {
-            get { return CurrTypesLst; }
+            get { return typesLst; }
 
             set
             {
-                CurrTypesLst = value;
+                typesLst = value;
                 base.RaisePropertyChangedEvent("GetCurrtypesList");
             }
         }
@@ -110,27 +140,32 @@ namespace BobProject.ViewModel
         private void Initialize()
         {
             // Initialize commands
-            this.UpdateTypes = new UpdateTreeCommand(this);
-            ShowAbout = new ShowAboutCommand(this);
-            SwitchUser = new SwitchUserCommand();
+            ShowProperties = new ShowPropertiesCommand(this);
+            UpdateTree = new UpdateTreeCommand();
 
             // Create types List
-            CurrTypesLst = new ObservableCollection<XmlSchemaElementWrapper>();
-            RootTypesLst = new ObservableCollection<XmlSchemaElementWrapper>();
+            typesLst = new ObservableCollection<XmlSchemaWrapper>();
             typesColor = ConfigurationData.Instance.TypesColor;
-            SchemaPath = ConfigurationData.Instance.SchemaPath;
+            string schemaPath = ConfigurationData.Instance.SchemaPath;
 
 
             //Load schema
             try
             {
-                var describer = new SchemaDescriber(SchemaPath);
-                RootTypesLst = describer.Elements;
-                CurrTypesLst = describer.Elements;
-                var r = describer.Elements[0].Children[0].Children[1].Children[1];
-                r.DrillOnce();
+                var describer = new SchemaDescriber(schemaPath);
 
-                GetCurrtypesList = CurrTypesLst;
+                typesLst.Add(describer.Elements[0]);
+                SelectedItem = describer.Elements[0].NodeType;
+
+                //DEBUG
+                LastElementSelected = (XmlSchemaElementWrapper)describer.Elements[0];
+                LastSequenceSelected = (XmlSchemaSequenceWrapper)LastElementSelected.Children[0];
+                LastChoiceSelected = (XmlSchemaChoiceWrapper)LastSequenceSelected.Children[1];
+                //END DEBUG
+
+
+
+                TypesList = typesLst;
 
             }
             catch (Exception)
@@ -148,8 +183,6 @@ namespace BobProject.ViewModel
         {
             return LastError != "";
         }
-
-
 
 
         #endregion

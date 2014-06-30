@@ -7,120 +7,227 @@
         xmlns:ValueConverter="clr-namespace:BobProject.ViewModel.ValueConverters"
         xmlns:Helper="clr-namespace:BobProject.UtilityClasses"
         xmlns:Elements ="clr-namespace:BL.SchemaLogic.SchemaTypes;assembly=BL"                              
+     xmlns:l="clr-namespace:UIControls;assembly=SearchTextBox"
         x:Class="BobProject.MainWindow"  
         x:Name="_this"
-        
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         Title="Bob" Height="350" Width="525" WindowState="Maximized" Icon="../Images/mainIcon.png" WindowStartupLocation="CenterScreen" Closed="OnExit">
     <Window.Resources>
         <ValueConverter:ColorToBrushConverter x:Key="colorToBrushConverter"/>
+        <ValueConverter:ColorLegendConverter x:Key="colorLegendConverter"/>
         <ValueConverter:BooleanToVisibilityConverter x:Key="BoolToVisConverter"/>
+        <ValueConverter:SelectionPropertyToVisibilityConverter x:Key="selectionPropertyToVisibilityConverter"/>
+        <ValueConverter:PermissionToVisibilityConverter x:Key="permissionToVisibilityConverter"/>
         <Helper:HierarchyDataTemplateSelector x:Key="hierarchyDataTemplateSelector" />
+        <Style x:Key="MyButtonStyle" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="MyListItemStyle" TargetType="ListBox">
+            <Style.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                                                                Color="Transparent" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                                                    Color="Transparent" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
+                                                                        Color="Black" />
+            </Style.Resources>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        </Style>
+
     </Window.Resources>
 
     <DockPanel>
         <Menu DockPanel.Dock="Top" HorizontalAlignment="Left" BorderBrush="Black">
             <MenuItem Header="File">
-                <MenuItem Header="New"/>
+                <MenuItem Header="New" Visibility="{Binding Path=Permit, Converter={StaticResource permissionToVisibilityConverter},ConverterParameter=Editor}"/>
                 <MenuItem Header="Open"/>
-                <Separator/>
-                <MenuItem Header="Save As..." Click="OpenSaveAs"/>
+                <Separator Visibility="{Binding Path=Permit, Converter={StaticResource permissionToVisibilityConverter},ConverterParameter=Editor}"/>
+                <MenuItem Header="Save As..." Click="OpenSaveAs" Visibility="{Binding Path=Permit, Converter={StaticResource permissionToVisibilityConverter},ConverterParameter=Editor}"/>
                 <Separator/>
                 <MenuItem Header="Exit" Click="OnExit"/>
             </MenuItem>
             <MenuItem Header="View" >
-                <MenuItem Header="Expand two levels"/>
+                <MenuItem Header="Expand"/>
                 <MenuItem Header="Collapse"/>
+                <Separator/>
+                <MenuItem Header="Search Bar"  IsChecked="{Binding IsShowSearchBar}" Click="ShowSearchBar"/>
+                <Separator/>
+                <MenuItem Header="Show XML"/>
             </MenuItem>
             <MenuItem Header="Tools">
-                <MenuItem Header="Switch User" Click="OnSwitchUser"  Command="{Binding SwitchUser}"/>
+                <MenuItem Header="Switch User" Click="OnSwitchUser" />
                 <Separator/>
                 <MenuItem Header="Options" Click="OpenConfiguration"/>
-                <Separator/>
-                <MenuItem Header="Reports" Click="OpenReports"/>
+                <Separator Visibility="{Binding Path=Permit, Converter={StaticResource permissionToVisibilityConverter},ConverterParameter=Manager}"/>
+                <MenuItem Header="Reports" Click="OpenReports" Visibility="{Binding Path=Permit, Converter={StaticResource permissionToVisibilityConverter},ConverterParameter=Manager}"/>
             </MenuItem>
             <MenuItem Header="Help">
-                <MenuItem Header="About" Command="{Binding ShowAbout}" />
+                <MenuItem Header="About" Click="OpenAbout" />
             </MenuItem>
         </Menu>
+        <ToolBar DockPanel.Dock="Top" Height="35" Visibility="{Binding Path=IsShowSearchBar, Converter={StaticResource BoolToVisConverter}}">
+            <l:SearchTextBox Height="35" VerticalAlignment="Top" Name="SearchBar" Background="AliceBlue" Width="263" Margin="0,0,0,-5" >
+                <!-- <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="OnSearch">
+                        <i:InvokeCommandAction Command="{Binding}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers> -->
+            </l:SearchTextBox>
+            <TextBlock Text="   " />
+            <Button Name="ClearSearchResult" Content="Clear" ToolTip="Clear Search Result" Background="LightGray" Height="27" Width="45" Margin="0,2,0,1"></Button>
+        </ToolBar>
         <Grid DockPanel.Dock="Bottom">
-            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Background="AliceBlue">
+            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Background="LightGray">
                 <TextBlock Text="{Binding Permit}" TextWrapping="NoWrap"/>
                 <TextBlock Text=" Permission" TextWrapping="Wrap"/>
             </StackPanel>
         </Grid>
 
-        <Grid DockPanel.Dock="Left">
+        <Grid  DockPanel.Dock="Left">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="107*"  />
-                <ColumnDefinition Width="410*" />
+                <ColumnDefinition Width="200*"  />
+                <ColumnDefinition Width="5*" />
+                <ColumnDefinition Width="315*" />
             </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="0" VerticalAlignment="Stretch">
-                <Label/>
-
-                <TreeView Name="HierarchyTreeView" ItemTemplateSelector="{StaticResource hierarchyDataTemplateSelector}" ItemsSource="{Binding}">
-                    <TreeView.ItemContainerStyle>
-                        <Style TargetType="{x:Type TreeViewItem}">                         
-                            <Setter Property="IsExpanded" Value="True" />
-                            <Setter Property="FontWeight" Value="Normal" />                            
-                            <Style.Triggers>
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="FontWeight" Value="Bold" />                                    
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TreeView.ItemContainerStyle>
-                    <TreeView.Resources>
-                        <HierarchicalDataTemplate x:Key="XmlSchemaSequenceWrapperTemplate" DataType="{x:Type Elements:XmlSchemaSequenceWrapper}" ItemsSource="{Binding Path=Children}">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" MinHeight="200" Grid.Column="0">
+                <StackPanel Grid.Column="0" VerticalAlignment="Stretch">
+                    <Label FontSize="16" FontWeight="Bold" Content="Types:"/>
+                    <TreeView Name="HierarchyTreeTypesView" FontSize="14" TreeViewItem.Expanded="TreeViewItem_Expanded" ItemTemplateSelector="{StaticResource hierarchyDataTemplateSelector}" ItemsSource="{Binding}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectedItemChanged">
+                                <i:InvokeCommandAction Command="{Binding ShowProperties}" CommandParameter="{Binding ElementName=HierarchyTreeTypesView,Path=SelectedItem}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <TreeView.ItemContainerStyle>
+                            <Style TargetType="{x:Type TreeViewItem}">
+                                <Setter Property="IsExpanded" Value="{Binding AllChildrenDrilled}" />
+                                <Setter Property="FontWeight" Value="Normal" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="FontWeight" Value="Bold" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TreeView.ItemContainerStyle>
+                        <TreeView.Resources>
+                            <HierarchicalDataTemplate x:Key="XmlSchemaSequenceWrapperTemplate" DataType="{x:Type Elements:XmlSchemaSequenceWrapper}" ItemsSource="{Binding Path=Children}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Path=Name}"  Foreground="{Binding Converter={StaticResource colorLegendConverter}, Mode=OneWay}"/>
+                                    <TextBlock Text=" " />
+                                </StackPanel>
+                            </HierarchicalDataTemplate>
+                            <HierarchicalDataTemplate x:Key="XmlSchemaElementWrapperTemplate" DataType="{x:Type Elements:XmlSchemaElementWrapper}" ItemsSource="{Binding Path=Children}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Path=Name}"  Foreground="{Binding Converter={StaticResource colorLegendConverter}, Mode=OneWay}"/>
+                                </StackPanel>
+                            </HierarchicalDataTemplate>
+                            <HierarchicalDataTemplate x:Key="XmlSchemaChoiceNullWrapperTemplate" DataType="{x:Type Elements:XmlSchemaElementWrapper}" ItemsSource="{Binding Path=Children}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Path=Name}"  Foreground="{Binding Converter={StaticResource colorLegendConverter}, Mode=OneWay}"/>
+                                </StackPanel>
+                            </HierarchicalDataTemplate>
+                            <HierarchicalDataTemplate x:Key="XmlSchemaChoiceWrapperTemplate" DataType="{x:Type Elements:XmlSchemaChoiceWrapper}" ItemsSource="{Binding Path=Children}">
+                                <StackPanel Orientation="Horizontal">
+                                     <TextBlock Text="{Binding Path=Name}"  Foreground="{Binding Converter={StaticResource colorLegendConverter}, Mode=OneWay}"/>
+                                    <TextBlock Text="->"  Foreground="{Binding Converter={StaticResource colorLegendConverter}, Mode=OneWay}"/>
+                                    <TextBlock Text="{Binding Path=Selected.Name}"  Foreground="{Binding Converter={StaticResource colorLegendConverter}, Mode=OneWay}"/>
+                                </StackPanel>
+                            </HierarchicalDataTemplate>
+                        </TreeView.Resources>
+                    </TreeView>
+                    <Line></Line>
+                    <Label FontSize="16" FontWeight="Bold" Content="Legend:"/>
+                    <ListBox Name="LstColors" FontSize="14" Grid.Row="0" ItemsSource="{Binding}" Style="{StaticResource MyListItemStyle}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=Key}" Foreground="{Binding Path=Value, Converter={StaticResource colorToBrushConverter}}"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </StackPanel>
+            </ScrollViewer>
+            <GridSplitter Grid.Column="1" Width="10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="LightGray" />
+            <StackPanel x:Name="RightPanel" Grid.Column="2" Orientation="Vertical" >
+                <Label FontSize="16" FontWeight="Bold" Content="Properties:"/>
+                <Grid x:Name="ElementPanel" Visibility="{Binding Path=SelectedItem, Converter={StaticResource selectionPropertyToVisibilityConverter},ConverterParameter=Element}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Element Name:" FontSize="14" />
+                        <TextBlock Name="ElementName" Text="{Binding Path=Name}" FontSize="14" DataContext="{Binding}"  VerticalAlignment="Center" Grid.Column="1" />
+                        <Label Content="Attributes:" FontSize="14" Grid.Row="1" Margin="0,21,0,-21" />
+                        <ListBox Name="ElementAttributes" FontSize="14" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" ItemsSource="{Binding}" Style="{StaticResource MyListItemStyle}" Margin="0,29,10,28">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="30" />
+                                            <RowDefinition Height="30" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding Path=Name}" Width="100" DataContext="{Binding}" Grid.Column="0" />
+                                        <StackPanel Orientation="Horizontal" Grid.Column="1">
+                                            <TextBox Text="{Binding Path=Value,Mode=TwoWay}" DataContext="{Binding}" Width="200"  />
+                                            <Label Content="*" Foreground="Red" Visibility="{Binding IsRequired, Converter={StaticResource BoolToVisConverter}}"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                </Grid>
+                <Grid x:Name="ChoicePanel" Visibility="{Binding Path=SelectedItem, Converter={StaticResource selectionPropertyToVisibilityConverter},ConverterParameter=Choice}">
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Choice:" FontSize="14" />
+                        <StackPanel>
+                            <ComboBox Name="ChoiceComboBox" FontSize="14" DataContext="{Binding}" ItemsSource="{Binding Path=Children}" SelectedItem="{Binding Path=Selected}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="SelectionChanged">
+                                        <i:InvokeCommandAction x:Name="SelectComboChange" Command="{Binding}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Name}" Width="100" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+                <Grid x:Name="SequencePanel" Visibility="{Binding Path=SelectedItem, Converter={StaticResource selectionPropertyToVisibilityConverter},ConverterParameter=Sequence}">
+                    <StackPanel Orientation="Vertical">
+                        <Label Content="Sequence:" FontSize="14" />
+                        <StackPanel Orientation="Horizontal" Margin="3,0,-3,0">
+                            <TextBlock Text="Array Size:  " FontSize="14" />
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding Path=Name}" Margin="0 0 5 0"/>                               
+                                <TextBox x:Name="SequenceSize" FontSize="14" x:FieldModifier="private" Margin="5,5,0,5" TextAlignment="Right" Width="50" Text="0" TextChanged="txtNum_TextChanged" />
+                                <Button x:Name="cmdUp" FontSize="14" x:FieldModifier="private" Margin="5,5,0,5" Content="˄" Width="20" Click="cmdUp_Click" />
+                                <Button x:Name="cmdDown" FontSize="14" x:FieldModifier="private" Margin="0,5,0,5"  Content="˅" Width="20" Click="cmdDown_Click" />
                             </StackPanel>
-                        </HierarchicalDataTemplate>
-                        <HierarchicalDataTemplate x:Key="XmlSchemaElementWrapperTemplate" DataType="{x:Type Elements:XmlSchemaElementWrapper}" ItemsSource="{Binding Path=Children}">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding Path=Name}"/>
-                            </StackPanel>
-                        </HierarchicalDataTemplate>
-                        <HierarchicalDataTemplate x:Key="XmlSchemaChoiceWrapperTemplate" DataType="{x:Type Elements:XmlSchemaChoiceWrapper}" ItemsSource="{Binding Path=Children}">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding Path=Name}"/>
-                                <TextBlock Text="->"/>
-                                <TextBlock Text="{Binding Path=Selected.Name}"/>
-                            </StackPanel>
-                        </HierarchicalDataTemplate>
-                    </TreeView.Resources>
-                </TreeView>
-
-                <Line></Line>
-                <Label FontSize="14" FontWeight="Bold" Content="Legend:"/>
-                <ListBox Name="LstColors" Grid.Row="0" ItemsSource="{Binding}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Path=Key}" Foreground="{Binding Path=Value, Converter={StaticResource colorToBrushConverter}}"/>
-                        </DataTemplate>
-
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
             </StackPanel>
-            <Grid x:Name="RightPanel" Grid.Column="1">
-                <ListBox x:Name="FieldsListBox">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <Label Content="{Binding Name}" VerticalAlignment="Center"/>
-                                <TextBox Width="{Binding Length}" Margin="5,0,0,0"/>
-                                <Label Content="*"  Visibility="{Binding Required, Converter={StaticResource BoolToVisConverter}}"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel Orientation="Horizontal" 
-								Height="{Binding ActualHeight, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
-								Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"/>
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                </ListBox>
-            </Grid>
         </Grid>
     </DockPanel>
 </Window>

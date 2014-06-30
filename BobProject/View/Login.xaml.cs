@@ -47,7 +47,6 @@ namespace BobProject
         private void ShowSplashScreen()
         {
             this.Hide();
-            MainWindow.Instance.IsFirstEnter = true;
             Splasher.Splash = new SplashScreen();
             Splasher.ShowSplash();
 
@@ -110,8 +109,7 @@ namespace BobProject
 
         private void OnExit(object sender, EventArgs e)
         {
-            if (!MainWindow.Instance.IsFirstEnter)
-                MainWindow.Instance.OnExit(this, e);
+
         }
 
     }
