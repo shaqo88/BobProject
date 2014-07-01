@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,7 +11,7 @@ using System.Xml.Schema;
 
 namespace BL.SchemaLogic.SchemaTypes
 {
-    public enum NodeType { Element, Choice, Sequence, NULL }
+    public enum NodeType { Element, Choice, Sequence, SequenceItem, NULL }
 
     /// <summary>
     /// For <choice> and <sequence> tags
@@ -17,13 +20,7 @@ namespace BL.SchemaLogic.SchemaTypes
     {
         protected event Action OnGroupDrill;
         private XmlSchemaGroupBase Group { get; set; }
-        public override bool IsDrillable
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public override bool IsDrillable { get { return true; } }
 
         public XmlSchemaGroupBaseWrapper(XmlSchemaGroupBase group, NodeType nodeType, XmlSchemaWrapper parent)
             : base(nodeType.ToString(), nodeType, parent)
@@ -34,11 +31,11 @@ namespace BL.SchemaLogic.SchemaTypes
         public static XmlSchemaGroupBaseWrapper SchemaGroupWrappersFactory(XmlSchemaGroupBase group, XmlSchemaWrapper parent)
         {
             if (group is XmlSchemaSequence)
-                return new XmlSchemaSequenceWrapper(group as XmlSchemaSequence, parent);
+                return new XmlSchemaSequenceArray(group as XmlSchemaSequence, parent);
             else if (group is XmlSchemaChoice)
                 return new XmlSchemaChoiceWrapper(group as XmlSchemaChoice, parent);
 
-            return null;
+            throw new Exception(string.Format("Group factory failed! Group could not be created, unknown type: {0}", group.GetType()));
         }
 
         protected override void InternalDrill()
@@ -57,7 +54,7 @@ namespace BL.SchemaLogic.SchemaTypes
                     }
                     else if (item is XmlSchemaSequence)
                     {
-                        Children.Add(new XmlSchemaSequenceWrapper(item as XmlSchemaSequence, this));
+                        Children.Add(new XmlSchemaSequenceArray(item as XmlSchemaSequence, this));
                     }
                     ((XmlSchemaGroupBaseWrapper)Children.Last()).DrillOnce();
                 }
@@ -96,7 +93,7 @@ namespace BL.SchemaLogic.SchemaTypes
             // Check if this choice is optional, if so - add NULL by default
             if (m_choice.MinOccurs == 0)
                 Children.Add(new XmlSchemaNullChoice(this));
-            
+
             base.InternalDrill();
         }
 
@@ -119,11 +116,126 @@ namespace BL.SchemaLogic.SchemaTypes
         }
     }
 
-    public class XmlSchemaSequenceWrapper : XmlSchemaGroupBaseWrapper
+    public class XmlSchemaSequenceArray : XmlSchemaGroupBaseWrapper, IList<XmlSchemaSequenceWrapper>//, INotifyCollectionChanged, INotifyPropertyChanged
     {
-        public XmlSchemaSequenceWrapper(XmlSchemaSequence sequence, XmlSchemaWrapper parent)
+        private XmlSchemaSequence m_sequence;
+
+        public XmlSchemaSequenceArray(XmlSchemaSequence sequence, XmlSchemaWrapper parent)
             : base(sequence, NodeType.Sequence, parent)
         {
+            m_sequence = sequence;
+        }
+
+        #region IList<> Interface
+
+        public int IndexOf(XmlSchemaSequenceWrapper item)
+        {
+            return Children.IndexOf(item);
+        }
+
+        public void Insert(int index, XmlSchemaSequenceWrapper item)
+        {
+            Children.Insert(index, item);
+        }
+
+        public void RemoveAt(int index)
+        {
+            Children.RemoveAt(index);
+        }
+
+        public XmlSchemaSequenceWrapper this[int index]
+        {
+            get
+            {
+                return (XmlSchemaSequenceWrapper)Children[index];
+            }
+            set
+            {
+                Children[index] = value;
+
+            }
+        }
+
+        public void Add(XmlSchemaSequenceWrapper item)
+        {
+            Children.Add(item);
+        }
+
+        public void Clear()
+        {
+            Children.Clear();
+        }
+
+        public bool Contains(XmlSchemaSequenceWrapper item)
+        {
+            return Children.Contains(item);
+        }
+
+        public void CopyTo(XmlSchemaSequenceWrapper[] array, int arrayIndex)
+        {
+            Children.CopyTo(array, arrayIndex);
+        }
+
+        public int Count
+        {
+            get { return Children.Count; }
+        }
+
+        public bool IsReadOnly
+        {
+            get { return false; }
+        }
+
+        public bool Remove(XmlSchemaSequenceWrapper item)
+        {
+            return Children.Remove(item);
+        }
+
+        public IEnumerator<XmlSchemaSequenceWrapper> GetEnumerator()
+        {
+            return (IEnumerator<XmlSchemaSequenceWrapper>)Children.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return Children.GetEnumerator();
+        }
+
+        #endregion
+
+        protected override void InternalDrill()
+        {
+            foreach (var seq in Children)
+            {
+                seq.DrillOnce();
+            }
+        }
+
+        public void AddNewWrapper()
+        {
+            var newSeq = new XmlSchemaSequenceWrapper(m_sequence, this, this.Count);
+            this.Add(newSeq);
+            newSeq.DrillOnce();
+        }
+
+        // TODO : Need those interfaces for WPF ??
+        //public event NotifyCollectionChangedEventHandler CollectionChanged;
+
+        //public event PropertyChangedEventHandler PropertyChanged;
+    }
+
+    public class XmlSchemaSequenceWrapper : XmlSchemaGroupBaseWrapper
+    {
+        private int m_index;
+        public XmlSchemaSequenceWrapper(XmlSchemaSequence sequence, XmlSchemaSequenceArray parent, int index)
+            : base(sequence, NodeType.SequenceItem, parent)
+        {
+            m_index = index;
+        }
+
+        public override string ToString()
+        {
+            return m_index.ToString();
         }
     }
 }

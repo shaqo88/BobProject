@@ -87,7 +87,15 @@ namespace BL
 
             offset += OFFSET_STR;
 
+            if (node is XmlSchemaSequenceArray)
+            {
+                var seqArr = node as XmlSchemaSequenceArray;
+                if (seqArr.Count == 0)
+                    seqArr.AddNewWrapper();
+            }
+
             if (isRoot || node is XmlSchemaGroupBaseWrapper)
+            {
                 foreach (var child in node.Children)
                 {
                     PrintNode(child);
@@ -97,6 +105,7 @@ namespace BL
                         ++index;
                     }
                 }
+            }
 
             offset = offset.Remove(0, OFFSET_STR.Length);
         }

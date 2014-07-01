@@ -21,8 +21,6 @@ namespace BL.SchemaLogic.SchemaTypes
 
         public string MaxOccursString { get; set; }
 
-        private XmlSchemaGroupBaseWrapper Group { get; set; }
-
         public ObservableCollection<XmlSchemaAttributeInfo> Attributes { get; private set; }
 
         public bool AllAttributesFilled
@@ -77,9 +75,10 @@ namespace BL.SchemaLogic.SchemaTypes
             if (groupBase == null)
                 return;
 
-            Group = XmlSchemaGroupBaseWrapper.SchemaGroupWrappersFactory(groupBase, this);
-            Children.Add(Group);
-            Group.DrillOnce();
+            // Element is complex type and has a group under it, add it to children (it's the only child) and drill it
+            var group = XmlSchemaGroupBaseWrapper.SchemaGroupWrappersFactory(groupBase, this);
+            Children.Add(group);
+            group.DrillOnce();
         }
 
         private XmlSchemaGroupBase GetDrillableComplexType()
