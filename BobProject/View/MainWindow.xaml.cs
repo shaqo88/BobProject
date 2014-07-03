@@ -61,14 +61,9 @@ namespace BobProject
             if (ViewModel.TypesList.Count == 0)
                 return;
 
-            //Right Panel - DEBUG            
-            ElementName.DataContext = ViewModel.LastElementSelected;
-            ElementAttributes.DataContext = ViewModel.LastElementSelected.Attributes;
-            ElementAttributes.ItemsSource = ViewModel.LastElementSelected.Attributes;
-            ChoiceComboBox.DataContext = ViewModel.LastChoiceSelected;
-            //END DEBUG
-
-            SelectComboChange.Command = ViewModel.UpdateTree;
+            //DEBUG - TODO : error while update tree
+            //SelectComboChange.Command = ViewModel.UpdateTree;
+            //END DEBUF
 
             // Supply the control with the list of sections
             List<string> sections = new List<string> { "Name", "Attribute Value" };
@@ -129,34 +124,7 @@ namespace BobProject
           
         }
 
-        //DEBUG - sequence - numeric
-        private int _numValue = 0;
-        public int NumValue
-        {
-            get { return _numValue; }
-            set
-            {
-                _numValue = value;
-                SequenceSize.Text = value.ToString();
-            }
-        }
-        private void cmdUp_Click(object sender, RoutedEventArgs e)
-        {
-            NumValue++;
-        }
 
-        private void cmdDown_Click(object sender, RoutedEventArgs e)
-        {
-            if (NumValue > 0)
-                NumValue--;
-        }
-
-        private void txtNum_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (!int.TryParse(SequenceSize.Text, out _numValue))
-                SequenceSize.Text = _numValue.ToString();
-        }
-        //END DEBUG
 
         private void OnSwitchUser(object sender, RoutedEventArgs e)
         {
@@ -202,17 +170,7 @@ namespace BobProject
             ViewModel.IsShowSearchBar = !ViewModel.IsShowSearchBar;
         }
 
-        private void OnTreeNodeDoubleClick(object sender, MouseButtonEventArgs args)
-        {
-            if (sender is TreeViewItem)
-            {
-                if (!((TreeViewItem)sender).IsSelected)
-                {
-                    return;
-                }
-            }
-
-        }
+       
 
         public void OnExit(object sender, EventArgs e)
         {

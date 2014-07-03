@@ -26,15 +26,13 @@ namespace BobProject.ViewModel
         // Property variables
         private ObservableCollection<XmlSchemaWrapper> typesLst;
         private ObservableDictionary<string, Color> typesColor;
-        private NodeType selectedItem;
-        private XmlSchemaElementWrapper lastElementSelected;
-        private XmlSchemaChoiceWrapper lastChoiceSelected;
-        private XmlSchemaSequenceWrapper lastSequenceSelected;
+        private XmlSchemaWrapper selectedItem;
         private string LastError = "";
         private string permission;
         private bool isShowSearchBar = true;
-        public ICommand ShowProperties { get; set; }
-        public ICommand UpdateTree { get; set; } 
+        public ICommand ShowProperties { get; private set; }
+        public ICommand UpdateTree { get; private set; }
+        public ICommand UpdateSeqNumItems { get; private set; }
         public bool IsShowSearchBar
         {
             get { return isShowSearchBar; }
@@ -44,7 +42,7 @@ namespace BobProject.ViewModel
                 base.RaisePropertyChangedEvent("IsShowSearchBar");
             }
         }
-        public NodeType SelectedItem
+        public XmlSchemaWrapper SelectedItem
         {
             get { return selectedItem; }
             set
@@ -52,44 +50,14 @@ namespace BobProject.ViewModel
                 selectedItem = value;
                 base.RaisePropertyChangedEvent("SelectedItem");
             }
-        }
-
-        public XmlSchemaElementWrapper LastElementSelected
-        {
-            get { return lastElementSelected; }
-            set
-            {
-                lastElementSelected = value;
-                base.RaisePropertyChangedEvent("LastElementSelected");
-            }
-        }
-
-        public XmlSchemaChoiceWrapper LastChoiceSelected
-        {
-            get { return lastChoiceSelected; }
-            set
-            {
-                lastChoiceSelected = value;
-                base.RaisePropertyChangedEvent("LastChoiceSelected");
-            }
-        }
-
-        public XmlSchemaSequenceWrapper LastSequenceSelected
-        {
-            get { return lastSequenceSelected; }
-            set
-            {
-                lastSequenceSelected = value;
-                base.RaisePropertyChangedEvent("LastSequenceSelected");
-            }
-        }
+        }   
 
         public string Permit
         {
-            get { return Permission.Instance.GetCurrPermisssion().ToString(); }
+            get { return Permission.Instance.CurrPermission.ToString(); }
             set
             {
-                permission = Permission.Instance.GetCurrPermisssion().ToString();
+                permission = Permission.Instance.CurrPermission.ToString();
                 base.RaisePropertyChangedEvent("Permit");
             }
         }
@@ -135,13 +103,13 @@ namespace BobProject.ViewModel
         #endregion
 
 
-
         #region Methods
         private void Initialize()
         {
             // Initialize commands
             ShowProperties = new ShowPropertiesCommand(this);
             UpdateTree = new UpdateTreeCommand();
+            UpdateSeqNumItems = new UpdateSeqNumItemsCommand();  
 
             // Create types List
             typesLst = new ObservableCollection<XmlSchemaWrapper>();
@@ -155,15 +123,10 @@ namespace BobProject.ViewModel
                 var describer = new SchemaDescriber(schemaPath);
 
                 typesLst.Add(describer.Elements[0]);
-                SelectedItem = describer.Elements[0].NodeType;
+                SelectedItem = describer.Elements[0];
 
-                //DEBUG
-                LastElementSelected = (XmlSchemaElementWrapper)describer.Elements[0];
-                LastSequenceSelected = (XmlSchemaSequenceWrapper)LastElementSelected.Children[0];
-                LastChoiceSelected = (XmlSchemaChoiceWrapper)LastSequenceSelected.Children[1];
-                //END DEBUG
-
-
+                //DEBUG - TODO - first time select the first element
+                //ShowProperties.Execute(describer.Elements[0]);
 
                 TypesList = typesLst;
 

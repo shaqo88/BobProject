@@ -22,6 +22,8 @@ namespace BobProject.ViewModel.ValueConverters
                 return Visibility.Visible;
             else if ((nodeType == NodeType.Sequence) && (parm == "Sequence"))
                 return Visibility.Visible;
+            else if ((nodeType == NodeType.NULL) && (parm == "Null"))
+                return Visibility.Visible;
             return Visibility.Collapsed;
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo language)

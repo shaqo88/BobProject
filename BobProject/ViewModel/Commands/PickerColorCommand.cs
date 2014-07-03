@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
 using BL.UtilityClasses;
+using BL.RegistryConfig;
 
 namespace BobProject.ViewModel.Commands
 {

@@ -33,6 +33,10 @@ namespace BobProject.UtilityClasses
                 {
                     retval = element.FindResource("XmlSchemaSequenceWrapperTemplate") as DataTemplate;
                 }
+                else if (item is XmlSchemaSequenceArray)
+                {
+                    retval = element.FindResource("XmlSchemaSequenceArrayWrapperTemplate") as DataTemplate;
+                }
             }
 
             return retval;

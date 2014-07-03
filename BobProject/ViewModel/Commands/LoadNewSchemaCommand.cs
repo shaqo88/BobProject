@@ -34,7 +34,7 @@ namespace BobProject.ViewModel.Commands
         /// </summary>
         public bool CanExecute(object parameter)
         {
-            return (Permission.Instance.GetCurrPermisssion() == Permission.PermissionType.Manager);
+            return (Permission.Instance.CurrPermission == Permission.PermissionType.Manager);
         }
 
         /// <summary>

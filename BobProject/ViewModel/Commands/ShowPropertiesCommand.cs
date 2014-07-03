@@ -51,21 +51,37 @@ namespace BobProject.ViewModel.Commands
         public void Execute(object parameter)
         {
             XmlSchemaWrapper schemaWr = (XmlSchemaWrapper)parameter;
-            viewModel.SelectedItem = schemaWr.NodeType;
 
-            if (schemaWr.NodeType == NodeType.Element)
-                viewModel.LastElementSelected = (XmlSchemaElementWrapper)schemaWr;
-            else if (schemaWr.NodeType == NodeType.Choice)
-                viewModel.LastChoiceSelected = (XmlSchemaChoiceWrapper)schemaWr;
-            else if (schemaWr.NodeType == NodeType.Sequence)
-                viewModel.LastSequenceSelected = (XmlSchemaSequenceWrapper)schemaWr;
+            //check if conversion parameter to XmlSchemaWrapper succeed
+            if (schemaWr != null)
+            {
+                viewModel.SelectedItem = schemaWr;
 
-
-            //Update Properties GUI
-            MainWindow.Instance.ElementName.DataContext = viewModel.LastElementSelected;
-            MainWindow.Instance.ElementAttributes.DataContext = viewModel.LastElementSelected.Attributes;
-            MainWindow.Instance.ElementAttributes.ItemsSource = viewModel.LastElementSelected.Attributes;
-            MainWindow.Instance.ChoiceComboBox.DataContext = viewModel.LastChoiceSelected;
+                switch (schemaWr.NodeType)
+                {
+                    case NodeType.Element:
+                        XmlSchemaElementWrapper element = (XmlSchemaElementWrapper)schemaWr;
+                        MainWindow.Instance.ElementName.DataContext = element;
+                        MainWindow.Instance.ElementAttributes.DataContext = element.Attributes;
+                        MainWindow.Instance.ElementAttributes.ItemsSource = element.Attributes;
+                        break;
+                    case NodeType.Choice:
+                        XmlSchemaChoiceWrapper choice = (XmlSchemaChoiceWrapper)schemaWr;
+                        MainWindow.Instance.ChoiceComboBox.DataContext = choice;
+                        break;
+                    case NodeType.Sequence:
+                        XmlSchemaSequenceArray seqArr = (XmlSchemaSequenceArray)schemaWr;
+                        MainWindow.Instance.SequenceSize.Value = seqArr.Count;
+                        break;
+                    case NodeType.SequenceItem:
+                        break;
+                    case NodeType.NULL:
+                        break;
+                    default:
+                        break; 
+                }
+               
+            }                        
 
 
         }

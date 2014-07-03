@@ -37,6 +37,9 @@
     <Reference Include="ColorPicker">
       <HintPath>ExternalDlls\ColorPicker.dll</HintPath>
     </Reference>
+    <Reference Include="NumericUpDownControl">
+      <HintPath>ExternalDlls\NumericUpDownControl.dll</HintPath>
+    </Reference>
     <Reference Include="SearchTextBox">
       <HintPath>ExternalDlls\SearchTextBox.dll</HintPath>
     </Reference>
@@ -65,6 +68,7 @@
     <Compile Include="ViewModel\Commands\LoadNewSchemaCommand.cs" />
     <Compile Include="ViewModel\Commands\PickerColorCommand.cs" />
     <Compile Include="ViewModel\Commands\SaveConfigCommand.cs" />
+    <Compile Include="ViewModel\Commands\UpdateSeqNumItemsCommand.cs" />
     <Compile Include="ViewModel\Commands\UpdateTreeCommand.cs" />
     <Compile Include="ViewModel\ConfigurationViewModel.cs" />
     <Compile Include="ViewModel\Commands\ShowPropertiesCommand.cs" />
@@ -72,6 +76,7 @@
     <Compile Include="ViewModel\ValueConverters\BooleanToVisibilityConverter.cs" />
     <Compile Include="ViewModel\ValueConverters\ColorLegendConverter.cs" />
     <Compile Include="ViewModel\ValueConverters\ColorToBrushConverter.cs" />
+    <Compile Include="ViewModel\ValueConverters\IndexToTextConverter.cs" />
     <Compile Include="ViewModel\ValueConverters\PermissionToVisibilityConverter.cs" />
     <Compile Include="ViewModel\ValueConverters\SelectionPropertyToVisibilityConverter.cs" />
     <Compile Include="View\About.xaml.cs">

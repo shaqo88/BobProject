@@ -213,7 +213,7 @@ namespace BL.SchemaLogic.SchemaTypes
 
         public void AddNewWrapper()
         {
-            var newSeq = new XmlSchemaSequenceWrapper(m_sequence, this, this.Count + 1);
+            var newSeq = new XmlSchemaSequenceWrapper(m_sequence, this, this.Count);
             this.Add(newSeq);
             newSeq.DrillOnce();
         }

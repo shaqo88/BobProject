@@ -27,7 +27,7 @@ namespace BobProject
 
         public Login()
         {
-            if (Permission.Instance.IsErrorLoading() || ConfigurationData.Instance.IsErrorLoadingSchema ||
+            if (Permission.Instance.IsErrorLoading || ConfigurationData.Instance.IsErrorLoadingSchema ||
                 ConfigurationData.Instance.IsErrorLoadingColors)
             {
                 MessageBox.Show("Configuration Error. Please ReInstall Application", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -73,7 +73,7 @@ namespace BobProject
         {
             bool okPermission = Permission.Instance.CheckPermission(userNameTxt.Text, passwordTxt.Password);
 
-            if (okPermission && ConfigurationData.Instance.SchemaPath == "" && Permission.Instance.GetCurrPermisssion() != Permission.PermissionType.Manager)
+            if (okPermission && ConfigurationData.Instance.SchemaPath == "" && Permission.Instance.CurrPermission != Permission.PermissionType.Manager)
             {
                 MessageBox.Show("Schema Path Empty. Please Contact Manager.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -86,7 +86,7 @@ namespace BobProject
 
             if (failLogin.Visibility == Visibility.Hidden)
             {
-                MainWindow.Instance.ViewModel.Permit = Permission.Instance.GetCurrPermisssion().ToString();
+                MainWindow.Instance.ViewModel.Permit = Permission.Instance.CurrPermission.ToString();
                 ShowSplashScreen();
 
             }
