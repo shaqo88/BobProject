@@ -213,7 +213,7 @@ namespace BL.SchemaLogic.SchemaTypes
 
         public void AddNewWrapper()
         {
-            var newSeq = new XmlSchemaSequenceWrapper(m_sequence, this, this.Count);
+            var newSeq = new XmlSchemaSequenceWrapper(m_sequence, this, this.Count + 1);
             this.Add(newSeq);
             newSeq.DrillOnce();
         }
@@ -226,16 +226,16 @@ namespace BL.SchemaLogic.SchemaTypes
 
     public class XmlSchemaSequenceWrapper : XmlSchemaGroupBaseWrapper
     {
-        private int m_index;
+        public int Index { get; private set; }
         public XmlSchemaSequenceWrapper(XmlSchemaSequence sequence, XmlSchemaSequenceArray parent, int index)
             : base(sequence, NodeType.SequenceItem, parent)
         {
-            m_index = index;
+            Index = index;
         }
 
         public override string ToString()
         {
-            return m_index.ToString();
+            return Index.ToString();
         }
     }
 }
