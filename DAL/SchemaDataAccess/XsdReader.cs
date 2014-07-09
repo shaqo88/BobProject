@@ -31,14 +31,17 @@ namespace DAL.SchemaDataAccess
         /// </summary>
         /// <param name="schemaPath">Path of the *.xsd file to validate</param>
         /// <returns>True if valid, false otherwise</returns>
-        public static bool ValidateSchema(string schemaPath)
+        public static bool ValidateSchema(string schemaPath, bool throwException)
         {
             try
             {
                 CompileSchema(schemaPath);
             }
-            catch
+            catch (Exception ex)
             {
+                if (throwException)
+                    throw ex;
+
                 return false;
             }
 

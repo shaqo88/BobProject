@@ -17,10 +17,22 @@ namespace BL.SchemaLogic
 
         private XmlWrappersSearcher Searcher { get; set; }
 
-        public ObservableCollection<XmlSchemaElementWrapper> Elements { get; set; }
+        public ObservableCollection<XmlSchemaElementWrapper> Elements { get; private set; }
 
         public SchemaDescriber(string schemaPath)
         {
+            LoadSchema(schemaPath);
+        }
+
+        /// <summary>
+        /// Loads schema by validating it and creating all BL objects by it
+        /// </summary>
+        /// <param name="schemaPath">Path of the schema to load</param>
+        public void LoadSchema(string schemaPath)
+        {
+            // Validate the schema and throw exception if fails (sent by the last parameter
+            ValidateSchema(schemaPath, true);
+
             XsdReader = new XsdReader(schemaPath);
 
             Elements = new ObservableCollection<XmlSchemaElementWrapper>();
@@ -35,9 +47,9 @@ namespace BL.SchemaLogic
             }
         }
 
-        public bool ValidateSchema(string schemaPath)
+        public bool ValidateSchema(string schemaPath, bool throwException = false)
         {
-            return XsdReader.ValidateSchema(schemaPath);
+            return XsdReader.ValidateSchema(schemaPath, throwException);
         }
 
         public List<XmlSchemaWrapper> SearchXml(XmlSchemaWrapper startingNode, string query, SearchEnum searchBy)
