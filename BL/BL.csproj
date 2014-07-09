@@ -45,11 +45,13 @@
     <Compile Include="Registry\Permission.cs" />
     <Compile Include="SchemaLogic\SchemaDescriber.cs" />
     <Compile Include="SchemaLogic\SchemaTypes\GroupTypes\XmlSchemaChoiceWraper.cs" />
+    <Compile Include="SchemaLogic\SchemaTypes\GroupTypes\XmlSchemaGroupsWrapper.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SchemaLogic\SchemaTypes\GroupTypes\XmlSchemaSequenceArray.cs" />
     <Compile Include="SchemaLogic\SchemaTypes\GroupTypes\XmlSchemaSequenceWrapper.cs" />
     <Compile Include="SchemaLogic\SchemaTypes\XmlSchemaAttributeInfo.cs" />
     <Compile Include="SchemaLogic\SchemaTypes\XmlSchemaElementWrapper.cs" />
-    <Compile Include="SchemaLogic\SchemaTypes\GroupTypes\XmlSchemaGroupsWrapper.cs" />
     <Compile Include="SchemaLogic\SchemaTypes\XmlSchemaTypeComposite\IXmlSchemaTypeWrapper.cs" />
     <Compile Include="SchemaLogic\SchemaTypes\XmlSchemaTypeComposite\XmlSchemaComplexTypeWrapper.cs" />
     <Compile Include="SchemaLogic\SchemaTypes\XmlSchemaTypeComposite\XmlSchemaSimpleTypeWrapper.cs" />
