@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace BL.SchemaLogic.SchemaTypes
 {
+    public enum NodeType { Element, Choice, Sequence, SequenceItem, NULL }
+
     public abstract class XmlSchemaWrapper
     {
         public string Name { get; private set; }
