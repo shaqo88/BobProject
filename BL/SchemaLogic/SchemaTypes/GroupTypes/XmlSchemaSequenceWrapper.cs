@@ -9,16 +9,17 @@ namespace BL.SchemaLogic.SchemaTypes
 {
     public class XmlSchemaSequenceWrapper : XmlSchemaGroupBaseWrapper
     {
-        private int m_index;
+        public int Index { get; private set; }
+        
         public XmlSchemaSequenceWrapper(XmlSchemaSequence sequence, XmlSchemaSequenceArray parent, int index)
             : base(sequence, NodeType.SequenceItem, parent)
         {
-            m_index = index;
+            Index = index;
         }
 
         public override string ToString()
         {
-            return m_index.ToString();
+            return Index.ToString();
         }
     }
 }
