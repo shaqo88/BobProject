@@ -54,7 +54,7 @@ namespace BobProject.ViewModel
             SaveConfig = new SaveConfigCommand();
             PickerColor = new PickerColorCommand(this, MainWindow.Instance.ViewModel);
             LoadNewSchema = new LoadNewSchemaCommand(this);
-            IsManagerPerm = Permission.Instance.GetCurrPermisssion() == Permission.PermissionType.Manager;
+            IsManagerPerm = Permission.Instance.CurrPermission == Permission.PermissionType.Manager;
         }
 
     }

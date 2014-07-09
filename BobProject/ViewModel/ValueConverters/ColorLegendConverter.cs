@@ -37,6 +37,7 @@ namespace BobProject.ViewModel.ValueConverters
                     case NodeType.Element:
                         color = ConfigurationData.Instance.GetColorConfiguration(ConfigurationData.Regkeys.Element);
                         break;
+                    case NodeType.SequenceItem:
                     case NodeType.Sequence:
                         color = ConfigurationData.Instance.GetColorConfiguration(ConfigurationData.Regkeys.Sequence);
                         break;

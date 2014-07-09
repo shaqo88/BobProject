@@ -7,7 +7,8 @@
         xmlns:ValueConverter="clr-namespace:BobProject.ViewModel.ValueConverters"
         xmlns:Helper="clr-namespace:BobProject.UtilityClasses"
         xmlns:Elements ="clr-namespace:BL.SchemaLogic.SchemaTypes;assembly=BL"                              
-     xmlns:l="clr-namespace:UIControls;assembly=SearchTextBox"
+        xmlns:l="clr-namespace:UIControls;assembly=SearchTextBox"
+        xmlns:nb="clr-namespace:NumericUpDownControl;assembly=NumericUpDownControl"
         x:Class="BobProject.MainWindow"  
         x:Name="_this"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
@@ -18,6 +19,7 @@
         <ValueConverter:BooleanToVisibilityConverter x:Key="BoolToVisConverter"/>
         <ValueConverter:SelectionPropertyToVisibilityConverter x:Key="selectionPropertyToVisibilityConverter"/>
         <ValueConverter:PermissionToVisibilityConverter x:Key="permissionToVisibilityConverter"/>
+        <ValueConverter:IndexToTextConverter x:Key="indexToTextConverter"/>        
         <Helper:HierarchyDataTemplateSelector x:Key="hierarchyDataTemplateSelector" />
         <Style x:Key="MyButtonStyle" TargetType="Button">
             <Setter Property="Template">
@@ -120,8 +122,13 @@
                         <TreeView.Resources>
                             <HierarchicalDataTemplate x:Key="XmlSchemaSequenceWrapperTemplate" DataType="{x:Type Elements:XmlSchemaSequenceWrapper}" ItemsSource="{Binding Path=Children}">
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding Path=Name}"  Foreground="{Binding Converter={StaticResource colorLegendConverter}, Mode=OneWay}"/>
+                                    <TextBlock Text="{Binding Index,Converter={StaticResource indexToTextConverter}, Mode=OneWay}"  Foreground="{Binding Converter={StaticResource colorLegendConverter}, Mode=OneWay}"/>
                                     <TextBlock Text=" " />
+                                </StackPanel>
+                            </HierarchicalDataTemplate>
+                            <HierarchicalDataTemplate x:Key="XmlSchemaSequenceArrayWrapperTemplate" DataType="{x:Type Elements:XmlSchemaSequenceArray}" ItemsSource="{Binding Path=Children}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Path=Name}"  Foreground="{Binding Converter={StaticResource colorLegendConverter}, Mode=OneWay}"/>
                                 </StackPanel>
                             </HierarchicalDataTemplate>
                             <HierarchicalDataTemplate x:Key="XmlSchemaElementWrapperTemplate" DataType="{x:Type Elements:XmlSchemaElementWrapper}" ItemsSource="{Binding Path=Children}">
@@ -133,7 +140,7 @@
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="{Binding Path=Name}"  Foreground="{Binding Converter={StaticResource colorLegendConverter}, Mode=OneWay}"/>
                                 </StackPanel>
-                            </HierarchicalDataTemplate>
+                            </HierarchicalDataTemplate>                            
                             <HierarchicalDataTemplate x:Key="XmlSchemaChoiceWrapperTemplate" DataType="{x:Type Elements:XmlSchemaChoiceWrapper}" ItemsSource="{Binding Path=Children}">
                                 <StackPanel Orientation="Horizontal">
                                      <TextBlock Text="{Binding Path=Name}"  Foreground="{Binding Converter={StaticResource colorLegendConverter}, Mode=OneWay}"/>
@@ -157,7 +164,7 @@
             <GridSplitter Grid.Column="1" Width="10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="LightGray" />
             <StackPanel x:Name="RightPanel" Grid.Column="2" Orientation="Vertical" >
                 <Label FontSize="16" FontWeight="Bold" Content="Properties:"/>
-                <Grid x:Name="ElementPanel" Visibility="{Binding Path=SelectedItem, Converter={StaticResource selectionPropertyToVisibilityConverter},ConverterParameter=Element}">
+                <Grid x:Name="ElementPanel" Visibility="{Binding Path=SelectedItem.NodeType, Converter={StaticResource selectionPropertyToVisibilityConverter},ConverterParameter=Element}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -193,7 +200,7 @@
                         </ListBox>
                     </Grid>
                 </Grid>
-                <Grid x:Name="ChoicePanel" Visibility="{Binding Path=SelectedItem, Converter={StaticResource selectionPropertyToVisibilityConverter},ConverterParameter=Choice}">
+                <Grid x:Name="ChoicePanel" Visibility="{Binding Path=SelectedItem.NodeType, Converter={StaticResource selectionPropertyToVisibilityConverter},ConverterParameter=Choice}">
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Choice:" FontSize="14" />
                         <StackPanel>
@@ -214,18 +221,18 @@
                         </StackPanel>
                     </StackPanel>
                 </Grid>
-                <Grid x:Name="SequencePanel" Visibility="{Binding Path=SelectedItem, Converter={StaticResource selectionPropertyToVisibilityConverter},ConverterParameter=Sequence}">
+                <Grid x:Name="SequencePanel" Visibility="{Binding Path=SelectedItem.NodeType, Converter={StaticResource selectionPropertyToVisibilityConverter},ConverterParameter=Sequence}">
                     <StackPanel Orientation="Vertical">
                         <Label Content="Sequence:" FontSize="14" />
                         <StackPanel Orientation="Horizontal" Margin="3,0,-3,0">
                             <TextBlock Text="Array Size:  " FontSize="14" />
-                            <StackPanel Orientation="Horizontal">
-                                <TextBox x:Name="SequenceSize" FontSize="14" x:FieldModifier="private" Margin="5,5,0,5" TextAlignment="Right" Width="50" Text="0" TextChanged="txtNum_TextChanged" />
-                                <Button x:Name="cmdUp" FontSize="14" x:FieldModifier="private" Margin="5,5,0,5" Content="˄" Width="20" Click="cmdUp_Click" />
-                                <Button x:Name="cmdDown" FontSize="14" x:FieldModifier="private" Margin="0,5,0,5"  Content="˅" Width="20" Click="cmdDown_Click" />
-                            </StackPanel>
+                            <nb:NumericBox Name="SequenceSize" Value="{Binding }"  Minimum="0" Maximum="10000" Margin="5" Height="28" />
+                            <Button Name="UpdateSequenceSize" Content="Update" Command="{Binding UpdateSeqNumItems}" CommandParameter="{Binding SelectedItem}" Height="30" />
                         </StackPanel>
                     </StackPanel>
+                </Grid>
+                <Grid Name="EmptyPanel" Visibility="{Binding Path=SelectedItem.NodeType, Converter={StaticResource selectionPropertyToVisibilityConverter},ConverterParameter=Null}">
+                    <Label>Empty.</Label>
                 </Grid>
             </StackPanel>
         </Grid>
