@@ -37,7 +37,8 @@
     <Reference Include="ColorPicker">
       <HintPath>ExternalDlls\ColorPicker.dll</HintPath>
     </Reference>
-    <Reference Include="NumericUpDownControl">
+    <Reference Include="NumericUpDownControl, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>ExternalDlls\NumericUpDownControl.dll</HintPath>
     </Reference>
     <Reference Include="SearchTextBox">
