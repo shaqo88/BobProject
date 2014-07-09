@@ -9,6 +9,7 @@ using DAL.XmlWrapper;
 using BL.SchemaLogic.SchemaTypes;
 using BL.SchemaLogic.SchemaTypes.XmlSchemaTypeComposite;
 using System.Collections.ObjectModel;
+using BL.XmlLogic;
 
 namespace BL
 {
@@ -24,7 +25,9 @@ namespace BL
             var describer = new SchemaDescriber("../../copperhead.xsd");
             var doc = DAL.XmlWrapper.XmlReaderWrapper.ReadXml("../../ch.xml");
 
-            var elementsQuery = XmlSearcher.SearchXml(doc, new XmlQueryPartType() { QueriedNode = "type", ReturnedNode = "typedef", AttributeName = "ref", AttributeValue = "FullName_t" });
+            // Probably won't be in use
+            //var elementsQuery = XmlSearcher.SearchXml(doc, new XmlQueryPartType() { QueriedNode = "type", ReturnedNode = "typedef", AttributeName = "ref", AttributeValue = "FullName_t" });
+
 
             var xml = new XmlDocument();
             var element = xml.CreateElement("newElement");
@@ -49,13 +52,21 @@ namespace BL
 
                 PrintInstructions();
 
-                if (!int.TryParse(Console.ReadLine(), out operation) || operation < -2 || operation >= flatChildrenList.Count)
+                if (!int.TryParse(Console.ReadLine(), out operation) || operation < -3 || operation >= flatChildrenList.Count)
                 {
                     Console.WriteLine("Invalid choice!");
                 }
                 else
                 {
-                    if (operation == -2) // Go up one layer
+                    if (operation == -3)
+                    {
+                        var searchResults = describer.SearchXml(currNode, "type", SearchEnum.NodeName);
+                        foreach (var res in searchResults)
+                        {
+                            Console.WriteLine("Result: {0}, Parent: {1}", res.Name, res.Parent);
+                        }
+                    }
+                    else if (operation == -2) // Go up one layer
                     {
                         if (currNode.Parent == null)
                             Console.WriteLine("This is the root, can't go up");
