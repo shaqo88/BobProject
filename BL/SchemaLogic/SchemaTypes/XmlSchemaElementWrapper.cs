@@ -29,7 +29,7 @@ namespace BL.SchemaLogic.SchemaTypes
             {
                 foreach (var attr in Attributes)
                 {
-                    if (attr.IsRequired && (attr.Value == null))
+                    if (attr.IsRequired && ((attr.Value == null) || attr.Value == string.Empty))
                         return false;
                 }
 
