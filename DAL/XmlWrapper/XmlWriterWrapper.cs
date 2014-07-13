@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -18,11 +19,23 @@ namespace DAL.XmlWrapper
         /// <returns>True if writing succeeded, throws exception otherwise</returns>
         public static bool WriteXml(XmlDocument document, string destinationPath)
         {
-            using (var writer = XmlWriter.Create(destinationPath))
+            try
             {
-                document.WriteTo(writer);
+                // Create the directory in case doesn't exist yet
+                Directory.CreateDirectory(new FileInfo(destinationPath).DirectoryName);
+
+                // Export the XML file with indentation for easy read
+                using (var writer = XmlWriter.Create(destinationPath, new XmlWriterSettings() { Indent = true }))
+                {
+                    document.WriteTo(writer);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(string.Format("Unable to create XML file at path: {0}", destinationPath), ex);
             }
 
+            // If no exception occured, operation successful
             return true;
         }
     }

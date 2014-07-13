@@ -24,7 +24,8 @@ namespace BL
         {
             var describer = new SchemaDescriber("../../copperhead.xsd");
             var doc = DAL.XmlWrapper.XmlReaderWrapper.ReadXml("../../ch.xml");
-
+            CreateDummyXml(describer, describer.RootElement);
+            describer.ExportXmlNow(@"TestingOutput\a.xml");
             // Probably won't be in use
             //var elementsQuery = XmlSearcher.SearchXml(doc, new XmlQueryPartType() { QueriedNode = "type", ReturnedNode = "typedef", AttributeName = "ref", AttributeValue = "FullName_t" });
 
@@ -37,11 +38,11 @@ namespace BL
             element.InnerText = "Inner";
             xml.AppendChild(element);
 
-            DAL.XmlWrapper.XmlWriterWrapper.WriteXml(xml, "../../ch_out.xml");
+            DAL.XmlWrapper.XmlWriterWrapper.WriteXml(xml, @"TestingOutput\ch_out.xml");
 
             int operation = 1;
 
-            XmlSchemaWrapper currNode = describer.Elements[0];
+            XmlSchemaWrapper currNode = describer.RootElement;
 
             do
             {
@@ -87,6 +88,58 @@ namespace BL
                 index = 0;
 
             } while (operation != -1);
+        }
+
+        private static void CreateDummyXml(SchemaDescriber describer, XmlSchemaWrapper currNode, int deep = 0)
+        {
+            int attrIndex = 0;
+
+            if (currNode is XmlSchemaElementWrapper)
+            {
+                var el = currNode as XmlSchemaElementWrapper;
+
+                foreach (var attr in el.Attributes)
+                {
+                    if (attr.IsRequired)
+                        attr.Value = "Dummy" + attrIndex++;
+                }
+
+                if (el.IsSimple)
+                    el.InnerText = "Inner dummy description";
+            }
+            else if (currNode is XmlSchemaSequenceArray)
+            {
+                var arr = currNode as XmlSchemaSequenceArray;
+                arr.AddNewWrapper();
+            }
+
+            if (currNode.IsDrillable)
+                currNode.DrillOnce();
+
+            if (currNode is XmlSchemaChoiceWrapper)
+            {
+                var choice = currNode as XmlSchemaChoiceWrapper;
+
+                if (deep < 10)
+                {
+                    if (choice.Children.Count > 1)
+                        choice.Selected = choice.Children[2];
+                }
+                else
+                {
+                    choice.Selected = choice.Children[5];
+                }
+                
+                CreateDummyXml(describer, choice.Selected, ++deep);
+
+            }
+            else
+            {
+                foreach (var child in currNode.Children)
+                {
+                    CreateDummyXml(describer, child, ++deep);
+                }
+            }
         }
 
         private static void PrintNode(XmlSchemaWrapper node, bool isRoot = false)

@@ -14,7 +14,6 @@ namespace BL.SchemaLogic.SchemaTypes.XmlSchemaTypeComposite
         public XmlSchemaSimpleType SchemaType { get; private set; }
         public Type DotNetType { get; private set; } // The restriction base, relevant only for simple type
         public string Pattern { get; private set; }
-        public string InnerText { get; set; }
 
         public XmlSchemaSimpleTypeWrapper(XmlSchemaSimpleType type)
         {

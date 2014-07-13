@@ -15,6 +15,10 @@ namespace BL.SchemaLogic.SchemaTypes
 
         private IXmlSchemaTypeWrapper Type { get; set; }
 
+        public bool IsSimple { get { return ElementObject.ElementSchemaType is XmlSchemaSimpleType; } }
+
+        public string InnerText { get; set; }
+
         public Type DotNetType { get; private set; }
 
         public decimal MinOccurs { get; set; }
@@ -29,7 +33,7 @@ namespace BL.SchemaLogic.SchemaTypes
             {
                 foreach (var attr in Attributes)
                 {
-                    if (attr.IsRequired && ((attr.Value == null) || attr.Value == string.Empty))
+                    if (!attr.IsAttributeFilled)
                         return false;
                 }
 

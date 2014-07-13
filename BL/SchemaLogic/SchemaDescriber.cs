@@ -8,6 +8,7 @@ using DAL.SchemaDataAccess;
 using BL.SchemaLogic.SchemaTypes;
 using System.Collections.ObjectModel;
 using BL.XmlLogic;
+using DAL.XmlWrapper;
 
 namespace BL.SchemaLogic
 {
@@ -18,6 +19,17 @@ namespace BL.SchemaLogic
         private XmlWrappersSearcher Searcher { get; set; }
 
         public ObservableCollection<XmlSchemaElementWrapper> Elements { get; private set; }
+
+        public XmlSchemaElementWrapper RootElement
+        {
+            get
+            {
+                if (Elements != null && Elements.Count > 0)
+                    return Elements[0];
+                else
+                    return null;
+            }
+        }
 
         public SchemaDescriber(string schemaPath)
         {
@@ -73,6 +85,25 @@ namespace BL.SchemaLogic
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Exports the current situation of the tree to XML
+        /// </summary>
+        /// <param name="xmlPath">Destination path for export</param>
+        /// <returns>True if succeeded to export, otherwise - probably exception will occur</returns>
+        public bool ExportXmlNow(string xmlPath)
+        {
+            // TODO : add validation in advance if we're in valid situation (all drilled and all attributes valid)
+            // TODO : commented out for debug purposes, remember to return
+            //if (!RootElement.AllChildAttributesFilled)
+                //throw new Exception("Could not export XML because not all required attributes filled yet");
+
+            // Create the Xml object from wrapper
+            var doc = XmlExportLogic.SchemaWrapperToXmlDocument(RootElement);
+
+            // Export the XML to the desired path
+            return XmlWriterWrapper.WriteXml(doc, xmlPath);
         }
     }
 }
