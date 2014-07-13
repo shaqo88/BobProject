@@ -94,10 +94,10 @@ namespace BL.SchemaLogic
         /// <returns>True if succeeded to export, otherwise - probably exception will occur</returns>
         public bool ExportXmlNow(string xmlPath)
         {
-            // TODO : add validation in advance if we're in valid situation (all drilled and all attributes valid)
-            // TODO : commented out for debug purposes, remember to return
-            //if (!RootElement.AllChildAttributesFilled)
-                //throw new Exception("Could not export XML because not all required attributes filled yet");
+            // TODO : check also if all children drilled and filled correctly
+            // Check if all attributes filled correcty before trying to export
+            if (!RootElement.AllChildAttributesFilled)
+                throw new Exception("Could not export XML because not all required attributes filled yet");
 
             // Create the Xml object from wrapper
             var doc = XmlExportLogic.SchemaWrapperToXmlDocument(RootElement);
