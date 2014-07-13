@@ -85,7 +85,7 @@ namespace BL.SchemaLogic.SchemaTypes
 
         public IEnumerator<XmlSchemaSequenceWrapper> GetEnumerator()
         {
-            return (IEnumerator<XmlSchemaSequenceWrapper>)Children.GetEnumerator();
+            return Children.ToList().ConvertAll((c) => (XmlSchemaSequenceWrapper)c).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
