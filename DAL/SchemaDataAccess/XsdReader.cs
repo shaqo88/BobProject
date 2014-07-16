@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Schema; //hello2
+using System.Xml;
+using System.Xml.Schema;
 
 namespace DAL.SchemaDataAccess
 {
@@ -46,6 +47,34 @@ namespace DAL.SchemaDataAccess
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Checks whether the given XmlDocument matches the current loaded XSD schema
+        /// </summary>
+        /// <param name="doc">The Xml object to check</param>
+        /// <param name="errorMessage">Error message to fill in case of error</param>
+        /// <returns>True if XML matches schema, false if not</returns>
+        public bool IsXmlMatchSchema(XmlDocument doc, out string errorMessage)
+        {
+            // Temp string because out parameter cannot be modified in lambda
+            string tempMessage = string.Empty;
+            
+            errorMessage = string.Empty;
+            bool result = true;
+
+            // Add the schema to XML object and validate mathchingg
+            doc.Schemas.Add(Schema);
+
+            doc.Validate((o, e) =>
+                     {
+                         tempMessage = e.Message;
+                         result = false;
+                     });
+
+            errorMessage = tempMessage;
+            
+            return result;
         }
 
         /// <summary>
