@@ -30,9 +30,12 @@ namespace BobProject.ViewModel
         private string LastError = "";
         private string permission;
         private bool isShowSearchBar = true;
+        private SchemaDescriber schemaDescriber;
         public ICommand ShowProperties { get; private set; }
-        public ICommand UpdateTree { get; private set; }
         public ICommand UpdateSeqNumItems { get; private set; }
+        public ICommand SelectedChoiceChange { get; private set; }
+        public ICommand DeleteSeqItem { get; private set; }
+
         public bool IsShowSearchBar
         {
             get { return isShowSearchBar; }
@@ -50,7 +53,7 @@ namespace BobProject.ViewModel
                 selectedItem = value;
                 base.RaisePropertyChangedEvent("SelectedItem");
             }
-        }   
+        }
 
         public string Permit
         {
@@ -73,9 +76,10 @@ namespace BobProject.ViewModel
             {
                 typesColor = value;
                 base.RaisePropertyChangedEvent("TypesColor");
+
             }
         }
-
+       
 
         #region Constructor
 
@@ -97,7 +101,7 @@ namespace BobProject.ViewModel
             set
             {
                 typesLst = value;
-                base.RaisePropertyChangedEvent("GetCurrtypesList");
+                base.RaisePropertyChangedEvent("TypesList");
             }
         }
         #endregion
@@ -108,25 +112,31 @@ namespace BobProject.ViewModel
         {
             // Initialize commands
             ShowProperties = new ShowPropertiesCommand(this);
-            UpdateTree = new UpdateTreeCommand();
-            UpdateSeqNumItems = new UpdateSeqNumItemsCommand();  
+            UpdateSeqNumItems = new UpdateSeqNumItemsCommand();
+            SelectedChoiceChange = new SelectedChoiceChangeCommand(this);
+            DeleteSeqItem = new DeleteSeqItemCommand();
+
 
             // Create types List
             typesLst = new ObservableCollection<XmlSchemaWrapper>();
-            typesColor = ConfigurationData.Instance.TypesColor;
+            TypesColor = ConfigurationData.Instance.TypesColor;
             string schemaPath = ConfigurationData.Instance.SchemaPath;
 
 
             //Load schema
             try
             {
-                var describer = new SchemaDescriber(schemaPath);
+                schemaDescriber = new SchemaDescriber(schemaPath);                
 
-                typesLst.Add(describer.Elements[0]);
-                SelectedItem = describer.Elements[0];
+                typesLst.Add(schemaDescriber.Elements[0]);
+                SelectedItem = schemaDescriber.Elements[0];
 
                 //DEBUG - TODO - first time select the first element
-                //ShowProperties.Execute(describer.Elements[0]);
+                /*if (ShowProperties.CanExecute(describer.Elements[0]))
+                    ShowProperties.Execute(describer.Elements[0]);*/
+                //schemaDescriber.LoadSchema
+                //schemaDescriber.ValidateSchema
+                //END DEBUG
 
                 TypesList = typesLst;
 
@@ -137,7 +147,7 @@ namespace BobProject.ViewModel
                 return;
             }
             // Update bindings
-            base.RaisePropertyChangedEvent("GetCurrtypesList");
+            base.RaisePropertyChangedEvent("TypesList");
 
         }
 

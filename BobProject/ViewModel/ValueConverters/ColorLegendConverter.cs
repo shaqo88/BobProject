@@ -10,29 +10,30 @@ using BL.SchemaLogic.SchemaTypes;
 
 namespace BobProject.ViewModel.ValueConverters
 {
-    public class ColorLegendConverter : IValueConverter
+    public class ColorLegendConverter : IMultiValueConverter
     {
         #region IValueConverter Members
 
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object[] value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (value == null) 
+            if (value == null)
                 return Brushes.Black; // Default color
 
-            XmlSchemaWrapper schemaWr = (XmlSchemaWrapper)value;
-            
+            XmlSchemaWrapper schemaWr = (XmlSchemaWrapper)value[0];
+            BL.UtilityClasses.ObservableDictionary<string, Color> typesColor = (BL.UtilityClasses.ObservableDictionary<string, Color>)value[1];
+
             if (schemaWr != null)
             {
                 NodeType type = schemaWr.NodeType;
                 Color color;
                 switch (type)
                 {
-                    case NodeType.Choice:                        
-                        XmlSchemaChoiceWrapper schemaWrChoice = (XmlSchemaChoiceWrapper)value;
+                    case NodeType.Choice:
+                        XmlSchemaChoiceWrapper schemaWrChoice = (XmlSchemaChoiceWrapper)value[0];
                         if (schemaWrChoice.Selected.NodeType == NodeType.NULL)
                             color = ConfigurationData.Instance.GetColorConfiguration(ConfigurationData.Regkeys.ChoiceNull);
                         else
-                            color = ConfigurationData.Instance.GetColorConfiguration(ConfigurationData.Regkeys.Choice);                   
+                            color = ConfigurationData.Instance.GetColorConfiguration(ConfigurationData.Regkeys.Choice);
                         break;
                     case NodeType.Element:
                         color = ConfigurationData.Instance.GetColorConfiguration(ConfigurationData.Regkeys.Element);
@@ -47,17 +48,16 @@ namespace BobProject.ViewModel.ValueConverters
                     default:
                         return Brushes.Black; // Default color
                 }
-                                                                      
+
                 return new SolidColorBrush(color);
             }
             return Brushes.Black; // Default color
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        object[] IMultiValueConverter.ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotImplementedException();
         }
-
         #endregion
 
     }

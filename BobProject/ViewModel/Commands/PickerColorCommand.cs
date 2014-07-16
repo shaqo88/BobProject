@@ -64,13 +64,14 @@ namespace BobProject.ViewModel.Commands
             bool? dialogResult = cPicker.ShowDialog();
             if (dialogResult != null && (bool)dialogResult == true)
             {
-                Color selectedColor = cPicker.SelectedColor;
-                viewModelConf.TypesColor[selectedItem.Key] = selectedColor;
-                viewModelMain.TypesColor[selectedItem.Key] = selectedColor;
 
+                Color selectedColor = cPicker.SelectedColor;
+                ObservableDictionary<string, Color> TypesColor = viewModelConf.TypesColor;
+                TypesColor[selectedItem.Key] = selectedColor;
                 //update treeview GUI
-                MainWindow.Instance.HierarchyTreeTypesView.Items.Refresh();
-                MainWindow.Instance.HierarchyTreeTypesView.UpdateLayout();
+                viewModelConf.TypesColor = TypesColor;
+                viewModelMain.TypesColor = TypesColor;
+
             }
         }
 

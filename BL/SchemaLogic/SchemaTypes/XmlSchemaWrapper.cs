@@ -4,14 +4,29 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BL.UtilityClasses;
 
 namespace BL.SchemaLogic.SchemaTypes
 {
     public enum NodeType { Element, Choice, Sequence, SequenceItem, NULL }
 
-    public abstract class XmlSchemaWrapper
+    public abstract class XmlSchemaWrapper : ObservableObject
     {
-        public string Name { get; private set; }
+
+        private string m_name;
+
+        public string Name 
+        {
+            get 
+            {
+                return m_name; 
+            }
+            private set
+            {
+                m_name = value;
+                RaisePropertyChangedEvent("Name");
+            }
+        }
 
         public NodeType NodeType { get; protected set; }
 

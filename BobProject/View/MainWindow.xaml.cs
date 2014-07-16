@@ -61,9 +61,6 @@ namespace BobProject
             if (ViewModel.TypesList.Count == 0)
                 return;
 
-            //DEBUG - TODO : error while update tree
-            //SelectComboChange.Command = ViewModel.UpdateTree;
-            //END DEBUF
 
             // Supply the control with the list of sections
             List<string> sections = new List<string> { "Name", "Attribute Value" };
@@ -73,7 +70,7 @@ namespace BobProject
             SearchBar.SectionsStyle = SearchTextBox.SectionsStyles.RadioBoxStyle;
 
             // Add a routine handling the event OnSearch
-            SearchBar.OnSearch += new RoutedEventHandler(OnSearch);
+            SearchBar.OnSearch += new RoutedEventHandler(OnSearch);            
 
         }
 
@@ -108,6 +105,8 @@ namespace BobProject
 
             GetAllItemContainers((ItemsControl)HierarchyTreeTypesView);
 
+           
+
             if (searchArgs.Sections[0] == "Name")
             {
                 /*foreach (TreeViewItem item in allItems)
@@ -121,7 +120,7 @@ namespace BobProject
 
             }
 
-          
+
         }
 
 
@@ -170,7 +169,7 @@ namespace BobProject
             ViewModel.IsShowSearchBar = !ViewModel.IsShowSearchBar;
         }
 
-       
+
 
         public void OnExit(object sender, EventArgs e)
         {
