@@ -9,7 +9,18 @@ namespace BL.SchemaLogic.SchemaTypes
 {
     public class XmlSchemaSequenceWrapper : XmlSchemaGroupBaseWrapper
     {
-        public int Index { get; private set; }
+        private int m_index;
+
+        public int Index {
+            get 
+            {
+                return m_index;
+            }
+            set 
+            {
+                SetProperty(ref m_index, value);
+            }
+        }
         
         public XmlSchemaSequenceWrapper(XmlSchemaSequence sequence, XmlSchemaSequenceArray parent, int index)
             : base(sequence, NodeType.SequenceItem, parent)

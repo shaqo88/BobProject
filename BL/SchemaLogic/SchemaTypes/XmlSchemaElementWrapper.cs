@@ -33,7 +33,7 @@ namespace BL.SchemaLogic.SchemaTypes
             {
                 foreach (var attr in Attributes)
                 {
-                    if (!attr.IsAttributeFilled)
+                    if (!attr.IsAttributeValid)
                         return false;
                 }
 

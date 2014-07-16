@@ -56,8 +56,8 @@
     <Compile Include="SchemaLogic\SchemaTypes\XmlSchemaTypeComposite\XmlSchemaComplexTypeWrapper.cs" />
     <Compile Include="SchemaLogic\SchemaTypes\XmlSchemaTypeComposite\XmlSchemaSimpleTypeWrapper.cs" />
     <Compile Include="SchemaLogic\SchemaTypes\XmlSchemaWrapper.cs" />
+    <Compile Include="UtilityClasses\PropertyNotifyObject.cs" />
     <Compile Include="UtilityClasses\ObservableDictionary.cs" />
-    <Compile Include="UtilityClasses\ObservableObject.cs" />
     <Compile Include="XmlLogic\XmlExportLogic.cs" />
     <Compile Include="XmlLogic\XmlImportLogic.cs" />
     <Compile Include="XmlLogic\XmlWrappersSearcher.cs" />

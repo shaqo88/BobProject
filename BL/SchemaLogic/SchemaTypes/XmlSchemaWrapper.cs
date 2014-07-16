@@ -10,21 +10,25 @@ namespace BL.SchemaLogic.SchemaTypes
 {
     public enum NodeType { Element, Choice, Sequence, SequenceItem, NULL }
 
-    public abstract class XmlSchemaWrapper : ObservableObject
+    public abstract class XmlSchemaWrapper : PropertyNotifyObject
     {
+        #region Private Members
 
         private string m_name;
 
-        public string Name 
+        #endregion
+
+        #region Properties
+
+        public string Name
         {
-            get 
+            get
             {
-                return m_name; 
+                return m_name;
             }
             private set
             {
-                m_name = value;
-                RaisePropertyChangedEvent("Name");
+                SetProperty(ref m_name, value);
             }
         }
 
@@ -66,6 +70,10 @@ namespace BL.SchemaLogic.SchemaTypes
             }
         }
 
+        #endregion
+
+        #region Constructor
+
         public XmlSchemaWrapper(string name, NodeType nodeType, XmlSchemaWrapper parent, bool nonDrillable = false)
         {
             this.Name = name;
@@ -75,12 +83,17 @@ namespace BL.SchemaLogic.SchemaTypes
             NodeType = nodeType;
         }
 
+        #endregion
+
+        #region Methods
+
+        protected abstract void InternalDrill();
+
         public override string ToString()
         {
             return Name;
         }
 
-        protected abstract void InternalDrill();
 
         public void DrillOnce()
         {
@@ -92,5 +105,7 @@ namespace BL.SchemaLogic.SchemaTypes
                 HasBeenDrilled = true;
             }
         }
+
+        #endregion
     }
 }

@@ -14,7 +14,7 @@ namespace BL.SchemaLogic.SchemaTypes
 
         private XmlSchemaWrapper m_selected;
 
-        public XmlSchemaWrapper Selected 
+        public XmlSchemaWrapper Selected
         {
             get
             {
@@ -22,8 +22,15 @@ namespace BL.SchemaLogic.SchemaTypes
             }
             set
             {
-                m_selected = value;
-                base.RaisePropertyChangedEvent("Selected");
+                base.SetProperty(ref m_selected, value);
+            }
+        }
+
+        public override bool AllChildAttributesFilled
+        {
+            get
+            {
+                return Selected.AllChildAttributesFilled;
             }
         }
 

@@ -8,14 +8,26 @@ using System.Xml.Schema;
 
 namespace BL.SchemaLogic.SchemaTypes
 {
-    public class XmlSchemaSequenceArray : XmlSchemaGroupBaseWrapper, IList<XmlSchemaSequenceWrapper>//, INotifyCollectionChanged, INotifyPropertyChanged
+    public class XmlSchemaSequenceArray : XmlSchemaGroupBaseWrapper, IList<XmlSchemaSequenceWrapper>
     {
         private XmlSchemaSequence m_sequence;
+        private int m_count;
 
         public XmlSchemaSequenceArray(XmlSchemaSequence sequence, XmlSchemaWrapper parent)
             : base(sequence, NodeType.Sequence, parent)
         {
             m_sequence = sequence;
+            Children.CollectionChanged += Children_CollectionChanged;
+            Count = Children.Count;
+        }
+
+        void Children_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            Count = Children.Count;
+            for (int i = 0; i < Children.Count; i++)
+            {
+                ((XmlSchemaSequenceWrapper)Children[i]).Index = i;
+            }
         }
 
         #region IList<> Interface
@@ -70,7 +82,8 @@ namespace BL.SchemaLogic.SchemaTypes
 
         public int Count
         {
-            get { return Children.Count; }
+            get { return m_count; }
+            set { SetProperty(ref m_count, value); }
         }
 
         public bool IsReadOnly
@@ -109,10 +122,5 @@ namespace BL.SchemaLogic.SchemaTypes
             this.Add(newSeq);
             newSeq.DrillOnce();
         }
-
-        // TODO : Need those interfaces for WPF ??
-        //public event NotifyCollectionChangedEventHandler CollectionChanged;
-
-        //public event PropertyChangedEventHandler PropertyChanged;
     }
 }
