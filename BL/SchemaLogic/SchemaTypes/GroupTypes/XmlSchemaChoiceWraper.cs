@@ -12,7 +12,20 @@ namespace BL.SchemaLogic.SchemaTypes
     {
         private XmlSchemaChoice m_choice;
 
-        public XmlSchemaWrapper Selected { get; set; }
+        private XmlSchemaWrapper m_selected;
+
+        public XmlSchemaWrapper Selected 
+        {
+            get
+            {
+                return m_selected;
+            }
+            set
+            {
+                m_selected = value;
+                base.RaisePropertyChangedEvent("Selected");
+            }
+        }
 
         protected override void InternalDrill()
         {

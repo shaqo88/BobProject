@@ -41,6 +41,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>ExternalDlls\NumericUpDownControl.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationFramework.Aero" />
     <Reference Include="SearchTextBox">
       <HintPath>ExternalDlls\SearchTextBox.dll</HintPath>
     </Reference>
@@ -66,9 +67,11 @@
     </ApplicationDefinition>
     <Compile Include="UtilityClasses\HierarchyDataTemplateSelector.cs" />
     <Compile Include="UtilityClasses\ViewModelBase.cs" />
+    <Compile Include="ViewModel\Commands\DeleteSeqItemCommand.cs" />
     <Compile Include="ViewModel\Commands\LoadNewSchemaCommand.cs" />
     <Compile Include="ViewModel\Commands\PickerColorCommand.cs" />
     <Compile Include="ViewModel\Commands\SaveConfigCommand.cs" />
+    <Compile Include="ViewModel\Commands\SelectedChoiceChangeCommand.cs" />
     <Compile Include="ViewModel\Commands\UpdateSeqNumItemsCommand.cs" />
     <Compile Include="ViewModel\Commands\UpdateTreeCommand.cs" />
     <Compile Include="ViewModel\ConfigurationViewModel.cs" />
@@ -80,6 +83,7 @@
     <Compile Include="ViewModel\ValueConverters\IndexToTextConverter.cs" />
     <Compile Include="ViewModel\ValueConverters\PermissionToVisibilityConverter.cs" />
     <Compile Include="ViewModel\ValueConverters\SelectionPropertyToVisibilityConverter.cs" />
+    <Compile Include="ViewModel\ValueConverters\SelectedItemToArrayConverter.cs" />
     <Compile Include="View\About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
@@ -187,7 +191,18 @@
     <Resource Include="Images\userIcon.png" />
     <Resource Include="Images\userIcon2.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Images\Resycle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ok.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\RightArrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\close.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
