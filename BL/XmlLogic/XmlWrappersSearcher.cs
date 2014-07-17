@@ -95,6 +95,9 @@ namespace BL.XmlLogic
         /// <returns>True if first contains second, false otherwise</returns>
         protected bool DefaultStringsCompareFunc(string first, string second)
         {
+            if (first == null || second == null)
+                return false;
+
             return first.Contains(second);
         }
     }
