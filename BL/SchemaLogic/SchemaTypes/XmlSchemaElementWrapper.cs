@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Schema;
 using BL.SchemaLogic.SchemaTypes.XmlSchemaTypeComposite;
+using System.ComponentModel;
 
 namespace BL.SchemaLogic.SchemaTypes
 {
@@ -70,6 +71,17 @@ namespace BL.SchemaLogic.SchemaTypes
             Type = XmlSchemaSimpleTypeWrapper.SchemaWrappersFactory(ElementObject.ElementSchemaType);
             Attributes = XmlSchemaComplexTypeWrapper.GetAllAttributes(Type);
             DotNetType = XmlSchemaSimpleTypeWrapper.GetDotNetType(Type);
+
+            Attributes.ToList().ForEach((attr) => attr.HighLevelPropertyChanged += attr_HighLevelPropertyChanged);
+        }
+
+        void attr_HighLevelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "IsAttributeValid")
+            {
+                RaisePropertyChangedEvent("AllAttributesFilled");
+                RaisePropertyChangedEvent("AllChildAttributesFilled");
+            }
         }
 
         protected override void InternalDrill()

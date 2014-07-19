@@ -43,6 +43,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Registry\ConfigurationData.cs" />
     <Compile Include="Registry\Permission.cs" />
+    <Compile Include="SchemaLogic\INotifyHighLevelPropertyChanged.cs" />
     <Compile Include="SchemaLogic\SchemaDescriber.cs" />
     <Compile Include="SchemaLogic\SchemaTypes\GroupTypes\XmlSchemaChoiceWraper.cs" />
     <Compile Include="SchemaLogic\SchemaTypes\GroupTypes\XmlSchemaGroupsWrapper.cs">

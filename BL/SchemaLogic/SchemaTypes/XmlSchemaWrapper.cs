@@ -5,16 +5,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BL.UtilityClasses;
+using System.ComponentModel;
+using System.Collections.Specialized;
 
 namespace BL.SchemaLogic.SchemaTypes
 {
     public enum NodeType { Element, Choice, Sequence, SequenceItem, NULL }
 
-    public abstract class XmlSchemaWrapper : PropertyNotifyObject
+    public abstract class XmlSchemaWrapper : PropertyNotifyObject, INotifyHighLevelPropertyChanged
     {
+        public event PropertyChangedEventHandler HighLevelPropertyChanged;
+
         #region Private Members
 
         private string m_name;
+
+        private bool m_hasBeenDrilled;
 
         #endregion
 
@@ -40,15 +46,19 @@ namespace BL.SchemaLogic.SchemaTypes
 
         public abstract bool IsDrillable { get; }
 
-        public bool HasBeenDrilled { get; private set; }
+        public bool HasBeenDrilled
+        {
+            get { return m_hasBeenDrilled; }
+            private set { SetProperty(ref m_hasBeenDrilled, value); }
+        }
 
-        public bool AllChildrenDrilled
+        public virtual bool AllChildrenDrilled
         {
             get
             {
                 foreach (var child in Children)
                 {
-                    if ((child.IsDrillable && !child.HasBeenDrilled))
+                    if (!child.AllChildrenDrilled)
                         return false;
                 }
 
@@ -81,6 +91,50 @@ namespace BL.SchemaLogic.SchemaTypes
             Children = new ObservableCollection<XmlSchemaWrapper>();
             HasBeenDrilled = nonDrillable;
             NodeType = nodeType;
+            PropertyChanged += XmlSchemaWrapper_PropertyChanged;
+            Children.CollectionChanged += Children_CollectionChanged;
+        }
+
+        void Children_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            // TODO : need to use Reset or Move or Replace?
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (var item in e.NewItems)
+                    {
+                        ((XmlSchemaWrapper)item).HighLevelPropertyChanged += XmlSchemaWrapperChild_HighLevelPropertyChanged;
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Move:
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (var item in e.OldItems)
+                    {
+                        ((XmlSchemaWrapper)item).HighLevelPropertyChanged -= XmlSchemaWrapperChild_HighLevelPropertyChanged;
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        void XmlSchemaWrapperChild_HighLevelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "AllChildAttributesFilled" || e.PropertyName == "AllChildrenDrilled")
+            {
+                RaisePropertyChangedEvent(e.PropertyName);
+            }
+        }
+
+        void XmlSchemaWrapper_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "HasBeenDrilled")
+                RaiseHighLevelPropertyChanged("AllChildrenDrilled");
         }
 
         #endregion
@@ -89,11 +143,16 @@ namespace BL.SchemaLogic.SchemaTypes
 
         protected abstract void InternalDrill();
 
+        protected void RaiseHighLevelPropertyChanged(string propertyName)
+        {
+            if (HighLevelPropertyChanged != null)
+                HighLevelPropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+
         public override string ToString()
         {
             return Name;
         }
-
 
         public void DrillOnce()
         {

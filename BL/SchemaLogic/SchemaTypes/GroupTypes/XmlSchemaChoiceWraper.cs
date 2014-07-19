@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,7 +23,9 @@ namespace BL.SchemaLogic.SchemaTypes
             }
             set
             {
-                base.SetProperty(ref m_selected, value);
+                SetProperty(ref m_selected, value);
+                RaiseHighLevelPropertyChanged("AllChildrenDrilled");
+                RaiseHighLevelPropertyChanged("AllChildAttributesFilled");
             }
         }
 
@@ -31,6 +34,14 @@ namespace BL.SchemaLogic.SchemaTypes
             get
             {
                 return Selected.AllChildAttributesFilled;
+            }
+        }
+
+        public override bool AllChildrenDrilled
+        {
+            get
+            {
+                return Selected.AllChildrenDrilled;
             }
         }
 
