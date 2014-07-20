@@ -22,7 +22,7 @@ namespace BL
 
         static void Main()
         {
-            var describer = new SchemaDescriber("../../copperhead.xsd");
+            var describer = new SchemaDescriber("../../copperhead.xsd", "Shaul");
             var doc = DAL.XmlWrapper.XmlReaderWrapper.ReadXml("../../ch.xml");
             CreateDummyXml(describer, describer.RootElement);
             describer.ExportXmlNow(@"TestingOutput\a.xml");

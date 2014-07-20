@@ -20,6 +20,10 @@ namespace BL.SchemaLogic
 
         public ObservableCollection<XmlSchemaElementWrapper> Elements { get; private set; }
 
+        public Version XmlVersion { get; set; }
+
+        public string UserName { get; set; }
+
         public XmlSchemaElementWrapper RootElement
         {
             get
@@ -31,8 +35,10 @@ namespace BL.SchemaLogic
             }
         }
 
-        public SchemaDescriber(string schemaPath)
+        public SchemaDescriber(string schemaPath, string userName = null)
         {
+            XmlVersion = new Version(1, 0);
+            UserName = userName;
             LoadSchema(schemaPath);
         }
 
@@ -87,12 +93,27 @@ namespace BL.SchemaLogic
             return result;
         }
 
+        //public bool LoadExistingXml(string xmlPath)
+        //{
+        //    var doc = XmlWriterWrapper.LoadXml(xmlPath);
+        //    string errorMessage;
+
+        //    if (!XsdReader.IsXmlMatchSchema(doc, out errorMessage))
+        //        throw new Exception(string.Format("Given XML doesn't match the loaded schema (XSD). Path: {0}, Details: {1}", xmlPath, errorMessage));
+
+        //    XmlVersion = XmlImportLogic.GetVersionOfXml(doc);
+
+        //    XmlImportLogic.XmlDocumentToSchemaWrapper(doc);
+
+        //    return true;
+        //}
+
         /// <summary>
         /// Exports the current situation of the tree to XML
         /// </summary>
         /// <param name="xmlPath">Destination path for export</param>
         /// <returns>True if succeeded to export, otherwise - probably exception will occur</returns>
-        public bool ExportXmlNow(string xmlPath)
+        public bool ExportXmlNow(string xmlPath, Version version = null, string userName = null)
         {
             // TODO : check also if all children drilled and filled correctly
             // Check if all attributes filled correcty before trying to export
@@ -100,7 +121,9 @@ namespace BL.SchemaLogic
                 throw new Exception("Could not export XML because not all required attributes filled yet");
 
             // Create the Xml object from wrapper
-            var doc = XmlExportLogic.SchemaWrapperToXmlDocument(RootElement);
+            var doc = XmlExportLogic.SchemaWrapperToXmlDocument(RootElement, 
+                                                                version != null ? version : XmlVersion, 
+                                                                string.IsNullOrEmpty(userName) ? UserName : userName);
 
             // Export the XML to the desired path
             return XmlWriterWrapper.WriteXml(doc, xmlPath);

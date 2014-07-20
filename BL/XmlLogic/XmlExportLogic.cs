@@ -10,6 +10,8 @@ namespace BL.XmlLogic
 {
     public static class XmlExportLogic
     {
+        public const string USER_NAME_FORMAT = "Last edit by: {0}";
+        public const string DATE_FORMAT = "Last edit date: {0}";
         private static XmlDocument doc = new XmlDocument();
 
         /// <summary>
@@ -17,13 +19,24 @@ namespace BL.XmlLogic
         /// </summary>
         /// <param name="rootWrapper">The root object to start with the building</param>
         /// <returns>The XmlDocument which represents the translated tree</returns>
-        public static XmlDocument SchemaWrapperToXmlDocument(XmlSchemaElementWrapper rootWrapper)
+        public static XmlDocument SchemaWrapperToXmlDocument(XmlSchemaElementWrapper rootWrapper, Version version, string userName = null)
         {
-            // TODO : add version from a global property
+            XmlElement rootElement = doc.DocumentElement;
+
             // Declaration that is required in XMLs
-            XmlDeclaration declaration = doc.CreateXmlDeclaration("1.0", "iso-8859-8", null);
-            XmlElement decElement = doc.DocumentElement;
-            doc.InsertBefore(declaration, decElement);
+            XmlDeclaration declaration = doc.CreateXmlDeclaration(version.ToString(), "iso-8859-8", null);
+            doc.InsertAfter(declaration, rootElement);
+
+            // Insert the user name 
+            if (!string.IsNullOrEmpty(userName))
+            {
+                var userNameComment = doc.CreateComment(string.Format(USER_NAME_FORMAT, userName));
+                doc.InsertAfter(userNameComment, declaration);
+            }
+
+            // Insert the date the XML was edited
+            var dateComment = doc.CreateComment(string.Format(DATE_FORMAT, DateTime.Now));
+            doc.InsertAfter(dateComment, declaration);
 
             // Create the root object before recursion
             var rootXmlElement = CreateElementNode(rootWrapper);
