@@ -25,13 +25,14 @@ namespace BL
             var describer = new SchemaDescriber("../../copperhead.xsd", "Shaul");
             var doc = DAL.XmlWrapper.XmlReaderWrapper.ReadXml("../../ch.xml");
             CreateDummyXml(describer, describer.RootElement);
-            describer.ExportXmlNow(@"TestingOutput\a.xml");
+            describer.ExportXmlNow(@"TestingOutput\a.xml", version:new Version(1,6));
 
             CreateDummyXml(describer, describer.RootElement);
-            describer.ExportXmlNow(@"TestingOutput\b.xml");
+            describer.ExportXmlNow(@"TestingOutput\b.xml", version: new Version(6, 2));
             // Probably won't be in use
             //var elementsQuery = XmlSearcher.SearchXml(doc, new XmlQueryPartType() { QueriedNode = "type", ReturnedNode = "typedef", AttributeName = "ref", AttributeValue = "FullName_t" });
 
+            describer.LoadExistingXml(@"TestingOutput\a.xml");
 
             var xml = new XmlDocument();
             var element = xml.CreateElement("newElement");

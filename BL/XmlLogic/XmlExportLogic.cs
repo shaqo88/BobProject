@@ -12,6 +12,7 @@ namespace BL.XmlLogic
     {
         public const string USER_NAME_FORMAT = "Last edit by: {0}";
         public const string DATE_FORMAT = "Last edit date: {0}";
+        public const string VERSION_FORMAT = "XML Version: {0}";
         private static XmlDocument doc;
 
         /// <summary>
@@ -25,7 +26,7 @@ namespace BL.XmlLogic
             XmlElement rootElement = doc.DocumentElement;
 
             // Declaration that is required in XMLs
-            XmlDeclaration declaration = doc.CreateXmlDeclaration(version.ToString(), "iso-8859-8", null);
+            XmlDeclaration declaration = doc.CreateXmlDeclaration("1.0", "iso-8859-8", null);
             doc.InsertAfter(declaration, rootElement);
 
             // Insert the user name 
@@ -38,6 +39,12 @@ namespace BL.XmlLogic
             // Insert the date the XML was edited
             var dateComment = doc.CreateComment(string.Format(DATE_FORMAT, DateTime.Now));
             doc.InsertAfter(dateComment, declaration);
+
+            if (version != null)
+            {
+                var vrsionComment = doc.CreateComment(string.Format(VERSION_FORMAT, version));
+                doc.InsertAfter(vrsionComment, declaration);
+            }
 
             // Create the root object before recursion
             var rootXmlElement = CreateElementNode(rootWrapper);
