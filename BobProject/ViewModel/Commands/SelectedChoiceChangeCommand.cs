@@ -49,6 +49,12 @@ namespace BobProject.ViewModel.Commands
         /// </summary>
         public void Execute(object parameter)
         {
+
+            foreach (var item in viewModel.SelectedItem.Children)
+            {
+                item.DrillOnce();
+            }
+
             //Call Update treeview Colors
             var typeColor = viewModel.TypesColor;
             viewModel.TypesColor = typeColor;

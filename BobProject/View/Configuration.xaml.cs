@@ -34,6 +34,8 @@ namespace BobProject
             InitializeComponent();
 
             LstColors.ItemsSource = ViewModel.TypesColor;
+            SchemaPath.DataContext = MainWindow.Instance.ViewModel;
+
 
         }
 

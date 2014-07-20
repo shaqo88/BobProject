@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using BL.RegistryConfig;
 using BL.UtilityClasses;
@@ -14,15 +15,15 @@ namespace BobProject.ViewModel.Commands
         #region Fields
 
         // Member variables
-        private readonly ConfigurationViewModel viewModel;
+        private readonly MainWindowViewModel viewModelMain;
 
         #endregion
 
         #region Constructor
 
-        public LoadNewSchemaCommand(ConfigurationViewModel _viewModel)
+        public LoadNewSchemaCommand(MainWindowViewModel _viewModelMain)
         {
-            viewModel = _viewModel;
+            viewModelMain = _viewModelMain;
         }
 
         #endregion
@@ -34,7 +35,11 @@ namespace BobProject.ViewModel.Commands
         /// </summary>
         public bool CanExecute(object parameter)
         {
-            return (Permission.Instance.CurrPermission == Permission.PermissionType.Manager);
+            //check if parameters are ok
+            string arg = (string)parameter;
+            if (arg == "path" || arg == "local")
+                return (Permission.Instance.CurrPermission == Permission.PermissionType.Manager);
+            else return false;
         }
 
         /// <summary>
@@ -51,29 +56,51 @@ namespace BobProject.ViewModel.Commands
         /// </summary>
         public void Execute(object parameter)
         {
-            // Create OpenFileDialog 
-            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            MessageBoxResult result = MessageBox.Show("Are you sure that you want to load a new schema? This action deletes previous data.", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+             if (result == MessageBoxResult.Yes)
+             {
+                 string arg = (string)parameter;
+                 string filename = "";
+                 if (arg == "path")
+                 {
+                     // Create OpenFileDialog 
+                     Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
 
 
-            // Set filter for file extension and default file extension 
-            dlg.DefaultExt = ".xsd";
-            dlg.Filter = "Schema Files (*.xsd)|*.xsd";
+                     // Set filter for file extension and default file extension 
+                     dlg.DefaultExt = ".xsd";
+                     dlg.Filter = "Schema Files (*.xsd)|*.xsd";
 
 
-            // Display OpenFileDialog by calling ShowDialog method 
-            Nullable<bool> result = dlg.ShowDialog();
+                     // Display OpenFileDialog by calling ShowDialog method 
+                     Nullable<bool> resultDlg = dlg.ShowDialog();
+                     // Get the selected file name and display in a TextBox 
+                     if (resultDlg == true)
+                     {
+                         // Open document 
+                         filename = dlg.FileName;
+                     }
+                     else return;
+                 }
+                 else if (arg == "local")
+                     filename = viewModelMain.SchemaPath;
+
+                 
+                try
+                {
+                    //load new schena and chech validation
+                    viewModelMain.LoadSchema();
+                    viewModelMain.SchemaPath = filename;
 
 
-            // Get the selected file name and display in a TextBox 
-            if (result == true)
-            {
-                // Open document 
-                string filename = dlg.FileName;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
 
-                ////////////////////////////////check valid schema
-
-                viewModel.SchemaPath = filename;
-            }
+             }
+            
         }
 
         #endregion

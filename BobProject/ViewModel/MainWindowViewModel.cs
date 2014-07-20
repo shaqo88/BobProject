@@ -27,14 +27,20 @@ namespace BobProject.ViewModel
         private ObservableCollection<XmlSchemaWrapper> typesLst;
         private ObservableDictionary<string, Color> typesColor;
         private XmlSchemaWrapper selectedItem;
-        private string LastError = "";
         private string permission;
+        private string schemaPath;
         private bool isShowSearchBar = true;
         private SchemaDescriber schemaDescriber;
         public ICommand ShowProperties { get; private set; }
         public ICommand UpdateSeqNumItems { get; private set; }
         public ICommand SelectedChoiceChange { get; private set; }
         public ICommand DeleteSeqItem { get; private set; }
+        public ICommand LoadNewFile { get; private set; }
+
+        public SchemaDescriber SchemaDescriber
+        {
+            get { return schemaDescriber; }
+        }
 
         public bool IsShowSearchBar
         {
@@ -64,6 +70,18 @@ namespace BobProject.ViewModel
                 base.RaisePropertyChangedEvent("Permit");
             }
         }
+
+        public string SchemaPath
+        {
+            get { return schemaPath; }
+            set
+            {
+                schemaPath = value;
+                ConfigurationData.Instance.SchemaPath = value;
+                base.RaisePropertyChangedEvent("SchemaPath");
+            }
+        }
+
 
 
         #endregion
@@ -107,55 +125,62 @@ namespace BobProject.ViewModel
         #endregion
 
 
-        #region Methods
+        #region Private Methods
         private void Initialize()
         {
             // Initialize commands
             ShowProperties = new ShowPropertiesCommand(this);
-            UpdateSeqNumItems = new UpdateSeqNumItemsCommand();
             SelectedChoiceChange = new SelectedChoiceChangeCommand(this);
+            UpdateSeqNumItems = new UpdateSeqNumItemsCommand();
             DeleteSeqItem = new DeleteSeqItemCommand();
+            LoadNewFile = new LoadNewSchemaCommand(this);
 
-
-            // Create types List
+            // Create types List and color list 
             typesLst = new ObservableCollection<XmlSchemaWrapper>();
             TypesColor = ConfigurationData.Instance.TypesColor;
-            string schemaPath = ConfigurationData.Instance.SchemaPath;
-
+            SchemaPath = ConfigurationData.Instance.SchemaPath;
 
             //Load schema
+            schemaDescriber = new SchemaDescriber(SchemaPath);
+            this.LoadSchema();           
+
+        }
+
+        public bool LoadSchema()
+        {           
+            bool isValidateSchema = true;
             try
             {
-                schemaDescriber = new SchemaDescriber(schemaPath);                
-
-                typesLst.Add(schemaDescriber.Elements[0]);
-                SelectedItem = schemaDescriber.Elements[0];
-
-                //DEBUG - TODO - first time select the first element
-                /*if (ShowProperties.CanExecute(describer.Elements[0]))
-                    ShowProperties.Execute(describer.Elements[0]);*/
-                //schemaDescriber.LoadSchema
-                //schemaDescriber.ValidateSchema
-                //END DEBUG
-
-                TypesList = typesLst;
-
+                isValidateSchema = schemaDescriber.ValidateSchema(SchemaPath, true);
+                schemaDescriber.LoadSchema(SchemaPath);
             }
             catch (Exception)
             {
-                LastError = "Error loading schema";
-                return;
+                throw new Exception( "Schema Invalid" );
             }
-            // Update bindings
-            base.RaisePropertyChangedEvent("TypesList");
+            
 
+            if (isValidateSchema)
+            {
+                TypesList.Clear();
+                if (schemaDescriber.Elements != null)
+                    if (schemaDescriber.Elements.Count != 0)
+                    {
+                        TypesList.Add(schemaDescriber.Elements[0]);
+                        SelectedItem = schemaDescriber.Elements[0];                        
+                    }
+                base.RaisePropertyChangedEvent("TypesList");
+                
+                
+            }
+
+
+            return isValidateSchema;
+
+            
         }
 
 
-        public bool IsErrorOccur()
-        {
-            return LastError != "";
-        }
 
 
         #endregion

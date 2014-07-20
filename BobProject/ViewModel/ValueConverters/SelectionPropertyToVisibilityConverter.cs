@@ -22,7 +22,7 @@ namespace BobProject.ViewModel.ValueConverters
                 return Visibility.Visible;
             else if ((nodeType == NodeType.Sequence) && (parm == "Sequence"))
                 return Visibility.Visible;
-            else if ((nodeType == NodeType.NULL) && (parm == "Null"))
+            else if (((nodeType == NodeType.NULL || nodeType == NodeType.SequenceItem) && (parm == "Null")))
                 return Visibility.Visible;
             return Visibility.Collapsed;
         }

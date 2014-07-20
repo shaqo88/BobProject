@@ -16,7 +16,6 @@ namespace BobProject.ViewModel
 {
     public class ConfigurationViewModel : ViewModelBase
     {
-        private string schemaPath;
         private ObservableDictionary<string, Color> typesColor;
         public ICommand PickerColor { get; set; }
         public ICommand SaveConfig { get; set; }
@@ -24,18 +23,7 @@ namespace BobProject.ViewModel
         public KeyValuePair<string, Color> SelectedItem { get; private set; }
         public Window Parent { get; set; }
         public bool IsManagerPerm { get; private set; }
-
-        public string SchemaPath
-        {
-            get { return schemaPath; }
-            set
-            {
-                schemaPath = value;
-                ConfigurationData.Instance.SchemaPath = value;
-                base.RaisePropertyChangedEvent("SchemaPath");
-            }
-        }
-
+       
 
         public ObservableDictionary<string, Color> TypesColor
         {
@@ -49,11 +37,10 @@ namespace BobProject.ViewModel
 
         public ConfigurationViewModel()
         {
-            schemaPath = ConfigurationData.Instance.SchemaPath;
             typesColor = ConfigurationData.Instance.TypesColor;
             SaveConfig = new SaveConfigCommand();
             PickerColor = new PickerColorCommand(this, MainWindow.Instance.ViewModel);
-            LoadNewSchema = new LoadNewSchemaCommand(this);
+            LoadNewSchema = new LoadNewSchemaCommand(MainWindow.Instance.ViewModel);
             IsManagerPerm = Permission.Instance.CurrPermission == Permission.PermissionType.Manager;
         }
 

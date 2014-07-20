@@ -78,10 +78,18 @@ namespace BobProject.ViewModel.Commands
                     case NodeType.NULL:
                         break;
                     default:
-                        break; 
+                        break;
                 }
-               
-            }                        
+
+            }
+            else
+            {
+                //Erase last data
+                MainWindow.Instance.ElementName.DataContext = null;
+                MainWindow.Instance.ElementAttributes.DataContext = null;
+                MainWindow.Instance.ElementAttributes.ItemsSource = null;
+                MainWindow.Instance.ChoiceComboBox.DataContext = null;
+            }
 
 
         }

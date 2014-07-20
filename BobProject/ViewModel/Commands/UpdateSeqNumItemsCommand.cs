@@ -55,7 +55,10 @@ namespace BobProject.ViewModel.Commands
                 if (chosenNum > 0)
                 {
                     for (int i = 0; i < chosenNum; i++)
+                    {
                         item.AddNewWrapper();
+                        item.DrillOnce();
+                    }
                 }
                 else //chosenNum < 0
                 {

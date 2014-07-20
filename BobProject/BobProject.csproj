@@ -66,6 +66,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="UtilityClasses\HierarchyDataTemplateSelector.cs" />
+    <Compile Include="UtilityClasses\TreeViewHelper.cs" />
     <Compile Include="UtilityClasses\ViewModelBase.cs" />
     <Compile Include="ViewModel\Commands\DeleteSeqItemCommand.cs" />
     <Compile Include="ViewModel\Commands\LoadNewSchemaCommand.cs" />

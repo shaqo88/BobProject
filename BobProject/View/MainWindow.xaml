@@ -43,14 +43,13 @@
                                                                         Color="Black" />
             </Style.Resources>
             <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-        </Style>
-
+        </Style>        
     </Window.Resources>
 
     <DockPanel>
         <Menu DockPanel.Dock="Top" HorizontalAlignment="Left" BorderBrush="Black">
             <MenuItem Header="File">
-                <MenuItem Header="New" Visibility="{Binding Path=Permit, Converter={StaticResource permissionToVisibilityConverter},ConverterParameter=Editor}"/>
+                <MenuItem Header="New" Command="{Binding LoadNewFile}" CommandParameter="local" Visibility="{Binding Path=Permit, Converter={StaticResource permissionToVisibilityConverter},ConverterParameter=Editor}"/>
                 <MenuItem Header="Open"/>
                 <Separator Visibility="{Binding Path=Permit, Converter={StaticResource permissionToVisibilityConverter},ConverterParameter=Editor}"/>
                 <MenuItem Header="Save As..." Click="OpenSaveAs" Visibility="{Binding Path=Permit, Converter={StaticResource permissionToVisibilityConverter},ConverterParameter=Editor}"/>
@@ -58,8 +57,8 @@
                 <MenuItem Header="Exit" Click="OnExit"/>
             </MenuItem>
             <MenuItem Header="View" >
-                <MenuItem Header="Expand"/>
-                <MenuItem Header="Collapse"/>
+                <MenuItem Header="Expand All" Click="ExpandTree"/>
+                <MenuItem Header="Collapse All" Click="CollapseTree"/>
                 <Separator/>
                 <MenuItem Header="Search Bar"  IsChecked="{Binding IsShowSearchBar}" Click="ShowSearchBar"/>
                 <Separator/>
@@ -78,20 +77,20 @@
         </Menu>
         <ToolBar DockPanel.Dock="Top" Height="35" Visibility="{Binding Path=IsShowSearchBar, Converter={StaticResource BoolToVisConverter}}">
             <l:SearchTextBox Height="35" VerticalAlignment="Top" Name="SearchBar" Background="AliceBlue" Width="263" Margin="0,0,0,-5" >
-                <!-- <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="OnSearch">
-                        <i:InvokeCommandAction Command="{Binding}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers> -->
             </l:SearchTextBox>
-            <Button Name="NextResult" Style="{DynamicResource IconButtonStyle}" ToolTip="View Next Result"  >
+            <Button Name="NextResult" Style="{DynamicResource IconButtonStyle}" ToolTip="View Next Result" Click="OnShowNextResult"  >
                 <Image Source="../Images/RightArrow.png" Width="25" Height="16" />
             </Button>
-            <Button Name="ClearSearchResult" Style="{DynamicResource IconButtonStyle}" ToolTip="Clear Results"  >
+            <Button Name="ClearSearchResult" Style="{DynamicResource IconButtonStyle}" ToolTip="Clear Results" Click="OnEraseResult"  >
                 <Image Source="../Images/close.png" Width="25" Height="17" />
             </Button>
-            <!--<TextBlock Name="ResultTxt"  Text="{Binding Amount, StringFormat=Total: {0:C}}" Visibility="Visible" />-->
-            
+            <StackPanel Name="ResultPanel" Orientation="Horizontal" Margin="0,6,0,-6" Visibility="Hidden" >
+                <TextBlock Text="Showing "/>
+                <TextBlock Name="CurrentResult" Text="{Binding CurrentResultCountProperty}"/>
+                <TextBlock Text=" From "/>
+                <TextBlock Name="TotalResult" Text="{Binding TotalResultCountProperty}"/>
+            </StackPanel>
+
         </ToolBar>
         <Grid DockPanel.Dock="Bottom">
             <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Background="LightGray">
@@ -113,7 +112,7 @@
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="SelectedItemChanged">
                                 <i:InvokeCommandAction Command="{Binding ShowProperties}" CommandParameter="{Binding ElementName=HierarchyTreeTypesView,Path=SelectedItem}"/>
-                            </i:EventTrigger>
+                            </i:EventTrigger>                            
                         </i:Interaction.Triggers>
                         <TreeView.ItemContainerStyle>
                             <Style TargetType="{x:Type TreeViewItem}">
@@ -138,15 +137,22 @@
                                                 </MultiBinding>
                                             </Setter.Value>
                                         </Setter>
-                                    </Trigger>
-                                    
-
+                                        <!--<Setter Property="Background" Value="Blue" />    -->                                        
+                                        <!--<Setter Property="ContextMenu">
+                                            <Setter.Value>
+                                                <ContextMenu Name="TreeViewMenu">
+                                                    <MenuItem Header ="Expand Node" Click="OnExpandCollapseNode" Tag="Expand"/>
+                                                    <MenuItem Header ="Collapse Node" Click="OnExpandCollapseNode" Tag="Collapse"/>
+                                                </ContextMenu>
+                                            </Setter.Value>
+                                        </Setter>-->
+                                    </Trigger>                                    
                                 </Style.Triggers>
                             </Style>
                         </TreeView.ItemContainerStyle>
-                        <TreeView.Resources>
+                        <TreeView.Resources>                            
                             <HierarchicalDataTemplate x:Key="XmlSchemaSequenceWrapperTemplate" DataType="{x:Type Elements:XmlSchemaSequenceWrapper}" ItemsSource="{Binding Path=Children}">
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel Orientation="Horizontal">      
                                     <TextBlock Text="{Binding Index,Converter={StaticResource indexToTextConverter}, Mode=OneWay}" />
                                     <TextBlock Text=" " />
                                     <Button  Style="{DynamicResource IconButtonStyle}" ToolTip="Delete Item" Command="{Binding  ElementName=_this, Path=DataContext.DeleteSeqItem}" CommandParameter="{Binding}">
@@ -179,6 +185,12 @@
                                 </StackPanel>
                             </HierarchicalDataTemplate>
                         </TreeView.Resources>
+                       <!-- <TreeViewItem>
+                            <Menu>
+                                <MenuItem Header ="Expand Node" Click="OnExpandCollapseNode" Tag="Expand"/>
+                                <MenuItem Header ="Collapse Node" Click="OnExpandCollapseNode" Tag="Collapse"/>
+                            </Menu>
+                        </TreeViewItem>-->
                     </TreeView>
                     <Line></Line>
                     <Label FontSize="16" FontWeight="Bold" Content="Legend:"/>
