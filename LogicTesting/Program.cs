@@ -26,6 +26,9 @@ namespace BL
             var doc = DAL.XmlWrapper.XmlReaderWrapper.ReadXml("../../ch.xml");
             CreateDummyXml(describer, describer.RootElement);
             describer.ExportXmlNow(@"TestingOutput\a.xml");
+
+            CreateDummyXml(describer, describer.RootElement);
+            describer.ExportXmlNow(@"TestingOutput\b.xml");
             // Probably won't be in use
             //var elementsQuery = XmlSearcher.SearchXml(doc, new XmlQueryPartType() { QueriedNode = "type", ReturnedNode = "typedef", AttributeName = "ref", AttributeValue = "FullName_t" });
 

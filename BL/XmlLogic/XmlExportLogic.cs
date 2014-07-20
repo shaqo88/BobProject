@@ -12,7 +12,7 @@ namespace BL.XmlLogic
     {
         public const string USER_NAME_FORMAT = "Last edit by: {0}";
         public const string DATE_FORMAT = "Last edit date: {0}";
-        private static XmlDocument doc = new XmlDocument();
+        private static XmlDocument doc;
 
         /// <summary>
         /// Converts the BL objects of XmlSchemaWrapper types to XmlDocument to get ready for writing to file
@@ -21,6 +21,7 @@ namespace BL.XmlLogic
         /// <returns>The XmlDocument which represents the translated tree</returns>
         public static XmlDocument SchemaWrapperToXmlDocument(XmlSchemaElementWrapper rootWrapper, Version version, string userName = null)
         {
+            doc = new XmlDocument();
             XmlElement rootElement = doc.DocumentElement;
 
             // Declaration that is required in XMLs
