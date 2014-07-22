@@ -9,20 +9,21 @@ using BL.SchemaLogic.SchemaTypes;
 using System.Collections.ObjectModel;
 using BL.XmlLogic;
 using DAL.XmlWrapper;
+using System.Xml;
 
 namespace BL.SchemaLogic
 {
     public class SchemaDescriber
     {
-        private XsdReader XsdReader { get; set; }
-
-        private XmlWrappersSearcher Searcher { get; set; }
+        #region Public Properties
 
         public ObservableCollection<XmlSchemaElementWrapper> Elements { get; private set; }
 
-        public Version XmlVersion { get; set; }
+        public Version XmlVersion { get; private set; }
 
-        public string UserName { get; set; }
+        public string UserName { get; private set; }
+
+        public DateTime LastEditDate { get; private set; }
 
         public XmlSchemaElementWrapper RootElement
         {
@@ -35,12 +36,28 @@ namespace BL.SchemaLogic
             }
         }
 
+        #endregion
+
+        #region Private Properties
+
+        private XsdReader XsdReader { get; set; }
+
+        private XmlWrappersSearcher Searcher { get; set; }
+
+        #endregion
+
+        #region Constructor
+
         public SchemaDescriber(string schemaPath, string userName = null)
         {
             XmlVersion = new Version(1, 0);
             UserName = userName;
             LoadSchema(schemaPath);
         }
+
+        #endregion
+
+        #region Public Methods
 
         /// <summary>
         /// Loads schema by validating it and creating all BL objects by it
@@ -62,6 +79,14 @@ namespace BL.SchemaLogic
                 var wrappedElement = new XmlSchemaElementWrapper((XmlSchemaElement)element, null);
                 Elements.Add(wrappedElement);
                 wrappedElement.DrillOnce();
+            }
+        }
+
+        public void ClearXml()
+        {
+            foreach (var element in Elements)
+            {
+                ClearWrapper(element);
             }
         }
 
@@ -93,20 +118,24 @@ namespace BL.SchemaLogic
             return result;
         }
 
-        //public bool LoadExistingXml(string xmlPath)
-        //{
-        //    var doc = XmlWriterWrapper.LoadXml(xmlPath);
-        //    string errorMessage;
+        public bool LoadExistingXml(string xmlPath)
+        {
+            var doc = XmlLoaderWrapper.LoadXml(xmlPath);
+            string errorMessage;
 
-        //    if (!XsdReader.IsXmlMatchSchema(doc, out errorMessage))
-        //        throw new Exception(string.Format("Given XML doesn't match the loaded schema (XSD). Path: {0}, Details: {1}", xmlPath, errorMessage));
+            if (!XsdReader.IsXmlMatchSchema(doc, out errorMessage))
+                throw new Exception(string.Format("Given XML doesn't match the loaded schema (XSD). Path: {0}, Details: {1}", xmlPath, errorMessage));
 
-        //    XmlVersion = XmlImportLogic.GetVersionOfXml(doc);
+            this.ClearXml();
 
-        //    XmlImportLogic.XmlDocumentToSchemaWrapper(doc);
+            XmlVersion = XmlImportLogic.GetVersionOfXml(doc);
+            UserName = XmlImportLogic.GetUserName(doc);
+            LastEditDate = XmlImportLogic.GetDateTime(doc);
 
-        //    return true;
-        //}
+            Elements.Add(XmlImportLogic.XmlDocumentToSchemaWrapper(doc));
+
+            return true;
+        }
 
         /// <summary>
         /// Exports the current situation of the tree to XML
@@ -121,12 +150,57 @@ namespace BL.SchemaLogic
                 throw new Exception("Could not export XML because not all required attributes filled yet");
 
             // Create the Xml object from wrapper
-            var doc = XmlExportLogic.SchemaWrapperToXmlDocument(RootElement, 
-                                                                version != null ? version : XmlVersion, 
+            var doc = XmlExportLogic.SchemaWrapperToXmlDocument(RootElement,
+                                                                version != null ? version : XmlVersion,
                                                                 string.IsNullOrEmpty(userName) ? UserName : userName);
 
             // Export the XML to the desired path
             return XmlWriterWrapper.WriteXml(doc, xmlPath);
         }
+
+        /// <summary>
+        /// Gets the current XmlDocument from the data in the system
+        /// </summary>
+        /// <returns>The XmlDocument object that represents the current XML</returns>
+        public XmlDocument GetCurrentXmlDocument()
+        {
+            return XmlExportLogic.SchemaWrapperToXmlDocument(RootElement, XmlVersion, UserName);
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private void ClearWrapper(XmlSchemaWrapper wrapper)
+        {
+            if (wrapper is XmlSchemaElementWrapper)
+            {
+                var element = wrapper as XmlSchemaElementWrapper;
+
+                foreach (var attr in element.Attributes)
+                {
+                    attr.Value = null;
+                }
+            }
+            else if (wrapper is XmlSchemaChoiceWrapper)
+            {
+                var choice = wrapper as XmlSchemaChoiceWrapper;
+
+                if (choice.Children != null && choice.Children.Count > 0)
+                    choice.Selected = choice.Children[0];
+            }
+            else if (wrapper is XmlSchemaSequenceArray)
+            {
+                var seqArr = wrapper as XmlSchemaSequenceArray;
+                seqArr.Clear();
+            }
+
+            foreach (var child in wrapper.Children)
+            {
+                ClearWrapper(child);
+            }
+        }
+
+        #endregion
     }
 }
