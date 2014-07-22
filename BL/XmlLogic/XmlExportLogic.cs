@@ -20,7 +20,7 @@ namespace BL.XmlLogic
         /// </summary>
         /// <param name="rootWrapper">The root object to start with the building</param>
         /// <returns>The XmlDocument which represents the translated tree</returns>
-        public static XmlDocument SchemaWrapperToXmlDocument(XmlSchemaElementWrapper rootWrapper, Version version, string userName = null)
+        public static XmlDocument SchemaWrapperToXmlDocument(XmlSchemaElementWrapper rootWrapper, Version version, string userName = null, bool validate = true)
         {
             doc = new XmlDocument();
             XmlElement rootElement = doc.DocumentElement;
@@ -47,12 +47,12 @@ namespace BL.XmlLogic
             }
 
             // Create the root object before recursion
-            var rootXmlElement = CreateElementNode(rootWrapper);
+            var rootXmlElement = CreateElementNode(rootWrapper, validate);
 
             // Build all children recursively
             foreach (var child in rootWrapper.Children)
             {
-                RecusiveXmlBuilder(child, rootXmlElement);
+                RecusiveXmlBuilder(child, rootXmlElement, validate);
             }
 
             // Append the ready root with all its children to the document
@@ -66,19 +66,19 @@ namespace BL.XmlLogic
         /// </summary>
         /// <param name="currWrapper">Current object to handle</param>
         /// <param name="parentXmlElement">The parent of the current object</param>
-        private static void RecusiveXmlBuilder(XmlSchemaWrapper currWrapper, XmlElement parentXmlElement)
+        private static void RecusiveXmlBuilder(XmlSchemaWrapper currWrapper, XmlElement parentXmlElement, bool validate = true)
         {
             if (currWrapper is XmlSchemaElementWrapper)
             {
                 // If element, add all its attributes, append it to the output and go recursively with all its children
                 var elementWrapper = currWrapper as XmlSchemaElementWrapper;
-                var xmlElement = CreateElementNode(elementWrapper);
+                var xmlElement = CreateElementNode(elementWrapper, validate);
 
                 parentXmlElement.AppendChild(xmlElement);
 
                 foreach (var child in elementWrapper.Children)
                 {
-                    RecusiveXmlBuilder(child, xmlElement);
+                    RecusiveXmlBuilder(child, xmlElement, validate);
                 }
 
                 // If the element requires inner text, fill it
@@ -91,7 +91,7 @@ namespace BL.XmlLogic
                 var choice = currWrapper as XmlSchemaChoiceWrapper;
 
                 if (!(choice.Selected is XmlSchemaNullChoice))
-                    RecusiveXmlBuilder(choice.Selected, parentXmlElement);
+                    RecusiveXmlBuilder(choice.Selected, parentXmlElement, validate);
             }
             else if (currWrapper is XmlSchemaSequenceWrapper)
             {
@@ -100,7 +100,7 @@ namespace BL.XmlLogic
 
                 foreach (var child in seq.Children)
                 {
-                    RecusiveXmlBuilder(child, parentXmlElement);
+                    RecusiveXmlBuilder(child, parentXmlElement, validate);
                 }
             }
             else if (currWrapper is XmlSchemaSequenceArray)
@@ -110,7 +110,7 @@ namespace BL.XmlLogic
 
                 foreach (var seq in seqArr)
                 {
-                    RecusiveXmlBuilder(seq, parentXmlElement);
+                    RecusiveXmlBuilder(seq, parentXmlElement, validate);
                 }
             }
             else
@@ -124,7 +124,7 @@ namespace BL.XmlLogic
         /// </summary>
         /// <param name="elementWrapper">The element wrapper to convert</param>
         /// <returns>The XmlElement with all the wrapper's informaion</returns>
-        private static XmlElement CreateElementNode(XmlSchemaElementWrapper elementWrapper)
+        private static XmlElement CreateElementNode(XmlSchemaElementWrapper elementWrapper, bool validate = true)
         {
             XmlElement newXmlElement = doc.CreateElement(elementWrapper.Name);
 
@@ -140,7 +140,8 @@ namespace BL.XmlLogic
                 }
                 else
                 {
-                    throw new Exception(string.Format("Error exporting XML. Node: {0} with Attribute: {1} is not filled correctly", elementWrapper.Name, attr.Name));
+                    if (validate)
+                        throw new Exception(string.Format("Error exporting XML. Node: {0} with Attribute: {1} is not filled correctly", elementWrapper.Name, attr.Name));
                 }
             }
 

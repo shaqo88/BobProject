@@ -152,7 +152,8 @@ namespace BL.SchemaLogic
             // Create the Xml object from wrapper
             var doc = XmlExportLogic.SchemaWrapperToXmlDocument(RootElement,
                                                                 version != null ? version : XmlVersion,
-                                                                string.IsNullOrEmpty(userName) ? UserName : userName);
+                                                                string.IsNullOrEmpty(userName) ? UserName : userName,
+                                                                true);
 
             // Export the XML to the desired path
             return XmlWriterWrapper.WriteXml(doc, xmlPath);
@@ -164,7 +165,7 @@ namespace BL.SchemaLogic
         /// <returns>The XmlDocument object that represents the current XML</returns>
         public XmlDocument GetCurrentXmlDocument()
         {
-            return XmlExportLogic.SchemaWrapperToXmlDocument(RootElement, XmlVersion, UserName);
+            return XmlExportLogic.SchemaWrapperToXmlDocument(RootElement, XmlVersion, UserName, false);
         }
 
         #endregion
