@@ -10,10 +10,12 @@ using System.Collections.ObjectModel;
 using BL.XmlLogic;
 using DAL.XmlWrapper;
 using System.Xml;
+using BL.UtilityClasses;
+using System.ComponentModel;
 
 namespace BL.SchemaLogic
 {
-    public class SchemaDescriber
+    public class SchemaDescriber : PropertyNotifyObject
     {
         #region Public Properties
 
@@ -36,6 +38,20 @@ namespace BL.SchemaLogic
             }
         }
 
+        private XmlDocument m_currentXmlDocument;
+
+        public XmlDocument CurrentXmlDocument
+        {
+            get
+            {
+                return m_currentXmlDocument;
+            }
+            set
+            {
+                SetProperty(ref m_currentXmlDocument, value);
+            }
+        }
+
         #endregion
 
         #region Private Properties
@@ -53,6 +69,12 @@ namespace BL.SchemaLogic
             XmlVersion = new Version(1, 0);
             UserName = userName;
             LoadSchema(schemaPath);
+
+        }
+
+        void RootElement_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            this.CurrentXmlDocument = GetCurrentXmlDocument();
         }
 
         #endregion
@@ -80,6 +102,8 @@ namespace BL.SchemaLogic
                 Elements.Add(wrappedElement);
                 wrappedElement.DrillOnce();
             }
+
+            RootElement.PropertyChanged += RootElement_PropertyChanged;
         }
 
         public void ClearXml()
@@ -132,7 +156,7 @@ namespace BL.SchemaLogic
             UserName = XmlImportLogic.GetUserName(doc);
             LastEditDate = XmlImportLogic.GetDateTime(doc);
 
-            Elements.Add(XmlImportLogic.XmlDocumentToSchemaWrapper(doc));
+            //Elements.Add(XmlImportLogic.XmlDocumentToSchemaWrapper(doc));
 
             return true;
         }
