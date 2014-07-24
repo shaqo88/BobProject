@@ -18,7 +18,13 @@ namespace BL.SchemaLogic.SchemaTypes
 
         public bool IsSimple { get { return ElementObject.ElementSchemaType is XmlSchemaSimpleType; } }
 
-        public string InnerText { get; set; }
+        private string m_innerText;
+
+        public string InnerText
+        {
+            get { return m_innerText; }
+            set { SetProperty(ref m_innerText, value); }
+        }
 
         public Type DotNetType { get; private set; }
 
