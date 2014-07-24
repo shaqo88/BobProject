@@ -17,7 +17,9 @@
         <Button Name="Send" Content="Save" ToolTip="Save Configuration for next load" Visibility="{Binding IsManagerPerm, Converter={StaticResource BoolToVisConverter}}"  Command="{Binding Path=SaveConfig}" HorizontalAlignment="Left" Height="32" Margin="205,406,0,0" VerticalAlignment="Top" Width="94" RenderTransformOrigin="0.973,0.531"/>
         <Label Content="Schema Path:" HorizontalAlignment="Right" Height="31" Margin="0,182,357,0" VerticalAlignment="Top" Width="89"/>
         <Label Content="Legend:" HorizontalAlignment="Right" Height="31" Margin="0,234,357,0" VerticalAlignment="Top" Width="89"/>
-        <Button Content="Browse..." Command="{Binding Path=LoadNewSchema}" CommandParameter="path" Visibility="{Binding IsManagerPerm, Converter={StaticResource BoolToVisConverter}}"  HorizontalAlignment="Left" Margin="369,182,0,0" VerticalAlignment="Top" Width="75" Height="31" RenderTransformOrigin="0.507,1.375"/>
+        <Button ToolTip="Browse..." Command="{Binding Path=LoadNewSchema}" CommandParameter="path" Style="{DynamicResource IconButtonStyle}" Visibility="{Binding IsManagerPerm, Converter={StaticResource BoolToVisConverter}}"  HorizontalAlignment="Left" Margin="356,177,0,0" VerticalAlignment="Top" Width="75" Height="40" RenderTransformOrigin="0.507,1.375">
+            <Image Source="../Images/OpenFileIcon.png"  />
+        </Button>
         <ListBox Name="LstColors" Grid.Row="0" Margin="142,234,135,128" SelectedItem="{Binding Path=SelectedItem}" ItemsSource="{Binding}" ToolTip="Double Click On Item For Changing The Color">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseDoubleClick">

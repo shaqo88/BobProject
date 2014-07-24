@@ -11,6 +11,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using BL.SchemaLogic;
+using BobProject.ViewModel;
 
 namespace BobProject
 {
@@ -19,37 +21,15 @@ namespace BobProject
     /// </summary>
     public partial class SaveXML : Window
     {
-        public SaveXML()
+        public SaveXmlViewModel ViewModel { get; private set; }
+
+        public SaveXML(SchemaDescriber schema)
         {
             InitializeComponent();
+
+            ViewModel = new SaveXmlViewModel(schema);
+            DataContext = ViewModel;
         }
-
-        private void Send_Click(object sender, RoutedEventArgs e)
-        {
-            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
-            dlg.FileName = "XmlDocument"; // Default file name
-            dlg.DefaultExt = ".xml"; // Default file extension
-            dlg.Filter = "XML Files (.xml)|*.xml"; // Filter files by extension
-
-            // Show save file dialog box
-            Nullable<bool> result = dlg.ShowDialog();
-
-            // Process save file dialog box results
-            if (result == true)
-            {
-                // Save document
-                string filename = dlg.FileName;
-                try
-                {
-                    MainWindow.Instance.ViewModel.SchemaDescriber.ExportXmlNow(filename);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-            
-            
-        }
+       
     }
 }

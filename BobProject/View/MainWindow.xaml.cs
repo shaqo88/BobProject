@@ -133,6 +133,8 @@ namespace BobProject
             // Add a routine handling the event OnSearch
             SearchBar.OnSearch += new RoutedEventHandler(OnSearch);
 
+            XMLViewer.XmlContents = ViewModel.SchemaDescriber.CurrentXmlDocument;
+
         }
 
         /// <summary>
@@ -261,44 +263,6 @@ namespace BobProject
             ViewNextResult();
         }
 
-        private void OnSwitchUser(object sender, RoutedEventArgs e)
-        {
-            Login login = new Login();
-            login.Owner = this;
-            //DEBUG
-            //login.ShowDialog();
-            //END DEBUG
-
-        }
-
-        private void OpenConfiguration(object sender, RoutedEventArgs e)
-        {
-            Configuration conf = new Configuration();
-            conf.Owner = this;
-            conf.ShowDialog();
-        }
-
-        private void OpenReports(object sender, RoutedEventArgs e)
-        {
-            Reports report = new Reports();
-            report.Owner = this;
-            report.ShowDialog();
-        }
-
-        private void OpenSaveAs(object sender, RoutedEventArgs e)
-        {
-            SaveXML saveXml = new SaveXML();
-            saveXml.Owner = this;
-            saveXml.ShowDialog();
-        }
-
-
-        private void OpenAbout(object sender, RoutedEventArgs e)
-        {
-            About about = new About();
-            about.Owner = this;
-            about.ShowDialog();
-        }
 
         private void ShowSearchBar(object sender, RoutedEventArgs e)
         {
@@ -349,6 +313,21 @@ namespace BobProject
 
                 }
             }
+
+            System.Xml.XmlDocument XMLdoc = null;
+            try
+            {
+                XMLdoc = ViewModel.SchemaDescriber.GetCurrentXmlDocument();
+            }
+            catch (Exception)
+            {
+                
+            }
+
+            XMLViewer.XmlContents = XMLdoc;
+            /*var xml = ViewModel.SchemaDescriber.CurrentXmlDocument;
+            ViewModel.SchemaDescriber.CurrentXmlDocument = xml;*/
+
         }
 
         /// <summary>
@@ -380,8 +359,9 @@ namespace BobProject
         private void OnExpandCollapseNode(object sender, RoutedEventArgs e)
         {
             /*need to add contextmenu to treeview*/
-           /* TreeViewItem tvi = e.OriginalSource as TreeViewItem;
-            string value = (string)((MenuItem)sender).Tag;
+           // HierarchyTreeTypesView.
+            TreeViewItem tvi = e.OriginalSource as TreeViewItem;
+            /*string value = (string)((MenuItem)sender).Tag;
             if (value == "Expand")
                 TreeViewHelper.ExpandCollapseNode(tvi, true);
             else if(value == "Collapse")
@@ -391,6 +371,7 @@ namespace BobProject
 
 
         #endregion
+
 
     }
 

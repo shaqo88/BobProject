@@ -9,6 +9,7 @@
         xmlns:Elements ="clr-namespace:BL.SchemaLogic.SchemaTypes;assembly=BL"                              
         xmlns:l="clr-namespace:UIControls;assembly=SearchTextBox"
         xmlns:nb="clr-namespace:NumericUpDownControl;assembly=NumericUpDownControl"
+        xmlns:XMLViewer="clr-namespace:XMLViewer;assembly=XMLViewer"
         x:Class="BobProject.MainWindow"  
         x:Name="_this"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
@@ -43,7 +44,7 @@
                                                                         Color="Black" />
             </Style.Resources>
             <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-        </Style>        
+        </Style>       
     </Window.Resources>
 
     <DockPanel>
@@ -52,7 +53,7 @@
                 <MenuItem Header="New" Command="{Binding LoadNewFile}" CommandParameter="local" Visibility="{Binding Path=Permit, Converter={StaticResource permissionToVisibilityConverter},ConverterParameter=Editor}"/>
                 <MenuItem Header="Open"/>
                 <Separator Visibility="{Binding Path=Permit, Converter={StaticResource permissionToVisibilityConverter},ConverterParameter=Editor}"/>
-                <MenuItem Header="Save As..." Click="OpenSaveAs" Visibility="{Binding Path=Permit, Converter={StaticResource permissionToVisibilityConverter},ConverterParameter=Editor}"/>
+                <MenuItem Header="Save As..." Command="{Binding ShowViews}" CommandParameter="SaveXML" Visibility="{Binding Path=Permit, Converter={StaticResource permissionToVisibilityConverter},ConverterParameter=Editor}"/>
                 <Separator/>
                 <MenuItem Header="Exit" Click="OnExit"/>
             </MenuItem>
@@ -61,18 +62,16 @@
                 <MenuItem Header="Collapse All" Click="CollapseTree"/>
                 <Separator/>
                 <MenuItem Header="Search Bar"  IsChecked="{Binding IsShowSearchBar}" Click="ShowSearchBar"/>
-                <Separator/>
-                <MenuItem Header="Show XML"/>
             </MenuItem>
             <MenuItem Header="Tools">
-                <MenuItem Header="Switch User" Click="OnSwitchUser" />
+                <MenuItem Header="Switch User" Command="{Binding ShowViews}" CommandParameter="Login" />
                 <Separator/>
-                <MenuItem Header="Options" Click="OpenConfiguration"/>
+                <MenuItem Header="Options" Command="{Binding ShowViews}" CommandParameter="Configuration"/>
                 <Separator Visibility="{Binding Path=Permit, Converter={StaticResource permissionToVisibilityConverter},ConverterParameter=Manager}"/>
-                <MenuItem Header="Reports" Click="OpenReports" Visibility="{Binding Path=Permit, Converter={StaticResource permissionToVisibilityConverter},ConverterParameter=Manager}"/>
+                <MenuItem Header="Reports" Command="{Binding ShowViews}" CommandParameter="Reports" Visibility="{Binding Path=Permit, Converter={StaticResource permissionToVisibilityConverter},ConverterParameter=Manager}"/>
             </MenuItem>
             <MenuItem Header="Help">
-                <MenuItem Header="About" Click="OpenAbout" />
+                <MenuItem Header="About" Command="{Binding ShowViews}" CommandParameter="About" />
             </MenuItem>
         </Menu>
         <ToolBar DockPanel.Dock="Top" Height="35" Visibility="{Binding Path=IsShowSearchBar, Converter={StaticResource BoolToVisConverter}}">
@@ -105,14 +104,17 @@
                 <ColumnDefinition Width="5*" />
                 <ColumnDefinition Width="315*" />
             </Grid.ColumnDefinitions>
+
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" MinHeight="200" Grid.Column="0">
                 <StackPanel Grid.Column="0" VerticalAlignment="Stretch">
                     <Label FontSize="16" FontWeight="Bold" Content="Types:"/>
-                    <TreeView Name="HierarchyTreeTypesView" FontSize="14" TreeViewItem.Expanded="TreeViewItem_Expanded" ItemTemplateSelector="{StaticResource hierarchyDataTemplateSelector}" ItemsSource="{Binding}">
+
+
+                    <TreeView Name="HierarchyTreeTypesView" FontSize="14" TreeViewItem.MouseRightButtonUp="OnExpandCollapseNode"  TreeViewItem.Expanded="TreeViewItem_Expanded" ItemTemplateSelector="{StaticResource hierarchyDataTemplateSelector}" ItemsSource="{Binding}" >
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="SelectedItemChanged">
                                 <i:InvokeCommandAction Command="{Binding ShowProperties}" CommandParameter="{Binding ElementName=HierarchyTreeTypesView,Path=SelectedItem}"/>
-                            </i:EventTrigger>                            
+                            </i:EventTrigger>
                         </i:Interaction.Triggers>
                         <TreeView.ItemContainerStyle>
                             <Style TargetType="{x:Type TreeViewItem}">
@@ -137,32 +139,29 @@
                                                 </MultiBinding>
                                             </Setter.Value>
                                         </Setter>
-                                        <!--<Setter Property="Background" Value="Blue" />    -->                                        
-                                        <!--<Setter Property="ContextMenu">
-                                            <Setter.Value>
-                                                <ContextMenu Name="TreeViewMenu">
-                                                    <MenuItem Header ="Expand Node" Click="OnExpandCollapseNode" Tag="Expand"/>
-                                                    <MenuItem Header ="Collapse Node" Click="OnExpandCollapseNode" Tag="Collapse"/>
-                                                </ContextMenu>
-                                            </Setter.Value>
-                                        </Setter>-->
-                                    </Trigger>                                    
+                                    </Trigger>
                                 </Style.Triggers>
                             </Style>
                         </TreeView.ItemContainerStyle>
-                        <TreeView.Resources>                            
+                        <TreeView.Resources>
+                            <ContextMenu x:Key="TreeViewMenu" x:Name="TreeViewMenu">
+                                <MenuItem Header ="Expand Node" Click="OnExpandCollapseNode" Tag="Expand"/>
+                                <MenuItem Header ="Collapse Node" Click="OnExpandCollapseNode" Tag="Collapse"/>
+                            </ContextMenu>
                             <HierarchicalDataTemplate x:Key="XmlSchemaSequenceWrapperTemplate" DataType="{x:Type Elements:XmlSchemaSequenceWrapper}" ItemsSource="{Binding Path=Children}">
-                                <StackPanel Orientation="Horizontal">      
+                                <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="{Binding Index,Converter={StaticResource indexToTextConverter}, Mode=OneWay}" />
                                     <TextBlock Text=" " />
                                     <Button  Style="{DynamicResource IconButtonStyle}" ToolTip="Delete Item" Command="{Binding  ElementName=_this, Path=DataContext.DeleteSeqItem}" CommandParameter="{Binding}">
                                         <Image Source="../Images/Resycle.png" Width="14" Height="14" />
                                     </Button>
+                                    <Image Source="../Images/ChildOKIcon.png" Width="20" Height="20" Visibility="{Binding Path=AllChildAttributesFilled, Converter={StaticResource BoolToVisConverter}}" />
                                 </StackPanel>
                             </HierarchicalDataTemplate>
                             <HierarchicalDataTemplate x:Key="XmlSchemaSequenceArrayWrapperTemplate" DataType="{x:Type Elements:XmlSchemaSequenceArray}" ItemsSource="{Binding Path=Children}">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="{Binding Path=Name}"  />
+                                    <Image Source="../Images/ChildOKIcon.png" Width="20" Height="20" Visibility="{Binding Path=AllChildAttributesFilled, Converter={StaticResource BoolToVisConverter}}" />
                                 </StackPanel>
                             </HierarchicalDataTemplate>
                             <HierarchicalDataTemplate x:Key="XmlSchemaElementWrapperTemplate" DataType="{x:Type Elements:XmlSchemaElementWrapper}" ItemsSource="{Binding Path=Children}">
@@ -170,11 +169,14 @@
                                     <TextBlock Text="{Binding Path=Name}"  />
                                     <TextBlock Text="   "  />
                                     <Image Source="../Images/ok.png" Visibility="{Binding Path=AllAttributesFilled, Converter={StaticResource BoolToVisConverter}}" />
+                                    <Image Source="../Images/ChildOKIcon.png" Width="20" Height="20" Visibility="{Binding Path=AllChildAttributesFilled, Converter={StaticResource BoolToVisConverter}}" />
+                                    
                                 </StackPanel>
                             </HierarchicalDataTemplate>
                             <HierarchicalDataTemplate x:Key="XmlSchemaChoiceNullWrapperTemplate" DataType="{x:Type Elements:XmlSchemaNullChoice}" ItemsSource="{Binding Path=Children}">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="{Binding Path=Name}"  />
+                                    <Image Source="../Images/ChildOKIcon.png" Width="20" Height="20" Visibility="{Binding Path=AllChildAttributesFilled, Converter={StaticResource BoolToVisConverter}}" />
                                 </StackPanel>
                             </HierarchicalDataTemplate>
                             <HierarchicalDataTemplate x:Key="XmlSchemaChoiceWrapperTemplate" DataType="{x:Type Elements:XmlSchemaChoiceWrapper}" ItemsSource="{Binding Path=Selected, Converter={StaticResource selectToArrayConverter}}">
@@ -182,15 +184,10 @@
                                     <TextBlock Text="{Binding Path=Name}" />
                                     <TextBlock Text="->"  />
                                     <TextBlock Text="{Binding Path=Selected.Name}" />
+                                    <Image Source="../Images/ChildOKIcon.png" Width="20" Height="20" Visibility="{Binding Path=AllChildAttributesFilled, Converter={StaticResource BoolToVisConverter}}" />
                                 </StackPanel>
                             </HierarchicalDataTemplate>
                         </TreeView.Resources>
-                       <!-- <TreeViewItem>
-                            <Menu>
-                                <MenuItem Header ="Expand Node" Click="OnExpandCollapseNode" Tag="Expand"/>
-                                <MenuItem Header ="Collapse Node" Click="OnExpandCollapseNode" Tag="Collapse"/>
-                            </Menu>
-                        </TreeViewItem>-->
                     </TreeView>
                     <Line></Line>
                     <Label FontSize="16" FontWeight="Bold" Content="Legend:"/>
@@ -204,79 +201,98 @@
                 </StackPanel>
             </ScrollViewer>
             <GridSplitter Grid.Column="1" Width="10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="LightGray" />
-            <StackPanel x:Name="RightPanel" Grid.Column="2" Orientation="Vertical" >
-                <Label FontSize="16" FontWeight="Bold" Content="Properties:"/>
-                <Grid x:Name="ElementPanel" Visibility="{Binding Path=SelectedItem.NodeType, Converter={StaticResource selectionPropertyToVisibilityConverter},ConverterParameter=Element}">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Label Content="Element Name:" FontSize="14" />
-                        <TextBlock Name="ElementName" Text="{Binding Path=Name}" FontSize="14" DataContext="{Binding}"  VerticalAlignment="Center" Grid.Column="1" />
-                        <Label Content="Attributes:" FontSize="14" Grid.Row="1" Margin="0,21,0,-21" />
-                        <ListBox Name="ElementAttributes" FontSize="14" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" ItemsSource="{Binding}" Style="{StaticResource MyListItemStyle}" Margin="0,29,10,28">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="30" />
-                                            <RowDefinition Height="30" />
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Text="{Binding Path=Name}" Width="100" DataContext="{Binding}" Grid.Column="0" />
-                                        <StackPanel Orientation="Horizontal" Grid.Column="1">
-                                            <TextBox Name="AttributeValue" Text="{Binding Path=Value,Mode=TwoWay}" DataContext="{Binding}" Width="200"  />
-                                            <Label Content="*" Foreground="Red" Visibility="{Binding IsRequired, Converter={StaticResource BoolToVisConverter}}"/>
-                                        </StackPanel>
-                                    </Grid>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" MinHeight="200" Grid.Column="2">            
+                <Grid x:Name="RightPanel" Grid.Column="2">                
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="5" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <StackPanel x:Name="PropertiesPanel" Grid.Column="2" Orientation="Vertical" Grid.Row="0" >
+
+                        <Label FontSize="16" FontWeight="Bold" Content="Properties:"/>
+                        <Grid x:Name="ElementPanel" Visibility="{Binding Path=SelectedItem.NodeType, Converter={StaticResource selectionPropertyToVisibilityConverter},ConverterParameter=Element}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Content="Element Name:" FontSize="14" />
+                                <TextBlock Name="ElementName" Text="{Binding Path=Name}" FontSize="14" DataContext="{Binding}"  VerticalAlignment="Center" Grid.Column="1" />
+                                <Label Content="Attributes:" FontSize="14" Grid.Row="1" Margin="0,21,0,-21" />
+                                <ListBox Name="ElementAttributes" FontSize="14" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" ItemsSource="{Binding}" Style="{StaticResource MyListItemStyle}" Margin="0,29,10,28">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="30" />
+                                                    <RowDefinition Height="30" />
+                                                </Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding Path=Name}" Width="100" DataContext="{Binding}" Grid.Column="0" />
+                                                <StackPanel Orientation="Horizontal" Grid.Column="1">
+                                                    <TextBox Name="AttributeValue" Text="{Binding Path=Value,Mode=TwoWay}" DataContext="{Binding}" Width="200"  />
+                                                    <Label Content="*" Foreground="Red" Visibility="{Binding IsRequired, Converter={StaticResource BoolToVisConverter}}"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Grid>
+                        </Grid>
+                        <Grid x:Name="ChoicePanel" Visibility="{Binding Path=SelectedItem.NodeType, Converter={StaticResource selectionPropertyToVisibilityConverter},ConverterParameter=Choice}">
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Choice:" FontSize="14" />
+                                <StackPanel>
+                                    <ComboBox Name="ChoiceComboBox" FontSize="14" DataContext="{Binding}" ItemsSource="{Binding Path=Children}" SelectedItem="{Binding Path=Selected}">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="SelectionChanged">
+                                                <i:InvokeCommandAction x:Name="SelectComboChange" Command="{Binding ElementName=_this, Path=DataContext.SelectedChoiceChange}" />
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding Name}" Width="100" />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                        <Grid x:Name="SequencePanel" Visibility="{Binding Path=SelectedItem.NodeType, Converter={StaticResource selectionPropertyToVisibilityConverter},ConverterParameter=Sequence}">
+                            <StackPanel Orientation="Vertical">
+                                <Label Content="Sequence:" FontSize="14" />
+                                <StackPanel Orientation="Horizontal" Margin="3,0,-3,0">
+                                    <TextBlock Text="Array Size:  " FontSize="14" />
+                                    <nb:NumericBox Name="SequenceSize" Value="{Binding }"  Minimum="0" Maximum="10000" Margin="5" Height="28" />
+                                    <Button Name="UpdateSequenceSize" Content="Update" Command="{Binding UpdateSeqNumItems}" CommandParameter="{Binding SelectedItem}" Height="30" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                        <Grid Name="EmptyPanel" Visibility="{Binding Path=SelectedItem.NodeType, Converter={StaticResource selectionPropertyToVisibilityConverter},ConverterParameter=Null}">
+                            <Label>Empty</Label>                        
+                        </Grid>
+                    
+                    </StackPanel>
+                    <GridSplitter Grid.Row="1" Height="10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="LightGray" />
+                    <Grid x:Name="XmlViewerGrid" Grid.Row="2">
+                        <StackPanel Orientation="Vertical">
+                            <Label FontSize="16" FontWeight="Bold" Content="Xml Viewer:"/>
+                            <XMLViewer:Viewer x:Name="XMLViewer" XmlContents="{Binding}" Margin="0,0,10,0" />
+                        </StackPanel>
                     </Grid>
+                
                 </Grid>
-                <Grid x:Name="ChoicePanel" Visibility="{Binding Path=SelectedItem.NodeType, Converter={StaticResource selectionPropertyToVisibilityConverter},ConverterParameter=Choice}">
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="Choice:" FontSize="14" />
-                        <StackPanel>
-                            <ComboBox Name="ChoiceComboBox" FontSize="14" DataContext="{Binding}" ItemsSource="{Binding Path=Children}" SelectedItem="{Binding Path=Selected}">
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="SelectionChanged">
-                                        <i:InvokeCommandAction x:Name="SelectComboChange" Command="{Binding ElementName=_this, Path=DataContext.SelectedChoiceChange}" />
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="{Binding Name}" Width="100" />
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
-                        </StackPanel>
-                    </StackPanel>
-                </Grid>
-                <Grid x:Name="SequencePanel" Visibility="{Binding Path=SelectedItem.NodeType, Converter={StaticResource selectionPropertyToVisibilityConverter},ConverterParameter=Sequence}">
-                    <StackPanel Orientation="Vertical">
-                        <Label Content="Sequence:" FontSize="14" />
-                        <StackPanel Orientation="Horizontal" Margin="3,0,-3,0">
-                            <TextBlock Text="Array Size:  " FontSize="14" />
-                            <nb:NumericBox Name="SequenceSize" Value="{Binding }"  Minimum="0" Maximum="10000" Margin="5" Height="28" />
-                            <Button Name="UpdateSequenceSize" Content="Update" Command="{Binding UpdateSeqNumItems}" CommandParameter="{Binding SelectedItem}" Height="30" />
-                        </StackPanel>
-                    </StackPanel>
-                </Grid>
-                <Grid Name="EmptyPanel" Visibility="{Binding Path=SelectedItem.NodeType, Converter={StaticResource selectionPropertyToVisibilityConverter},ConverterParameter=Null}">
-                    <Label>Empty</Label>
-                </Grid>
-            </StackPanel>
+            </ScrollViewer>
         </Grid>
     </DockPanel>
 </Window>

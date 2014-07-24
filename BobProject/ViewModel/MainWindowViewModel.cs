@@ -36,6 +36,8 @@ namespace BobProject.ViewModel
         public ICommand SelectedChoiceChange { get; private set; }
         public ICommand DeleteSeqItem { get; private set; }
         public ICommand LoadNewFile { get; private set; }
+        public ICommand ShowViews { get; private set; }
+        
 
         public SchemaDescriber SchemaDescriber
         {
@@ -134,6 +136,7 @@ namespace BobProject.ViewModel
             UpdateSeqNumItems = new UpdateSeqNumItemsCommand();
             DeleteSeqItem = new DeleteSeqItemCommand();
             LoadNewFile = new LoadNewSchemaCommand(this);
+            ShowViews = new ShowViewsCommand(this);
 
             // Create types List and color list 
             typesLst = new ObservableCollection<XmlSchemaWrapper>();
@@ -163,15 +166,13 @@ namespace BobProject.ViewModel
             if (isValidateSchema)
             {
                 TypesList.Clear();
-                if (schemaDescriber.Elements != null)
-                    if (schemaDescriber.Elements.Count != 0)
-                    {
-                        TypesList.Add(schemaDescriber.Elements[0]);
-                        SelectedItem = schemaDescriber.Elements[0];                        
-                    }
-                base.RaisePropertyChangedEvent("TypesList");
-                
-                
+                XmlSchemaElementWrapper rootElement = schemaDescriber.RootElement;
+                if (rootElement != null)
+                {
+                    TypesList.Add(rootElement);
+                    SelectedItem = rootElement;                        
+                }
+                base.RaisePropertyChangedEvent("TypesList");                                
             }
 
 

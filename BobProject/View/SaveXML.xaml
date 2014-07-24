@@ -6,13 +6,15 @@
         <Image HorizontalAlignment="Left" Height="140" Margin="179,24,0,0" VerticalAlignment="Top" Width="133" Source="../Images/SaveIcon.png"/>
 
 
-        <TextBox TextWrapping="Wrap" Text="" Margin="168,215,151,226"/>
-        <TextBox HorizontalAlignment="Left" Height="31" Margin="168,266,0,0" VerticalAlignment="Top" Width="175"/>
-        <Button Name="Send" Content="Save" HorizontalAlignment="Left" Height="32" Margin="207,377,0,0" VerticalAlignment="Top" Width="74" RenderTransformOrigin="0.973,0.531" Click="Send_Click"/>
+        <TextBox Name="EditorName" Text="{Binding EditorName}" Margin="168,215,151,226" TextWrapping="Wrap"/>
+        <TextBox Name="PathFile" Text="{Binding PathFile}" ToolTip="{Binding PathFile}" IsReadOnly="True" HorizontalAlignment="Left" Height="31" Margin="168,266,0,0" VerticalAlignment="Top" Width="175"/>
+        <Button Name="Send" Command="{Binding ExportXml}" Content="Save" HorizontalAlignment="Left" Height="32" Margin="207,377,0,0" VerticalAlignment="Top" Width="74" RenderTransformOrigin="0.973,0.531" />
 
         <Label Content="Editor Name:" HorizontalAlignment="Right" Height="31" Margin="0,215,326,0" VerticalAlignment="Top" Width="89"/>
         <Label Content="Path File:" HorizontalAlignment="Right" Height="31" Margin="0,266,326,0" VerticalAlignment="Top" Width="89"/>
-        <Button Content="Browse..." HorizontalAlignment="Left" Margin="366,266,0,0" VerticalAlignment="Top" Width="75" Height="32" RenderTransformOrigin="0.507,1.375"/>
+        <Button ToolTip="Browse..." Command="{Binding SelectXmlExportFile}" Style="{DynamicResource IconButtonStyle}"  HorizontalAlignment="Left" Margin="345,257,0,0" VerticalAlignment="Top" Width="62" Height="45" RenderTransformOrigin="0.507,1.375">
+            <Image Source="../Images/OpenFileIcon.png"  />
+        </Button>
 
 
     </Grid>
