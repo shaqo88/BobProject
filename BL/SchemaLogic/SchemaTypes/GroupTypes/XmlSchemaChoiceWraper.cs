@@ -23,9 +23,25 @@ namespace BL.SchemaLogic.SchemaTypes
             }
             set
             {
+                // Unregister from old Selected's event
+                if (m_selected != null)
+                    m_selected.PropertyChanged -= Selected_PropertyChanged;
+
                 SetProperty(ref m_selected, value);
-                RaiseHighLevelPropertyChanged("AllChildrenDrilled");
-                RaiseHighLevelPropertyChanged("AllChildAttributesFilled");
+
+                // Register to new Selected's event
+                if (m_selected != null)
+                    m_selected.PropertyChanged += Selected_PropertyChanged;
+
+                RaiseAllProperties();
+            }
+        }
+
+        void Selected_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "AllChildAttributesFilled" || e.PropertyName == "AllChildrenDrilled")
+            {
+                RaisePropertyChangedEvent(e.PropertyName);
             }
         }
 

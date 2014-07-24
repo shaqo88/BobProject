@@ -90,6 +90,12 @@ namespace BL.SchemaLogic.SchemaTypes
             }
         }
 
+        protected override void RaiseAllProperties()
+        {
+            RaisePropertyChangedEvent("AllAttributesFilled");
+            base.RaiseAllProperties();
+        }
+
         protected override void InternalDrill()
         {
             var groupBase = GetDrillableComplexType();

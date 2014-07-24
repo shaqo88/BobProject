@@ -46,15 +46,21 @@ namespace BL.SchemaLogic.SchemaTypes
                 }
                 else if (item is XmlSchemaGroupBase)
                 {
+                    XmlSchemaGroupBaseWrapper groupItem = null;
                     if (item is XmlSchemaChoice)
                     {
-                        Children.Add(new XmlSchemaChoiceWrapper(item as XmlSchemaChoice, this));
+                        groupItem = new XmlSchemaChoiceWrapper(item as XmlSchemaChoice, this);
                     }
                     else if (item is XmlSchemaSequence)
                     {
-                        Children.Add(new XmlSchemaSequenceArray(item as XmlSchemaSequence, this));
+                        groupItem = new XmlSchemaSequenceArray(item as XmlSchemaSequence, this);
                     }
-                    ((XmlSchemaGroupBaseWrapper)Children.Last()).DrillOnce();
+
+                    if (groupItem != null)
+                    {
+                        groupItem.DrillOnce();
+                        Children.Add(groupItem);
+                    }
                 }
             }
 

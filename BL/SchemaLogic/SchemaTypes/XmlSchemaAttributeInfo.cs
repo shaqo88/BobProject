@@ -52,19 +52,22 @@ namespace BL.SchemaLogic.SchemaTypes
 
         void XmlSchemaAttributeInfo_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (HighLevelPropertyChanged == null)
-                return;
-
             // IsAttributeValid raised if IsRequired or is IsAttributeFilled raised, i.e. Use or Value
             if (e.PropertyName != "Name")
-                HighLevelPropertyChanged(this, new PropertyChangedEventArgs("IsAttributeValid"));
+                RaiseHighLevelPropertyChanged("IsAttributeValid");
 
             if (e.PropertyName == "Use")
                 // IsRequired depends on Use
-                HighLevelPropertyChanged(this, new PropertyChangedEventArgs("IsRequired"));
+                RaiseHighLevelPropertyChanged("IsRequired");
             else if (e.PropertyName == "Value")
                 // IsAttributeFilled depends on Value
-                HighLevelPropertyChanged(this, new PropertyChangedEventArgs("IsAttributeFilled"));
+                RaiseHighLevelPropertyChanged("IsAttributeFilled");
+        }
+
+        protected void RaiseHighLevelPropertyChanged(string propertyName)
+        {
+            if (HighLevelPropertyChanged != null)
+                HighLevelPropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

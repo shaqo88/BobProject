@@ -12,10 +12,8 @@ namespace BL.SchemaLogic.SchemaTypes
 {
     public enum NodeType { Element, Choice, Sequence, SequenceItem, NULL }
 
-    public abstract class XmlSchemaWrapper : PropertyNotifyObject, INotifyHighLevelPropertyChanged
+    public abstract class XmlSchemaWrapper : PropertyNotifyObject
     {
-        public event PropertyChangedEventHandler HighLevelPropertyChanged;
-
         #region Private Members
 
         private string m_name;
@@ -103,16 +101,20 @@ namespace BL.SchemaLogic.SchemaTypes
                 case NotifyCollectionChangedAction.Add:
                     foreach (var item in e.NewItems)
                     {
-                        ((XmlSchemaWrapper)item).HighLevelPropertyChanged += XmlSchemaWrapperChild_HighLevelPropertyChanged;
+                        ((XmlSchemaWrapper)item).PropertyChanged += XmlSchemaWrapperChild_PropertyChanged;
                     }
+
+                    RaiseAllProperties();
                     break;
                 case NotifyCollectionChangedAction.Move:
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var item in e.OldItems)
                     {
-                        ((XmlSchemaWrapper)item).HighLevelPropertyChanged -= XmlSchemaWrapperChild_HighLevelPropertyChanged;
+                        ((XmlSchemaWrapper)item).PropertyChanged -= XmlSchemaWrapperChild_PropertyChanged;
                     }
+
+                    RaiseAllProperties();
                     break;
                 case NotifyCollectionChangedAction.Replace:
                     break;
@@ -123,7 +125,7 @@ namespace BL.SchemaLogic.SchemaTypes
             }
         }
 
-        void XmlSchemaWrapperChild_HighLevelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        void XmlSchemaWrapperChild_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "AllChildAttributesFilled" || e.PropertyName == "AllChildrenDrilled")
             {
@@ -134,7 +136,13 @@ namespace BL.SchemaLogic.SchemaTypes
         void XmlSchemaWrapper_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "HasBeenDrilled")
-                RaiseHighLevelPropertyChanged("AllChildrenDrilled");
+                RaisePropertyChangedEvent("AllChildrenDrilled");
+        }
+
+        protected virtual void RaiseAllProperties()
+        {
+            RaisePropertyChangedEvent("AllChildrenDrilled");
+            RaisePropertyChangedEvent("AllChildAttributesFilled");
         }
 
         #endregion
@@ -142,12 +150,6 @@ namespace BL.SchemaLogic.SchemaTypes
         #region Methods
 
         protected abstract void InternalDrill();
-
-        protected void RaiseHighLevelPropertyChanged(string propertyName)
-        {
-            if (HighLevelPropertyChanged != null)
-                HighLevelPropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-        }
 
         public override string ToString()
         {

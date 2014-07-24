@@ -115,7 +115,10 @@ namespace BL.XmlLogic
             }
             else
             {
-                throw new Exception(string.Format("Error while exporting XML. Unknown type: {0}", currWrapper.GetType()));
+                if (currWrapper == null)
+                    throw new Exception(string.Format("Error while exporting XML. Child was null"));
+                else
+                    throw new Exception(string.Format("Error while exporting XML. Unknown type: {0}", currWrapper.GetType()));
             }
         }
 
