@@ -37,8 +37,10 @@ namespace BobProject.ViewModel.Commands
         {
             //check if parameters are ok
             string arg = (string)parameter;
-            if (arg == "path" || arg == "local")
+            if (arg == "path")
                 return (Permission.Instance.CurrPermission == Permission.PermissionType.Manager);
+            else if (arg == "local")
+                return (Permission.Instance.CurrPermission != Permission.PermissionType.Viewer);
             else return false;
         }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using BL.SchemaLogic.SchemaTypes;
 
@@ -61,8 +62,18 @@ namespace BobProject.ViewModel.Commands
             var scWr = (XmlSchemaSequenceWrapper)parameter;
             var parent = (XmlSchemaSequenceArray)scWr.Parent;
 
-            //delete the selected item from array
-            parent.RemoveAt(scWr.Index);           
+            int index = scWr.Index + 1;
+
+            //check if user want to delete
+            MessageBoxResult result = MessageBox.Show("Would you like to delete item " + index.ToString() + " ?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            if (result == MessageBoxResult.Yes)
+            {
+                //delete the selected item from array
+                parent.RemoveAt(scWr.Index);
+
+                //update Xxl view
+                MainWindow.Instance.UpdateXMLView();
+            }
         }
 
         #endregion

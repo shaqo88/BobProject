@@ -108,11 +108,25 @@ namespace BobProject.UtilityClasses
             }
         }
 
+
         /// <summary>
-        /// Searches a TreeView for the provided object and selects it if found
+        /// Searches a TreeView for the provided object and select it if found
         /// </summary>
         /// <param name="treeView">The TreeView containing the item</param>
         /// <param name="items">The item to search and select</param>
+        public static bool SelectItem(this TreeView treeView, object item, Color selectedColor)
+        {
+           TreeViewItem treeViewItem = ExpandAndSelectItem(treeView, item, selectedColor);
+           return treeViewItem != null;
+
+        }
+
+
+        /// <summary>
+        /// Searches a TreeView for the provided objects and selects it if found
+        /// </summary>
+        /// <param name="treeView">The TreeView containing the item</param>
+        /// <param name="items">The items to search and select</param>
         public static List<TreeViewItem> SelectItems(this TreeView treeView, object[] items, Color selectedColor)
         {
             List<TreeViewItem> treeviewItems = new List<TreeViewItem>();

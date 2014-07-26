@@ -6,7 +6,7 @@
         <Image HorizontalAlignment="Left" Height="140" Margin="179,24,0,0" VerticalAlignment="Top" Width="133" Source="../Images/SaveIcon.png"/>
 
 
-        <TextBox Name="EditorName" Text="{Binding EditorName}" Margin="168,215,151,226" TextWrapping="Wrap"/>
+        <TextBox Name="EditorName" Text="{Binding EditorName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="168,215,151,226" TextWrapping="Wrap"/>
         <TextBox Name="PathFile" Text="{Binding PathFile}" ToolTip="{Binding PathFile}" IsReadOnly="True" HorizontalAlignment="Left" Height="31" Margin="168,266,0,0" VerticalAlignment="Top" Width="175"/>
         <Button Name="Send" Command="{Binding ExportXml}" Content="Save" HorizontalAlignment="Left" Height="32" Margin="207,377,0,0" VerticalAlignment="Top" Width="74" RenderTransformOrigin="0.973,0.531" />
 

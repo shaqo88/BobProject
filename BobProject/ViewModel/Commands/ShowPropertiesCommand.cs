@@ -62,8 +62,21 @@ namespace BobProject.ViewModel.Commands
                     case NodeType.Element:
                         XmlSchemaElementWrapper element = (XmlSchemaElementWrapper)schemaWr;
                         MainWindow.Instance.ElementName.DataContext = element;
-                        MainWindow.Instance.ElementAttributes.DataContext = element.Attributes;
-                        MainWindow.Instance.ElementAttributes.ItemsSource = element.Attributes;
+                        if (element.Attributes.Count > 0)
+                        {
+                            MainWindow.Instance.ElementAttributes.DataContext = element.Attributes;
+                            MainWindow.Instance.ElementAttributes.ItemsSource = element.Attributes;
+                            MainWindow.Instance.ElementAttributes.Visibility = System.Windows.Visibility.Visible;
+                        }
+                        else
+                            MainWindow.Instance.ElementAttributes.Visibility = System.Windows.Visibility.Collapsed;
+                        if (element.IsSimple)
+                        {
+                            MainWindow.Instance.InnerTextBlock.DataContext = element;
+                            MainWindow.Instance.InnerTextBlock.Visibility = System.Windows.Visibility.Visible;
+                        }
+                        else
+                            MainWindow.Instance.InnerTextBlock.Visibility = System.Windows.Visibility.Collapsed;
                         break;
                     case NodeType.Choice:
                         XmlSchemaChoiceWrapper choice = (XmlSchemaChoiceWrapper)schemaWr;
@@ -71,7 +84,7 @@ namespace BobProject.ViewModel.Commands
                         break;
                     case NodeType.Sequence:
                         XmlSchemaSequenceArray seqArr = (XmlSchemaSequenceArray)schemaWr;
-                        MainWindow.Instance.SequenceSize.Value = seqArr.Count;
+                        MainWindow.Instance.SequenceSize.Value = seqArr.Count;                         
                         break;
                     case NodeType.SequenceItem:
                         break;

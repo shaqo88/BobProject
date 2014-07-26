@@ -5,15 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BL.SchemaLogic.SchemaTypes;
+using BobProject.UtilityClasses;
 
 namespace BobProject.ViewModel.Commands
 {
-    public class UpdateTreeCommand : ICommand
+    public class TreeViewItemCommand : ICommand
     {
 
         #region Constructor
 
-        public UpdateTreeCommand()
+        public TreeViewItemCommand()
         {
         }
 
@@ -43,10 +44,10 @@ namespace BobProject.ViewModel.Commands
         /// </summary>
         public void Execute(object parameter)
         {
-            //Update Properties GUI
-            MainWindow.Instance.HierarchyTreeTypesView.Items.Refresh();
-            MainWindow.Instance.HierarchyTreeTypesView.UpdateLayout();
-
+            XmlSchemaWrapper schemaWr = (XmlSchemaWrapper)parameter;
+            //MainWindow.Instance.HierarchyTreeTypesView
+            //TreeViewHelper.Expand
+            
         }
 
         #endregion

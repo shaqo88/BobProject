@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using BobProject.ViewModel;
 
 namespace BobProject
 {
@@ -19,9 +20,15 @@ namespace BobProject
     /// </summary>
     public partial class Reports : Window
     {
+
+        public ReportsViewModel ViewModel { get; private set; }
+        
         public Reports()
         {
             InitializeComponent();
+
+            ViewModel = new ReportsViewModel();
+            DataContext = ViewModel;
         }
     }
 }

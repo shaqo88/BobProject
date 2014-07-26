@@ -49,7 +49,7 @@ namespace BobProject.ViewModel.Commands
         /// </summary>
         public void Execute(object parameter)
         {
-
+            viewModel.SelectedItem.DrillOnce();
             foreach (var item in viewModel.SelectedItem.Children)
             {
                 item.DrillOnce();

@@ -37,6 +37,7 @@ namespace BobProject.ViewModel
         public ICommand DeleteSeqItem { get; private set; }
         public ICommand LoadNewFile { get; private set; }
         public ICommand ShowViews { get; private set; }
+        public ICommand CollapseExpandCommand { get; private set; }
         
 
         public SchemaDescriber SchemaDescriber
@@ -137,14 +138,14 @@ namespace BobProject.ViewModel
             DeleteSeqItem = new DeleteSeqItemCommand();
             LoadNewFile = new LoadNewSchemaCommand(this);
             ShowViews = new ShowViewsCommand(this);
+            CollapseExpandCommand = new TreeViewItemCommand();
 
             // Create types List and color list 
             typesLst = new ObservableCollection<XmlSchemaWrapper>();
             TypesColor = ConfigurationData.Instance.TypesColor;
             SchemaPath = ConfigurationData.Instance.SchemaPath;
 
-            //Load schema
-            schemaDescriber = new SchemaDescriber(SchemaPath);
+            //Load schema            
             this.LoadSchema();           
 
         }
@@ -154,8 +155,9 @@ namespace BobProject.ViewModel
             bool isValidateSchema = true;
             try
             {
+                schemaDescriber = new SchemaDescriber(SchemaPath);
                 isValidateSchema = schemaDescriber.ValidateSchema(SchemaPath, true);
-                schemaDescriber.LoadSchema(SchemaPath);
+                //schemaDescriber.LoadSchema(SchemaPath);
             }
             catch (Exception)
             {

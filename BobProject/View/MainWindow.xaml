@@ -22,6 +22,8 @@
         <ValueConverter:PermissionToVisibilityConverter x:Key="permissionToVisibilityConverter"/>
         <ValueConverter:IndexToTextConverter x:Key="indexToTextConverter"/>
         <ValueConverter:SelectedItemToArrayConverter x:Key="selectToArrayConverter"/>
+        <ValueConverter:ElementsToVisibilityConverter x:Key="elementsToVisibilityConverter"/>                
+        
         <Helper:HierarchyDataTemplateSelector x:Key="hierarchyDataTemplateSelector" />
         <Style x:Key="MyButtonStyle" TargetType="Button">
             <Setter Property="Template">
@@ -75,7 +77,7 @@
             </MenuItem>
         </Menu>
         <ToolBar DockPanel.Dock="Top" Height="35" Visibility="{Binding Path=IsShowSearchBar, Converter={StaticResource BoolToVisConverter}}">
-            <l:SearchTextBox Height="35" VerticalAlignment="Top" Name="SearchBar" Background="AliceBlue" Width="263" Margin="0,0,0,-5" >
+            <l:SearchTextBox Height="35" VerticalAlignment="Top" Name="SearchBar" Background="AliceBlue" Width="263" Margin="0,0,0,-5" PreviewKeyDown="Window_PreviewKeyDown">
             </l:SearchTextBox>
             <Button Name="NextResult" Style="{DynamicResource IconButtonStyle}" ToolTip="View Next Result" Click="OnShowNextResult"  >
                 <Image Source="../Images/RightArrow.png" Width="25" Height="16" />
@@ -108,9 +110,8 @@
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" MinHeight="200" Grid.Column="0">
                 <StackPanel Grid.Column="0" VerticalAlignment="Stretch">
                     <Label FontSize="16" FontWeight="Bold" Content="Types:"/>
-
-
-                    <TreeView Name="HierarchyTreeTypesView" FontSize="14" TreeViewItem.MouseRightButtonUp="OnExpandCollapseNode"  TreeViewItem.Expanded="TreeViewItem_Expanded" ItemTemplateSelector="{StaticResource hierarchyDataTemplateSelector}" ItemsSource="{Binding}" >
+                    
+                    <TreeView Name="HierarchyTreeTypesView" FontSize="14" TreeViewItem.MouseRightButtonUp="OnExpandCollapseNode"   TreeViewItem.Expanded="TreeViewItem_Expanded" ItemTemplateSelector="{StaticResource hierarchyDataTemplateSelector}" ItemsSource="{Binding}" >
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="SelectedItemChanged">
                                 <i:InvokeCommandAction Command="{Binding ShowProperties}" CommandParameter="{Binding ElementName=HierarchyTreeTypesView,Path=SelectedItem}"/>
@@ -118,8 +119,9 @@
                         </i:Interaction.Triggers>
                         <TreeView.ItemContainerStyle>
                             <Style TargetType="{x:Type TreeViewItem}">
-                                <Setter Property="IsExpanded" Value="{Binding AllChildrenDrilled}" />
-                                <Setter Property="FontWeight" Value="Normal" />
+                                <!--<Setter Property="ContextMenu" Value="{DynamicResource TreeViewMenu}" />-->
+                                <Setter Property="IsExpanded" Value="{Binding IsDrillable}" />                                 
+                                <Setter Property="FontWeight" Value="Normal" />                                
                                 <Setter Property="Foreground">
                                     <Setter.Value>
                                         <MultiBinding Converter="{StaticResource colorLegendConverter}" >
@@ -144,39 +146,38 @@
                             </Style>
                         </TreeView.ItemContainerStyle>
                         <TreeView.Resources>
-                            <ContextMenu x:Key="TreeViewMenu" x:Name="TreeViewMenu">
-                                <MenuItem Header ="Expand Node" Click="OnExpandCollapseNode" Tag="Expand"/>
-                                <MenuItem Header ="Collapse Node" Click="OnExpandCollapseNode" Tag="Collapse"/>
+                            <ContextMenu x:Key="TreeViewMenu" x:Name="TreeViewMenu" >
+                                <MenuItem Header ="Expand Node" Click="OnExpandCollapseNode" Tag="Expand"/>                                                                    
+                                <MenuItem Header ="Collapse Node" Click="OnExpandCollapseNode" Tag="Collapse"/>                                
                             </ContextMenu>
                             <HierarchicalDataTemplate x:Key="XmlSchemaSequenceWrapperTemplate" DataType="{x:Type Elements:XmlSchemaSequenceWrapper}" ItemsSource="{Binding Path=Children}">
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel Orientation="Horizontal" >
                                     <TextBlock Text="{Binding Index,Converter={StaticResource indexToTextConverter}, Mode=OneWay}" />
                                     <TextBlock Text=" " />
                                     <Button  Style="{DynamicResource IconButtonStyle}" ToolTip="Delete Item" Command="{Binding  ElementName=_this, Path=DataContext.DeleteSeqItem}" CommandParameter="{Binding}">
                                         <Image Source="../Images/Resycle.png" Width="14" Height="14" />
                                     </Button>
-                                    <Image Source="../Images/ChildOKIcon.png" Width="20" Height="20" Visibility="{Binding Path=AllChildAttributesFilled, Converter={StaticResource BoolToVisConverter}}" />
+                                    <Image Source="../Images/ChildOKIcon.png" ToolTip="All child node attributes are filled" Width="20" Height="20" Visibility="{Binding Path=AllChildAttributesFilled, Converter={StaticResource BoolToVisConverter}}" />
                                 </StackPanel>
                             </HierarchicalDataTemplate>
                             <HierarchicalDataTemplate x:Key="XmlSchemaSequenceArrayWrapperTemplate" DataType="{x:Type Elements:XmlSchemaSequenceArray}" ItemsSource="{Binding Path=Children}">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="{Binding Path=Name}"  />
-                                    <Image Source="../Images/ChildOKIcon.png" Width="20" Height="20" Visibility="{Binding Path=AllChildAttributesFilled, Converter={StaticResource BoolToVisConverter}}" />
+                                    <Image Source="../Images/ChildOKIcon.png" ToolTip="All child node attributes are filled" Width="20" Height="20" Visibility="{Binding Path=AllChildAttributesFilled, Converter={StaticResource BoolToVisConverter}}" />
                                 </StackPanel>
                             </HierarchicalDataTemplate>
                             <HierarchicalDataTemplate x:Key="XmlSchemaElementWrapperTemplate" DataType="{x:Type Elements:XmlSchemaElementWrapper}" ItemsSource="{Binding Path=Children}">
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel Orientation="Horizontal" >
                                     <TextBlock Text="{Binding Path=Name}"  />
                                     <TextBlock Text="   "  />
-                                    <Image Source="../Images/ok.png" Visibility="{Binding Path=AllAttributesFilled, Converter={StaticResource BoolToVisConverter}}" />
-                                    <Image Source="../Images/ChildOKIcon.png" Width="20" Height="20" Visibility="{Binding Path=AllChildAttributesFilled, Converter={StaticResource BoolToVisConverter}}" />
-                                    
+                                    <Image Source="../Images/ok.png" ToolTip="All selected node attributes are filled" Visibility="{Binding Path=AllAttributesFilled, Converter={StaticResource BoolToVisConverter}}" />
+                                    <Image Source="../Images/ChildOKIcon.png" ToolTip="All child node attributes are filled" Width="20" Height="20" Visibility="{Binding Path=AllChildAttributesFilled, Converter={StaticResource BoolToVisConverter}}" />                                    
                                 </StackPanel>
                             </HierarchicalDataTemplate>
                             <HierarchicalDataTemplate x:Key="XmlSchemaChoiceNullWrapperTemplate" DataType="{x:Type Elements:XmlSchemaNullChoice}" ItemsSource="{Binding Path=Children}">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="{Binding Path=Name}"  />
-                                    <Image Source="../Images/ChildOKIcon.png" Width="20" Height="20" Visibility="{Binding Path=AllChildAttributesFilled, Converter={StaticResource BoolToVisConverter}}" />
+                                    <Image Source="../Images/ChildOKIcon.png" ToolTip="All child node attributes are filled" Width="20" Height="20" Visibility="{Binding Path=AllChildAttributesFilled, Converter={StaticResource BoolToVisConverter}}" />
                                 </StackPanel>
                             </HierarchicalDataTemplate>
                             <HierarchicalDataTemplate x:Key="XmlSchemaChoiceWrapperTemplate" DataType="{x:Type Elements:XmlSchemaChoiceWrapper}" ItemsSource="{Binding Path=Selected, Converter={StaticResource selectToArrayConverter}}">
@@ -184,7 +185,7 @@
                                     <TextBlock Text="{Binding Path=Name}" />
                                     <TextBlock Text="->"  />
                                     <TextBlock Text="{Binding Path=Selected.Name}" />
-                                    <Image Source="../Images/ChildOKIcon.png" Width="20" Height="20" Visibility="{Binding Path=AllChildAttributesFilled, Converter={StaticResource BoolToVisConverter}}" />
+                                    <Image Source="../Images/ChildOKIcon.png" ToolTip="All child node attributes are filled" Width="20" Height="20" Visibility="{Binding Path=AllChildAttributesFilled, Converter={StaticResource BoolToVisConverter}}" />
                                 </StackPanel>
                             </HierarchicalDataTemplate>
                         </TreeView.Resources>
@@ -216,6 +217,7 @@
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
@@ -223,8 +225,8 @@
                                 </Grid.ColumnDefinitions>
                                 <Label Content="Element Name:" FontSize="14" />
                                 <TextBlock Name="ElementName" Text="{Binding Path=Name}" FontSize="14" DataContext="{Binding}"  VerticalAlignment="Center" Grid.Column="1" />
-                                <Label Content="Attributes:" FontSize="14" Grid.Row="1" Margin="0,21,0,-21" />
-                                <ListBox Name="ElementAttributes" FontSize="14" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" ItemsSource="{Binding}" Style="{StaticResource MyListItemStyle}" Margin="0,29,10,28">
+                                <Label Content="Attributes:" FontSize="14" Grid.Row="1" Margin="0,21,0,-21"  Visibility="{Binding Path=SelectedItem, Converter={StaticResource elementsToVisibilityConverter},ConverterParameter=Attributes}" />
+                                <ListBox Name="ElementAttributes" FontSize="14" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" ItemsSource="{Binding}" Style="{StaticResource MyListItemStyle}" Margin="0,29,10,28" Visibility="{Binding Path=SelectedItem, Converter={StaticResource elementsToVisibilityConverter},ConverterParameter=Attributes}">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <Grid>
@@ -238,20 +240,23 @@
                                                 </Grid.ColumnDefinitions>
                                                 <TextBlock Text="{Binding Path=Name}" Width="100" DataContext="{Binding}" Grid.Column="0" />
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1">
-                                                    <TextBox Name="AttributeValue" Text="{Binding Path=Value,Mode=TwoWay}" DataContext="{Binding}" Width="200"  />
+                                                    <TextBox Name="AttributeValue" Text="{Binding Path=Value,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" DataContext="{Binding}" Width="200" TextChanged="PropertiesChanged"  />
                                                     <Label Content="*" Foreground="Red" Visibility="{Binding IsRequired, Converter={StaticResource BoolToVisConverter}}"/>
                                                 </StackPanel>
                                             </Grid>
                                         </DataTemplate>
                                     </ListBox.ItemTemplate>
                                 </ListBox>
+                                <Label  Name="InnerTextLabel" Content="Inner Text:" FontSize="14" Grid.Row="2" Visibility="{Binding Path=SelectedItem, Converter={StaticResource elementsToVisibilityConverter},ConverterParameter=Inner}" />
+                                <TextBox Name="InnerTextBlock" Text="{Binding Path=InnerText,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" FontSize="14" DataContext="{Binding}"  VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" Visibility="{Binding Path=SelectedItem, Converter={StaticResource elementsToVisibilityConverter},ConverterParameter=Inner}" TextChanged="PropertiesChanged" />
+                                
                             </Grid>
                         </Grid>
                         <Grid x:Name="ChoicePanel" Visibility="{Binding Path=SelectedItem.NodeType, Converter={StaticResource selectionPropertyToVisibilityConverter},ConverterParameter=Choice}">
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="Choice:" FontSize="14" />
                                 <StackPanel>
-                                    <ComboBox Name="ChoiceComboBox" FontSize="14" DataContext="{Binding}" ItemsSource="{Binding Path=Children}" SelectedItem="{Binding Path=Selected}">
+                                    <ComboBox Name="ChoiceComboBox" FontSize="14" DataContext="{Binding}" ItemsSource="{Binding Path=Children}" SelectedItem="{Binding Path=Selected}" SelectionChanged="PropertiesChanged">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="SelectionChanged">
                                                 <i:InvokeCommandAction x:Name="SelectComboChange" Command="{Binding ElementName=_this, Path=DataContext.SelectedChoiceChange}" />
@@ -273,8 +278,8 @@
                                 <Label Content="Sequence:" FontSize="14" />
                                 <StackPanel Orientation="Horizontal" Margin="3,0,-3,0">
                                     <TextBlock Text="Array Size:  " FontSize="14" />
-                                    <nb:NumericBox Name="SequenceSize" Value="{Binding }"  Minimum="0" Maximum="10000" Margin="5" Height="28" />
-                                    <Button Name="UpdateSequenceSize" Content="Update" Command="{Binding UpdateSeqNumItems}" CommandParameter="{Binding SelectedItem}" Height="30" />
+                                    <nb:NumericBox Name="SequenceSize" Value="{Binding}"  Minimum="0" Maximum="10000" Margin="5" Height="28" />
+                                    <Button Name="UpdateSequenceSize" Content="Update" Command="{Binding UpdateSeqNumItems}" CommandParameter="{Binding SelectedItem}" Height="30" Click="PropertiesChanged" />
                                 </StackPanel>
                             </StackPanel>
                         </Grid>

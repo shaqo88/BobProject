@@ -122,19 +122,18 @@ namespace BobProject
             HierarchyTreeTypesView.ItemsSource = ViewModel.TypesList;
             CurrentResult.DataContext = this;
             TotalResult.DataContext = this;
+            XMLViewer.XmlContents = ViewModel.SchemaDescriber.CurrentXmlDocument;
 
             // Supply the control with the list of sections
             List<string> sections = new List<string> { "Name", "Attribute Value" };
-            SearchBar.SectionsList = sections;
+            SearchBar.SectionsList = sections;            
 
             // Choose a style for displaying sections
             SearchBar.SectionsStyle = SearchTextBox.SectionsStyles.CheckBoxStyle;
 
             // Add a routine handling the event OnSearch
             SearchBar.OnSearch += new RoutedEventHandler(OnSearch);
-
-            XMLViewer.XmlContents = ViewModel.SchemaDescriber.CurrentXmlDocument;
-
+           
         }
 
         /// <summary>
@@ -287,50 +286,6 @@ namespace BobProject
 
 
         /// <summary>
-        /// on tree expand command - drill tree items
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void TreeViewItem_Expanded(object sender, RoutedEventArgs e)
-        {
-            TreeViewItem tvi = e.OriginalSource as TreeViewItem;
-            if (tvi != null)
-            {
-                if (tvi.Header != null)
-                {
-                    XmlSchemaWrapper schemaWr = tvi.Header as XmlSchemaWrapper;
-                    if (!(schemaWr is XmlSchemaSequenceWrapper))
-                    {
-                        if (!schemaWr.AllChildrenDrilled)
-                        {
-                            schemaWr.DrillOnce();
-                            foreach (var item in schemaWr.Children)
-                            {
-                                item.DrillOnce();
-                            }
-                        }
-                    }
-
-                }
-            }
-
-            System.Xml.XmlDocument XMLdoc = null;
-            try
-            {
-                XMLdoc = ViewModel.SchemaDescriber.GetCurrentXmlDocument();
-            }
-            catch (Exception)
-            {
-                
-            }
-
-            XMLViewer.XmlContents = XMLdoc;
-            /*var xml = ViewModel.SchemaDescriber.CurrentXmlDocument;
-            ViewModel.SchemaDescriber.CurrentXmlDocument = xml;*/
-
-        }
-
-        /// <summary>
         /// expand all tree view items
         /// </summary>
         /// <param name="sender"></param>
@@ -351,6 +306,51 @@ namespace BobProject
             TreeViewHelper.CollapseAll(HierarchyTreeTypesView);
         }
 
+
+        /// <summary>
+        /// on tree expand command - drill tree items
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TreeViewItem_Expanded(object sender, RoutedEventArgs e)
+        {
+            TreeViewItem tvi = e.OriginalSource as TreeViewItem;
+            if (tvi != null)
+            {
+                if (tvi.Header != null)
+                {
+                    //Drill all child node
+                    XmlSchemaWrapper schemaWr = tvi.Header as XmlSchemaWrapper;
+                    if (!(schemaWr is XmlSchemaSequenceWrapper))
+                    {
+                        if (!schemaWr.AllChildrenDrilled)
+                        {
+                            schemaWr.DrillOnce();
+                            foreach (var item in schemaWr.Children)
+                            {
+                                item.DrillOnce();
+                            }
+                        }
+                    }
+
+                }
+            }
+
+            //update xml view
+            UpdateXMLView();
+
+
+        }
+
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                //MessageBox.Show("s");
+            }
+        }
+        
+
         /// <summary>
         /// on expand or collapse  tree view node
         /// </summary>
@@ -358,20 +358,45 @@ namespace BobProject
         /// <param name="e"></param>
         private void OnExpandCollapseNode(object sender, RoutedEventArgs e)
         {
-            /*need to add contextmenu to treeview*/
-           // HierarchyTreeTypesView.
+            /*TextBlock tvi1 = e.OriginalSource as TextBlock;            
             TreeViewItem tvi = e.OriginalSource as TreeViewItem;
-            /*string value = (string)((MenuItem)sender).Tag;
-            if (value == "Expand")
-                TreeViewHelper.ExpandCollapseNode(tvi, true);
-            else if(value == "Collapse")
-                TreeViewHelper.ExpandCollapseNode(tvi, false);*/
+            
+            MenuItem item = sender as MenuItem;
+
+            if (tvi != null)
+            {
+                string value = (string)((MenuItem)sender).Tag;
+                if (value == "Expand")
+                    TreeViewHelper.ExpandCollapseNode(tvi, true);
+                else if (value == "Collapse")
+                    TreeViewHelper.ExpandCollapseNode(tvi, false);
+            }*/
             
         }
 
 
         #endregion
+       
 
+        private void PropertiesChanged(object sender, EventArgs e)
+        {
+            UpdateXMLView();
+        }
+
+        public void UpdateXMLView()
+        {
+            System.Xml.XmlDocument XMLdoc = null;
+            try
+            {
+                XMLdoc = ViewModel.SchemaDescriber.GetCurrentXmlDocument();
+            }
+            catch (Exception)
+            {
+
+            }
+
+            XMLViewer.XmlContents = XMLdoc;
+        }
 
     }
 

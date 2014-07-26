@@ -11,13 +11,13 @@
         <Image HorizontalAlignment="Left" Height="121" Margin="179,24,0,0" VerticalAlignment="Top" Width="124" Source="../Images/reportIcon.jpg"/>
 
 
-        <TextBox TextWrapping="Wrap" Text="" Margin="179,156,140,81"/>
+        <TextBox TextWrapping="Wrap" Text="{Binding PathFile,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="179,156,140,81"/>
         <Label Content="Editor Name:" HorizontalAlignment="Right" Height="31" Margin="0,156,320,0" VerticalAlignment="Top" Width="89"/>
         <Label Content="Date:" HorizontalAlignment="Right" Height="31" Margin="0,201,315,0" VerticalAlignment="Top" Width="89" RenderTransformOrigin="1.797,0.643"/>
         <TextBox TextWrapping="Wrap" IsReadOnly="True" Text="" Margin="179,244,140,197" Grid.RowSpan="2"/>
         <Label Content="Root Directory:" HorizontalAlignment="Right" Height="31" Margin="0,244,320,0" VerticalAlignment="Top" Width="89" Grid.RowSpan="2"/>
         <Button Content="Search" HorizontalAlignment="Left" Margin="223,8,0,0" VerticalAlignment="Top" Width="75" Height="31" Grid.Row="1"/>
-        <ListView HorizontalAlignment="Left" Height="150" Margin="34,44,0,0" VerticalAlignment="Top" Width="450" Grid.Row="1">
+        <ListView Name="ResultReports" HorizontalAlignment="Left" Height="150" Margin="34,44,0,0" VerticalAlignment="Top" Width="450" Grid.Row="1">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Editor Name"/>
@@ -34,6 +34,6 @@
         <Button ToolTip="Browse..."  Style="{DynamicResource IconButtonStyle}"  HorizontalAlignment="Left"  VerticalAlignment="Top" Width="61" Height="45" RenderTransformOrigin="0.507,1.375" Margin="354,233,0,0" Grid.RowSpan="2">
             <Image Source="../Images/OpenFileIcon.png"  />
         </Button>
-        <DatePicker Name="datePick" SelectedDate="{x:Static sys:DateTime.Now}" DisplayDateEnd="{x:Static sys:DateTime.Now}" HorizontalAlignment="Left" Margin="179,206,0,0" VerticalAlignment="Top" Width="175"/>
+        <DatePicker Name="datePick" SelectedDate="{x:Static sys:DateTime.Now}" DisplayDateEnd="{x:Static sys:DateTime.Now}" HorizontalAlignment="Left" Margin="179,206,0,0" VerticalAlignment="Top" Width="165"/>
     </Grid>
 </Window>
