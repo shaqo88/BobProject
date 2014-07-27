@@ -142,24 +142,24 @@ namespace BL.SchemaLogic
             return result;
         }
 
-        public bool LoadExistingXml(string xmlPath)
-        {
-            var doc = XmlLoaderWrapper.LoadXml(xmlPath);
-            string errorMessage;
+        //public bool LoadExistingXml(string xmlPath)
+        //{
+        //    var doc = XmlLoaderWrapper.LoadXml(xmlPath, XsdReader.Schema);
+        //    //string errorMessage;
 
-            if (!XsdReader.IsXmlMatchSchema(doc, out errorMessage))
-                throw new Exception(string.Format("Given XML doesn't match the loaded schema (XSD). Path: {0}, Details: {1}", xmlPath, errorMessage));
+        //    //if (!XsdReader.IsXmlMatchSchema(doc, out errorMessage))
+        //    //    throw new Exception(string.Format("Given XML doesn't match the loaded schema (XSD). Path: {0}, Details: {1}", xmlPath, errorMessage));
 
-            this.ClearXml();
+        //    this.ClearXml();
 
-            XmlVersion = XmlImportLogic.GetVersionOfXml(doc);
-            UserName = XmlImportLogic.GetUserName(doc);
-            LastEditDate = XmlImportLogic.GetDateTime(doc);
+        //    XmlVersion = XmlImportLogic.GetVersionOfXml(doc);
+        //    UserName = XmlImportLogic.GetUserName(doc);
+        //    LastEditDate = XmlImportLogic.GetDateTime(doc);
 
-            //Elements.Add(XmlImportLogic.XmlDocumentToSchemaWrapper(doc));
+        //    //Elements.Add(XmlImportLogic.XmlDocumentToSchemaWrapper(doc));
 
-            return true;
-        }
+        //    return true;
+        //}
 
         /// <summary>
         /// Exports the current situation of the tree to XML
@@ -190,6 +190,11 @@ namespace BL.SchemaLogic
         public XmlDocument GetCurrentXmlDocument()
         {
             return XmlExportLogic.SchemaWrapperToXmlDocument(RootElement, XmlVersion, UserName, false);
+        }
+
+        public List<string> ProduceReport(string folderPath, string userName, DateRange dates)
+        {
+            return null;
         }
 
         #endregion

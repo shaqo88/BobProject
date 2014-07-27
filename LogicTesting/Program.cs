@@ -32,7 +32,7 @@ namespace BL
             // Probably won't be in use
             //var elementsQuery = XmlSearcher.SearchXml(doc, new XmlQueryPartType() { QueriedNode = "type", ReturnedNode = "typedef", AttributeName = "ref", AttributeValue = "FullName_t" });
 
-            describer.LoadExistingXml(@"TestingOutput\a.xml");
+            //describer.LoadExistingXml(@"TestingOutput\a.xml");
 
             var xml = new XmlDocument();
             var element = xml.CreateElement("newElement");
