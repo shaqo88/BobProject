@@ -12,6 +12,7 @@ using DAL.XmlWrapper;
 using System.Xml;
 using BL.UtilityClasses;
 using System.ComponentModel;
+using System.IO;
 
 namespace BL.SchemaLogic
 {
@@ -106,6 +107,9 @@ namespace BL.SchemaLogic
             RootElement.PropertyChanged += RootElement_PropertyChanged;
         }
 
+        /// <summary>
+        /// Clears all main XML object's elements
+        /// </summary>
         public void ClearXml()
         {
             foreach (var element in Elements)
@@ -119,6 +123,13 @@ namespace BL.SchemaLogic
             return XsdReader.ValidateSchema(schemaPath, throwException);
         }
 
+        /// <summary>
+        /// Searches the XML with given query
+        /// </summary>
+        /// <param name="startingNode">Node to start the recursive search with</param>
+        /// <param name="query">The query sting to check with</param>
+        /// <param name="searchBy">Method of the search - attribute, node name or both</param>
+        /// <returns>List of wrappers that match the query</returns>
         public List<XmlSchemaWrapper> SearchXml(XmlSchemaWrapper startingNode, string query, SearchEnum searchBy)
         {
             List<XmlSchemaWrapper> result = new List<XmlSchemaWrapper>();
@@ -192,17 +203,65 @@ namespace BL.SchemaLogic
             return XmlExportLogic.SchemaWrapperToXmlDocument(RootElement, XmlVersion, UserName, false);
         }
 
-        public List<string> ProduceReport(string folderPath, string userName, DateRange dates)
+        /// <summary>
+        /// Prouces list of matching files according to input for reports
+        /// </summary>
+        /// <param name="folderPath">Folder to look for the files</param>
+        /// <param name="userName">User name to find, if null or empty - any user</param>
+        /// <param name="dates">Date range to serach for</param>
+        /// <returns>List of matching files with their details</returns>
+        public List<XmlMetaData> ProduceReport(string folderPath, string userName, DateRange dates)
         {
-            return null;
+            List<XmlMetaData> result = new List<XmlMetaData>();
+
+            // Check if folder is a real path
+            if (!Directory.Exists(folderPath))
+                throw new Exception(string.Format("Could not generate report, folder doesn't exist: {0}", folderPath));
+
+            // Get all XMLs at this path
+            var filePaths = Directory.GetFiles(folderPath, "*.xml");
+
+            Func<string, bool> userNameCompareFunc;
+
+            // An empty or null user name means any user will match, otherwise - checking if it's substring of the input
+            if (string.IsNullOrEmpty(userName))
+                userNameCompareFunc = (u) => { return true; };
+            else
+                userNameCompareFunc = (u) => { return u.Contains(userName); };
+
+            foreach (var filePath in filePaths)
+            {
+                try
+                {
+                    var xmlFile = XmlLoaderWrapper.LoadXml(filePath);
+
+                    var metaData = XmlImportLogic.GetAllProperties(xmlFile);
+                    metaData.XmlPath = filePath;
+
+                    // Check dates and compare user name
+                    if (dates.IsInRange(metaData.Date) && userNameCompareFunc(metaData.UserName))
+                        result.Add(metaData);
+                }
+                catch
+                {
+                    // File is illegal XML, continue, no need to throw exeption
+                }
+            }
+
+            return result;
         }
 
         #endregion
 
         #region Private Methods
 
+        /// <summary>
+        /// Clears the given wrapper object from all data
+        /// </summary>
+        /// <param name="wrapper">The wrapper to clear</param>
         private void ClearWrapper(XmlSchemaWrapper wrapper)
         {
+            // For element - clear all attributes
             if (wrapper is XmlSchemaElementWrapper)
             {
                 var element = wrapper as XmlSchemaElementWrapper;
@@ -212,6 +271,7 @@ namespace BL.SchemaLogic
                     attr.Value = null;
                 }
             }
+            // For choice - clear the selected
             else if (wrapper is XmlSchemaChoiceWrapper)
             {
                 var choice = wrapper as XmlSchemaChoiceWrapper;
@@ -219,12 +279,14 @@ namespace BL.SchemaLogic
                 if (choice.Children != null && choice.Children.Count > 0)
                     choice.Selected = choice.Children[0];
             }
+            // For sequence array - clear its children
             else if (wrapper is XmlSchemaSequenceArray)
             {
                 var seqArr = wrapper as XmlSchemaSequenceArray;
                 seqArr.Clear();
             }
 
+            // For all objects - clear their children
             foreach (var child in wrapper.Children)
             {
                 ClearWrapper(child);

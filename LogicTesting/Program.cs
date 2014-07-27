@@ -33,6 +33,8 @@ namespace BL
             //var elementsQuery = XmlSearcher.SearchXml(doc, new XmlQueryPartType() { QueriedNode = "type", ReturnedNode = "typedef", AttributeName = "ref", AttributeValue = "FullName_t" });
 
             //describer.LoadExistingXml(@"TestingOutput\a.xml");
+            var res1 = describer.ProduceReport(@"TestingOutput", "", new UtilityClasses.DateRange(DateTime.Parse("01/07/2014"), DateTime.Now));
+            var res2 = describer.ProduceReport(@"TestingOutput", "Shaul", new UtilityClasses.DateRange(DateTime.Parse("01/06/2014"), DateTime.Parse("30/06/2014")));
 
             var xml = new XmlDocument();
             var element = xml.CreateElement("newElement");
