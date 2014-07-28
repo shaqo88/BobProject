@@ -16,6 +16,7 @@ namespace BobProject.ViewModel.ValueConverters
         {
             if (value == null) return Brushes.Black; // Default color
 
+            //convert color to solidcolorbrush
             Color color = (Color)value;
 
             return new SolidColorBrush(color);

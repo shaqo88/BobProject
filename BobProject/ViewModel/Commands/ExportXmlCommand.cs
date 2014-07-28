@@ -13,16 +13,15 @@ namespace BobProject.ViewModel.Commands
         #region Fields
 
         // Member variables
-        private readonly SaveXmlViewModel viewModel;
+        private readonly SaveXmlViewModel m_viewModel;
 
         #endregion
-
 
         #region Constructor
 
         public ExportXmlCommand(SaveXmlViewModel _viewModel)
         {
-            viewModel = _viewModel;
+            m_viewModel = _viewModel;
         }
 
         #endregion
@@ -35,8 +34,8 @@ namespace BobProject.ViewModel.Commands
         public bool CanExecute(object parameter)
         {
             //check if all child attribute filed
-            if (viewModel.SchemaDescriber.RootElement != null)
-                return viewModel.SchemaDescriber.RootElement.AllChildAttributesFilled;
+            if (m_viewModel.SchemaDescriber.RootElement != null)
+                return m_viewModel.SchemaDescriber.RootElement.AllChildAttributesFilled;
             return false;
         }
 
@@ -54,14 +53,16 @@ namespace BobProject.ViewModel.Commands
         /// </summary>
         public void Execute(object parameter)
         {
-            if (viewModel.PathFile == null || viewModel.PathFile == string.Empty)
+            //check if path is not empty
+            if (m_viewModel.PathFile == null || m_viewModel.PathFile == string.Empty)
             {
                 MessageBox.Show("Invalid Path File", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             try
             {
-                bool isExportOk = viewModel.SchemaDescriber.ExportXmlNow(viewModel.PathFile,null,viewModel.EditorName);
+                //try to export xml
+                bool isExportOk = m_viewModel.SchemaDescriber.ExportXmlNow(m_viewModel.PathFile,null,m_viewModel.EditorName);
                 if (isExportOk)
                     MessageBox.Show("Export File Succeeded!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 else
@@ -70,6 +71,7 @@ namespace BobProject.ViewModel.Commands
             }
             catch (Exception ex)
             {
+                //not Succeeded
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }

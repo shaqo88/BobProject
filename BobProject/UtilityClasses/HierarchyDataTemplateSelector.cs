@@ -17,6 +17,7 @@ namespace BobProject.UtilityClasses
 
             if (element != null && item != null)
             {
+                //check item type and set dataTemplate
                 if (item is XmlSchemaElementWrapper)
                 {
                     retval = element.FindResource("XmlSchemaElementWrapperTemplate") as DataTemplate;

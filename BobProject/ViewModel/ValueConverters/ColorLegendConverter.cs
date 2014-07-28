@@ -19,13 +19,18 @@ namespace BobProject.ViewModel.ValueConverters
             if (value == null)
                 return Brushes.Black; // Default color
 
+            //convert parameters
             XmlSchemaWrapper schemaWr = (XmlSchemaWrapper)value[0];
             BL.UtilityClasses.ObservableDictionary<string, Color> typesColor = (BL.UtilityClasses.ObservableDictionary<string, Color>)value[1];
 
+            //check if convertion Succeeded
             if (schemaWr != null)
             {
+                //get node type
                 NodeType type = schemaWr.NodeType;
                 Color color;
+
+                //switch color and draw text by configuration
                 switch (type)
                 {
                     case NodeType.Choice:
@@ -58,6 +63,7 @@ namespace BobProject.ViewModel.ValueConverters
         {
             throw new NotImplementedException();
         }
+
         #endregion
 
     }

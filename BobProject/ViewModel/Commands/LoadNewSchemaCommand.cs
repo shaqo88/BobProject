@@ -15,7 +15,7 @@ namespace BobProject.ViewModel.Commands
         #region Fields
 
         // Member variables
-        private readonly MainWindowViewModel viewModelMain;
+        private readonly MainWindowViewModel m_viewModelMain;
 
         #endregion
 
@@ -23,7 +23,7 @@ namespace BobProject.ViewModel.Commands
 
         public LoadNewSchemaCommand(MainWindowViewModel _viewModelMain)
         {
-            viewModelMain = _viewModelMain;
+            m_viewModelMain = _viewModelMain;
         }
 
         #endregion
@@ -85,14 +85,14 @@ namespace BobProject.ViewModel.Commands
                      else return;
                  }
                  else if (arg == "local")
-                     filename = viewModelMain.SchemaPath;
+                     filename = m_viewModelMain.SchemaPath;
 
                  
                 try
                 {
                     //load new schena and chech validation
-                    viewModelMain.LoadSchema();
-                    viewModelMain.SchemaPath = filename;
+                    m_viewModelMain.LoadSchema();
+                    m_viewModelMain.SchemaPath = filename;
 
 
                 }

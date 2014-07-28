@@ -21,12 +21,17 @@ namespace BobProject
     /// </summary>
     public partial class Configuration : Window
     {
+        #region Properties
 
         public ConfigurationViewModel ViewModel { get; private set; }
 
+        #endregion
+
+        #region Constructor 
+
         public Configuration()
         {
-
+            //init wpf members
             ViewModel = new ConfigurationViewModel();
             ViewModel.Parent = this;
             DataContext = ViewModel;
@@ -39,6 +44,7 @@ namespace BobProject
 
         }
 
+        #endregion
 
     }
 }

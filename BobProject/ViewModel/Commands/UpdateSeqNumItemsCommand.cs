@@ -26,9 +26,12 @@ namespace BobProject.ViewModel.Commands
         /// </summary>
         public bool CanExecute(object parameter)
         {
+            //check if convertion Succeeded.
             var selectedItem = parameter as XmlSchemaWrapper;
             if (selectedItem == null)
                 return false;
+
+            //check if node type is sequence
             return (selectedItem.NodeType == NodeType.Sequence);
         }
 
@@ -46,6 +49,7 @@ namespace BobProject.ViewModel.Commands
         /// </summary>
         public void Execute(object parameter)
         {
+            //init temp members
             var item = parameter as XmlSchemaSequenceArray;
             int currNumItems = item.Count;
             int chosenNum = MainWindow.Instance.SequenceSize.Value - currNumItems;
@@ -54,6 +58,7 @@ namespace BobProject.ViewModel.Commands
             {
                 if (chosenNum > 0)
                 {
+                    //add items to array
                     for (int i = 0; i < chosenNum; i++)
                     {
                         item.AddNewWrapper();
@@ -62,6 +67,7 @@ namespace BobProject.ViewModel.Commands
                 }
                 else //chosenNum < 0
                 {
+                    //remove items
                     MessageBoxResult result = MessageBox.Show("Would you like to delete " + (Math.Abs(chosenNum)).ToString()  +" last items?", "Confirmation", MessageBoxButton.YesNo,MessageBoxImage.Warning);
                     if (result == MessageBoxResult.Yes)
                     {

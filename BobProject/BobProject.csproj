@@ -49,6 +49,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -78,10 +79,10 @@
     <Compile Include="ViewModel\Commands\LoadNewSchemaCommand.cs" />
     <Compile Include="ViewModel\Commands\PickerColorCommand.cs" />
     <Compile Include="ViewModel\Commands\SaveConfigCommand.cs" />
+    <Compile Include="ViewModel\Commands\SearchReportsCommand.cs" />
     <Compile Include="ViewModel\Commands\SelectedChoiceChangeCommand.cs" />
     <Compile Include="ViewModel\Commands\SelectXmlExportFileCommand.cs" />
     <Compile Include="ViewModel\Commands\ShowViewsCommand.cs" />
-    <Compile Include="ViewModel\Commands\TreeViewItemCommand.cs" />
     <Compile Include="ViewModel\Commands\UpdateSeqNumItemsCommand.cs" />
     <Compile Include="ViewModel\ConfigurationViewModel.cs" />
     <Compile Include="ViewModel\Commands\ShowPropertiesCommand.cs" />
@@ -94,6 +95,7 @@
     <Compile Include="ViewModel\ValueConverters\ElementsToVisibilityConverter.cs" />
     <Compile Include="ViewModel\ValueConverters\IndexToTextConverter.cs" />
     <Compile Include="ViewModel\ValueConverters\PermissionToVisibilityConverter.cs" />
+    <Compile Include="ViewModel\ValueConverters\PermissionToEnableConverter.cs" />
     <Compile Include="ViewModel\ValueConverters\SelectionPropertyToVisibilityConverter.cs" />
     <Compile Include="ViewModel\ValueConverters\SelectedItemToArrayConverter.cs" />
     <Compile Include="View\About.xaml.cs">

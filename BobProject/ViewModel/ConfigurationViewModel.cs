@@ -16,33 +16,51 @@ namespace BobProject.ViewModel
 {
     public class ConfigurationViewModel : ViewModelBase
     {
-        private ObservableDictionary<string, Color> typesColor;
+        #region Fields
+
+        private ObservableDictionary<string, Color> m_typesColor;
+
+        #endregion
+
+        #region Properties
+
         public ICommand PickerColor { get; set; }
+
         public ICommand SaveConfig { get; set; }
+
         public ICommand LoadNewSchema { get; set; }
+
         public KeyValuePair<string, Color> SelectedItem { get; private set; }
+
         public Window Parent { get; set; }
+
         public bool IsManagerPerm { get; private set; }
        
-
         public ObservableDictionary<string, Color> TypesColor
         {
-            get { return typesColor; }
+            get { return m_typesColor; }
             set
             {
-                typesColor = value;
+                m_typesColor = value;
                 base.RaisePropertyChangedEvent("TypesColor");
             }
         }
 
+        #endregion
+
+        #region Constructor
+
         public ConfigurationViewModel()
         {
-            typesColor = ConfigurationData.Instance.TypesColor;
+            //init members and commands
+            m_typesColor = ConfigurationData.Instance.TypesColor;
             SaveConfig = new SaveConfigCommand();
             PickerColor = new PickerColorCommand(this, MainWindow.Instance.ViewModel);
             LoadNewSchema = new LoadNewSchemaCommand(MainWindow.Instance.ViewModel);
             IsManagerPerm = Permission.Instance.CurrPermission == Permission.PermissionType.Manager;
         }
+
+        #endregion
 
     }
 }

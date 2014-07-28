@@ -22,44 +22,57 @@ namespace BobProject.ViewModel
 
         #region Fields
 
+        private ObservableCollection<XmlSchemaWrapper> m_typesLst;
 
-        // Property variables
-        private ObservableCollection<XmlSchemaWrapper> typesLst;
-        private ObservableDictionary<string, Color> typesColor;
-        private XmlSchemaWrapper selectedItem;
-        private string permission;
-        private string schemaPath;
-        private bool isShowSearchBar = true;
-        private SchemaDescriber schemaDescriber;
+        private ObservableDictionary<string, Color> m_typesColor;
+
+        private XmlSchemaWrapper m_selectedItem;
+
+        private string m_permission;
+
+        private string m_schemaPath;
+
+        private bool m_isShowSearchBar = true;
+
+        private SchemaDescriber m_schemaDescriber;
+
+        #endregion
+
+        #region Properties
+
         public ICommand ShowProperties { get; private set; }
+
         public ICommand UpdateSeqNumItems { get; private set; }
+
         public ICommand SelectedChoiceChange { get; private set; }
+
         public ICommand DeleteSeqItem { get; private set; }
+
         public ICommand LoadNewFile { get; private set; }
+
         public ICommand ShowViews { get; private set; }
-        public ICommand CollapseExpandCommand { get; private set; }
-        
 
         public SchemaDescriber SchemaDescriber
         {
-            get { return schemaDescriber; }
+            get { return m_schemaDescriber; }
         }
 
         public bool IsShowSearchBar
         {
-            get { return isShowSearchBar; }
+            get { return m_isShowSearchBar; }
             set
             {
-                isShowSearchBar = value;
+                m_isShowSearchBar = value;
                 base.RaisePropertyChangedEvent("IsShowSearchBar");
             }
         }
+
         public XmlSchemaWrapper SelectedItem
         {
-            get { return selectedItem; }
+            get { return m_selectedItem; }
             set
             {
-                selectedItem = value;
+                m_selectedItem = value;
                 base.RaisePropertyChangedEvent("SelectedItem");
             }
         }
@@ -69,38 +82,44 @@ namespace BobProject.ViewModel
             get { return Permission.Instance.CurrPermission.ToString(); }
             set
             {
-                permission = Permission.Instance.CurrPermission.ToString();
+                m_permission = Permission.Instance.CurrPermission.ToString();
                 base.RaisePropertyChangedEvent("Permit");
             }
         }
 
         public string SchemaPath
         {
-            get { return schemaPath; }
+            get { return m_schemaPath; }
             set
             {
-                schemaPath = value;
+                m_schemaPath = value;
                 ConfigurationData.Instance.SchemaPath = value;
                 base.RaisePropertyChangedEvent("SchemaPath");
             }
-        }
-
-
-
-        #endregion
-
+        }        
 
         public ObservableDictionary<string, Color> TypesColor
         {
-            get { return typesColor; }
+            get { return m_typesColor; }
             set
             {
-                typesColor = value;
+                m_typesColor = value;
                 base.RaisePropertyChangedEvent("TypesColor");
-
             }
         }
-       
+
+        public ObservableCollection<XmlSchemaWrapper> TypesList
+        {
+            get { return m_typesLst; }
+
+            set
+            {
+                m_typesLst = value;
+                base.RaisePropertyChangedEvent("TypesList");
+            }
+        }
+
+        #endregion
 
         #region Constructor
 
@@ -110,38 +129,22 @@ namespace BobProject.ViewModel
         }
 
         #endregion
-
-
-        #region Data Properties
-
-
-        public ObservableCollection<XmlSchemaWrapper> TypesList
-        {
-            get { return typesLst; }
-
-            set
-            {
-                typesLst = value;
-                base.RaisePropertyChangedEvent("TypesList");
-            }
-        }
-        #endregion
-
-
+      
         #region Private Methods
+
         private void Initialize()
         {
             // Initialize commands
             ShowProperties = new ShowPropertiesCommand(this);
             SelectedChoiceChange = new SelectedChoiceChangeCommand(this);
-            UpdateSeqNumItems = new UpdateSeqNumItemsCommand();
-            DeleteSeqItem = new DeleteSeqItemCommand();
+            DeleteSeqItem = new DeleteSeqItemCommand(this);
             LoadNewFile = new LoadNewSchemaCommand(this);
-            ShowViews = new ShowViewsCommand(this);
-            CollapseExpandCommand = new TreeViewItemCommand();
+            ShowViews = new ShowViewsCommand(this);            
+            UpdateSeqNumItems = new UpdateSeqNumItemsCommand();
+            
 
             // Create types List and color list 
-            typesLst = new ObservableCollection<XmlSchemaWrapper>();
+            m_typesLst = new ObservableCollection<XmlSchemaWrapper>();
             TypesColor = ConfigurationData.Instance.TypesColor;
             SchemaPath = ConfigurationData.Instance.SchemaPath;
 
@@ -150,13 +153,21 @@ namespace BobProject.ViewModel
 
         }
 
+        #endregion
+
+        #region Public Methods
+
+        /// <summary>
+        /// Load and reload schema from config path
+        /// </summary>
+        /// <returns></returns>
         public bool LoadSchema()
         {           
             bool isValidateSchema = true;
             try
             {
-                schemaDescriber = new SchemaDescriber(SchemaPath);
-                isValidateSchema = schemaDescriber.ValidateSchema(SchemaPath, true);
+                m_schemaDescriber = new SchemaDescriber(SchemaPath);
+                isValidateSchema = m_schemaDescriber.ValidateSchema(SchemaPath, true);
                 //schemaDescriber.LoadSchema(SchemaPath);
             }
             catch (Exception)
@@ -168,7 +179,7 @@ namespace BobProject.ViewModel
             if (isValidateSchema)
             {
                 TypesList.Clear();
-                XmlSchemaElementWrapper rootElement = schemaDescriber.RootElement;
+                XmlSchemaElementWrapper rootElement = m_schemaDescriber.RootElement;
                 if (rootElement != null)
                 {
                     TypesList.Add(rootElement);
@@ -182,9 +193,6 @@ namespace BobProject.ViewModel
 
             
         }
-
-
-
 
         #endregion
 

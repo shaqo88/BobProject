@@ -16,11 +16,9 @@ namespace BobProject.ViewModel
 
         #region Fields
 
-        private string pathFile;
+        private string m_pathFile;
 
-        private string editorName;
-
-        public SchemaDescriber SchemaDescriber { get; private set; }        
+        private string m_editorName;        
 
         #endregion
 
@@ -35,18 +33,19 @@ namespace BobProject.ViewModel
         
         #endregion
 
-
         #region Properties
+
+        public SchemaDescriber SchemaDescriber { get; private set; }  
 
         public string PathFile 
         {
             get
             {
-                return pathFile;
+                return m_pathFile;
             }
             set
             {
-                pathFile = value;
+                m_pathFile = value;
                 base.RaisePropertyChangedEvent("PathFile");
             }
         }
@@ -55,16 +54,17 @@ namespace BobProject.ViewModel
         {
             get
             {
-                return editorName;
+                return m_editorName;
             }
             set
             {
-                editorName = value;
+                m_editorName = value;
                 base.RaisePropertyChangedEvent("EditorName");
             }
         }
 
         public ICommand SelectXmlExportFile { get; private set; }
+
         public ICommand ExportXml { get; private set; }
         
 

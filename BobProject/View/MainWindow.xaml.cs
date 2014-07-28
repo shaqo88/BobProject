@@ -31,9 +31,13 @@ namespace BobProject
     {
         #region Fields
 
-        private static MainWindow instance;
+        private static MainWindow m_instance;
 
         private List<TreeViewItem> m_lastItemsResult;
+
+        private bool m_isResultSearchMode = false;
+
+        private string m_lastSearchTxt;
         
         #endregion
 
@@ -68,14 +72,13 @@ namespace BobProject
         {
             get
             {
-                if (instance == default(MainWindow))
-                    instance = new MainWindow();
-                return instance;
+                if (m_instance == default(MainWindow))
+                    m_instance = new MainWindow();
+                return m_instance;
             }
         }
 
         #endregion
-
 
         #region Constructor
 
@@ -91,7 +94,6 @@ namespace BobProject
         }
 
         #endregion
-
 
         #region Private Methods
 
@@ -160,7 +162,7 @@ namespace BobProject
             }
 
             //delete last search
-            EraseAllLastSearchResult();
+            EraseAllLastSearchResult();            
 
             //Search xml by section
             List<XmlSchemaWrapper> resultLst = new List<XmlSchemaWrapper>();
@@ -183,8 +185,10 @@ namespace BobProject
             m_lastItemsResult = TreeViewHelper.SelectItems(HierarchyTreeTypesView, resultLst.Cast<object>().ToArray(), searchColor);
             TotalResultCount = m_lastItemsResult.Count;
 
-            //view the first result
+            //view the first result and update members
             ViewNextResult();
+            m_isResultSearchMode = true;
+            m_lastSearchTxt = searchTxt;
 
             //show search result text            
             ResultPanel.Visibility = Visibility.Visible;
@@ -234,6 +238,7 @@ namespace BobProject
             //init search result counts
             CurrentResultCount = 0;
             TotalResultCount = 0;
+            m_isResultSearchMode = false;
         }
 
 
@@ -263,6 +268,24 @@ namespace BobProject
         }
 
 
+        private void Search_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                if (ViewModel.IsShowSearchBar)
+                {
+                    if (SearchBar.Text != string.Empty)
+                    {
+                        if ( m_isResultSearchMode && m_lastSearchTxt.Equals(SearchBar.Text.ToLower()))
+                        {
+                            ViewNextResult();
+                        }
+                    }
+                }
+            }
+        }
+
+
         private void ShowSearchBar(object sender, RoutedEventArgs e)
         {
             ViewModel.IsShowSearchBar = !ViewModel.IsShowSearchBar;
@@ -274,7 +297,7 @@ namespace BobProject
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void OnExit(object sender, EventArgs e)
+        private void OnExit(object sender, EventArgs e)
         {
             //close all sub windows
             Close();
@@ -307,6 +330,7 @@ namespace BobProject
         }
 
 
+
         /// <summary>
         /// on tree expand command - drill tree items
         /// </summary>
@@ -319,20 +343,16 @@ namespace BobProject
             {
                 if (tvi.Header != null)
                 {
-                    //Drill all child node
+                    //drill node and children nodes
                     XmlSchemaWrapper schemaWr = tvi.Header as XmlSchemaWrapper;
-                    if (!(schemaWr is XmlSchemaSequenceWrapper))
+                    if (!schemaWr.AllChildrenDrilled)
                     {
-                        if (!schemaWr.AllChildrenDrilled)
+                        schemaWr.DrillOnce();
+                        foreach (var item in schemaWr.Children)
                         {
-                            schemaWr.DrillOnce();
-                            foreach (var item in schemaWr.Children)
-                            {
-                                item.DrillOnce();
-                            }
+                            item.DrillOnce();
                         }
                     }
-
                 }
             }
 
@@ -340,15 +360,7 @@ namespace BobProject
             UpdateXMLView();
 
 
-        }
-
-        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                //MessageBox.Show("s");
-            }
-        }
+        }        
         
 
         /// <summary>
@@ -374,14 +386,14 @@ namespace BobProject
             
         }
 
-
-        #endregion
-       
-
         private void PropertiesChanged(object sender, EventArgs e)
         {
             UpdateXMLView();
         }
+
+        #endregion       
+
+        #region public methods
 
         public void UpdateXMLView()
         {
@@ -397,6 +409,8 @@ namespace BobProject
 
             XMLViewer.XmlContents = XMLdoc;
         }
+
+        #endregion
 
     }
 

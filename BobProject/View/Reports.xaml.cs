@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using BL.SchemaLogic;
 using BobProject.ViewModel;
 
 namespace BobProject
@@ -21,14 +22,39 @@ namespace BobProject
     public partial class Reports : Window
     {
 
+        #region Properties
+
         public ReportsViewModel ViewModel { get; private set; }
-        
-        public Reports()
+
+        #endregion
+
+        #region Constructor
+
+        public Reports(SchemaDescriber schema)
         {
             InitializeComponent();
 
-            ViewModel = new ReportsViewModel();
+            ViewModel = new ReportsViewModel(schema);
             DataContext = ViewModel;
         }
+
+        #endregion
+
+        #region private methods
+
+        private void Browse_Click(object sender, RoutedEventArgs e)
+        {
+            //show browse dir dialog
+            var dialog = new System.Windows.Forms.FolderBrowserDialog();
+            System.Windows.Forms.DialogResult result = dialog.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                //update to selected dir
+                ViewModel.PathFile = dialog.SelectedPath;
+            }
+
+        }
+
+        #endregion
     }
 }

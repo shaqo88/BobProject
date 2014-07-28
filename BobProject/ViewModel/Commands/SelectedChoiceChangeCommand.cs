@@ -12,7 +12,7 @@ namespace BobProject.ViewModel.Commands
         #region Fields
 
         // Member variables
-        private readonly MainWindowViewModel viewModel;
+        private readonly MainWindowViewModel m_viewModel;
 
         #endregion
 
@@ -20,7 +20,7 @@ namespace BobProject.ViewModel.Commands
 
         public SelectedChoiceChangeCommand(MainWindowViewModel _viewModel)
         {
-            viewModel = _viewModel;
+            m_viewModel = _viewModel;
         }
 
         #endregion
@@ -49,15 +49,16 @@ namespace BobProject.ViewModel.Commands
         /// </summary>
         public void Execute(object parameter)
         {
-            viewModel.SelectedItem.DrillOnce();
-            foreach (var item in viewModel.SelectedItem.Children)
+            //drill for new selected item
+            m_viewModel.SelectedItem.DrillOnce();
+            foreach (var item in m_viewModel.SelectedItem.Children)
             {
                 item.DrillOnce();
             }
 
             //Call Update treeview Colors
-            var typeColor = viewModel.TypesColor;
-            viewModel.TypesColor = typeColor;
+            var typeColor = m_viewModel.TypesColor;
+            m_viewModel.TypesColor = typeColor;
         }
 
         #endregion

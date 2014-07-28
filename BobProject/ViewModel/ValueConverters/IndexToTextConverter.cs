@@ -13,6 +13,7 @@ namespace BobProject.ViewModel.ValueConverters
 
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
+            //increase index by 1. because index starts with 0.
             int val = (int)value + 1;
             return val.ToString();
         }

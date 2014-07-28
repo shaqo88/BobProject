@@ -14,8 +14,8 @@ namespace BobProject.ViewModel.Commands
         #region Fields
 
         // Member variables
-        private readonly ConfigurationViewModel viewModelConf;
-        private readonly MainWindowViewModel viewModelMain;
+        private readonly ConfigurationViewModel m_viewModelConf;
+        private readonly MainWindowViewModel m_viewModelMain;
 
         #endregion
 
@@ -23,8 +23,8 @@ namespace BobProject.ViewModel.Commands
 
         public PickerColorCommand(ConfigurationViewModel _viewModelConf, MainWindowViewModel _viewModelMain)
         {
-            viewModelConf = _viewModelConf;
-            viewModelMain = _viewModelMain;
+            m_viewModelConf = _viewModelConf;
+            m_viewModelMain = _viewModelMain;
         }
 
         #endregion
@@ -36,7 +36,7 @@ namespace BobProject.ViewModel.Commands
         /// </summary>
         public bool CanExecute(object parameter)
         {
-            var selectedItem = viewModelConf.SelectedItem;
+            var selectedItem = m_viewModelConf.SelectedItem;
             return (selectedItem.Key != null);
         }
 
@@ -54,23 +54,25 @@ namespace BobProject.ViewModel.Commands
         /// </summary>
         public void Execute(object parameter)
         {
-            var selectedItem = viewModelConf.SelectedItem;
+            var selectedItem = m_viewModelConf.SelectedItem;
 
+            //load pick color dialog
             Microsoft.Samples.CustomControls.ColorPickerDialog cPicker
               = new Microsoft.Samples.CustomControls.ColorPickerDialog();
             cPicker.StartingColor = selectedItem.Value;
-            cPicker.Owner = viewModelConf.Parent;
+            cPicker.Owner = m_viewModelConf.Parent;
 
             bool? dialogResult = cPicker.ShowDialog();
             if (dialogResult != null && (bool)dialogResult == true)
             {
-
+                //set to selected color
                 Color selectedColor = cPicker.SelectedColor;
-                ObservableDictionary<string, Color> TypesColor = viewModelConf.TypesColor;
+                ObservableDictionary<string, Color> TypesColor = m_viewModelConf.TypesColor;
                 TypesColor[selectedItem.Key] = selectedColor;
+
                 //update treeview GUI
-                viewModelConf.TypesColor = TypesColor;
-                viewModelMain.TypesColor = TypesColor;
+                m_viewModelConf.TypesColor = TypesColor;
+                m_viewModelMain.TypesColor = TypesColor;
 
             }
         }

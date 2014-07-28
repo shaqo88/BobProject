@@ -13,18 +13,23 @@ namespace BobProject
     /// </summary>
     public class MessageListener : DependencyObject
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        private static MessageListener mInstance;
 
-        /// <summary>
-        /// 
-        /// </summary>
+        #region Fields
+
+        private static MessageListener m_Instance;
+
+        #endregion
+
+        #region Constructor
+
         private MessageListener()
         {
 
         }
+
+        #endregion
+
+        #region Singleton instance
 
         /// <summary>
         /// Get MessageListener instance
@@ -33,16 +38,16 @@ namespace BobProject
         {
             get
             {
-                if (mInstance == null)
-                    mInstance = new MessageListener();
-                return mInstance;
+                if (m_Instance == null)
+                    m_Instance = new MessageListener();
+                return m_Instance;
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="message"></param>
+        #endregion
+
+        #region public methods
+
         public void ReceiveMessage(string message)
         {
             Message = message;
@@ -59,11 +64,13 @@ namespace BobProject
             set { SetValue(MessageProperty, value); }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
+        #endregion
+
+        #region DependencyProperty
         public static readonly DependencyProperty MessageProperty =
             DependencyProperty.Register("Message", typeof(string), typeof(MessageListener), new UIPropertyMetadata(null));
+
+        #endregion
 
     }
 }

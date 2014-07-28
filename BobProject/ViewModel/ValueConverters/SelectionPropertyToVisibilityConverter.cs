@@ -12,10 +12,15 @@ namespace BobProject.ViewModel.ValueConverters
 {
     public class SelectionPropertyToVisibilityConverter : IValueConverter
     {
+        #region IValueConverter Members
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo language)
         {
+            //convert parameters
             NodeType nodeType = (NodeType)value;
             string parm = (string)parameter;
+
+            //check if node type equals to parameter. if so - visible. otherwise, collapse.
             if ((nodeType == NodeType.Element) && (parm == "Element"))
                 return Visibility.Visible;
             else if ((nodeType == NodeType.Choice) && (parm == "Choice"))
@@ -30,5 +35,7 @@ namespace BobProject.ViewModel.ValueConverters
         {
             throw new NotImplementedException();
         }
+
+        #endregion
     }
 }

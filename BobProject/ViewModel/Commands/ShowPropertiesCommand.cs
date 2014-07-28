@@ -13,7 +13,7 @@ namespace BobProject.ViewModel.Commands
         #region Fields
 
         // Member variables
-        private readonly MainWindowViewModel viewModel;
+        private readonly MainWindowViewModel m_viewModel;
 
         #endregion
 
@@ -21,7 +21,7 @@ namespace BobProject.ViewModel.Commands
 
         public ShowPropertiesCommand(MainWindowViewModel _viewModel)
         {
-            viewModel = _viewModel;
+            m_viewModel = _viewModel;
         }
 
         #endregion
@@ -55,8 +55,11 @@ namespace BobProject.ViewModel.Commands
             //check if conversion parameter to XmlSchemaWrapper succeed
             if (schemaWr != null)
             {
-                viewModel.SelectedItem = schemaWr;
+                m_viewModel.SelectedItem = schemaWr;
 
+                schemaWr.DrillOnce();
+
+                //set data context by selected item
                 switch (schemaWr.NodeType)
                 {
                     case NodeType.Element:

@@ -12,11 +12,9 @@ namespace BobProject.ViewModel.Commands
         #region Fields
 
         // Member variables
-        private readonly SaveXmlViewModel viewModel;
+        private readonly SaveXmlViewModel m_viewModel;
 
-        #endregion
-
-        //Consts
+        #endregion      
 
         #region Const
 
@@ -28,7 +26,7 @@ namespace BobProject.ViewModel.Commands
 
         public SelectXmlExportFileCommand(SaveXmlViewModel _viewModel)
         {
-            viewModel = _viewModel;
+            m_viewModel = _viewModel;
         }
 
         #endregion
@@ -70,7 +68,7 @@ namespace BobProject.ViewModel.Commands
             {
                 // Select document
                 string filename = dlg.FileName;
-                viewModel.PathFile = filename;
+                m_viewModel.PathFile = filename;
             }
 
         }

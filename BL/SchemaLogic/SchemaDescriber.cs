@@ -210,9 +210,9 @@ namespace BL.SchemaLogic
         /// <param name="userName">User name to find, if null or empty - any user</param>
         /// <param name="dates">Date range to serach for</param>
         /// <returns>List of matching files with their details</returns>
-        public List<XmlMetaData> ProduceReport(string folderPath, string userName, DateRange dates)
+        public ObservableCollection<XmlMetaData> ProduceReport(string folderPath, string userName, DateRange dates)
         {
-            List<XmlMetaData> result = new List<XmlMetaData>();
+            ObservableCollection<XmlMetaData> result = new ObservableCollection<XmlMetaData>();
 
             // Check if folder is a real path
             if (!Directory.Exists(folderPath))
@@ -239,7 +239,9 @@ namespace BL.SchemaLogic
                     metaData.XmlPath = filePath;
 
                     // Check dates and compare user name
-                    if (dates.IsInRange(metaData.Date) && userNameCompareFunc(metaData.UserName))
+                    if (dates == null && userNameCompareFunc(metaData.UserName))
+                        result.Add(metaData);
+                    else if (dates.IsInRange(metaData.Date) && userNameCompareFunc(metaData.UserName))
                         result.Add(metaData);
                 }
                 catch

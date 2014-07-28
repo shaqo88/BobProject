@@ -26,6 +26,7 @@ namespace BobProject.ViewModel.Commands
         /// </summary>
         public bool CanExecute(object parameter)
         {
+            //check permission - manager
             return (Permission.Instance.CurrPermission == Permission.PermissionType.Manager);
         }
 
@@ -43,6 +44,7 @@ namespace BobProject.ViewModel.Commands
         /// </summary>
         public void Execute(object parameter)
         {
+            //call save config  - in registry
             ConfigurationData.Instance.SaveConfig();
         }
 

@@ -21,15 +21,23 @@ namespace BobProject
     /// </summary>
     public partial class SaveXML : Window
     {
+        #region Properties
+
         public SaveXmlViewModel ViewModel { get; private set; }
+
+        #endregion
+
+        #region Constructor
 
         public SaveXML(SchemaDescriber schema)
         {
+            //init wpf members
             InitializeComponent();
-
             ViewModel = new SaveXmlViewModel(schema);
             DataContext = ViewModel;
         }
-       
+
+        #endregion
+
     }
 }

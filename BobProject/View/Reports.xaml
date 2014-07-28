@@ -2,38 +2,37 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
-   Title="Reports" Height="500" Width="500" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Icon="../Images/mainIcon.png">
+   Title="Reports" Height="500" Width="539.03" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Icon="../Images/mainIcon.png">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="67*"/>
             <RowDefinition Height="51*"/>
         </Grid.RowDefinitions>
-        <Image HorizontalAlignment="Left" Height="121" Margin="179,24,0,0" VerticalAlignment="Top" Width="124" Source="../Images/reportIcon.jpg"/>
+        <Image HorizontalAlignment="Left" Height="121" Margin="229,30,0,0" VerticalAlignment="Top" Width="124" Source="../Images/reportIcon.jpg"/>
 
 
-        <TextBox TextWrapping="Wrap" Text="{Binding PathFile,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="179,156,140,81"/>
-        <Label Content="Editor Name:" HorizontalAlignment="Right" Height="31" Margin="0,156,320,0" VerticalAlignment="Top" Width="89"/>
-        <Label Content="Date:" HorizontalAlignment="Right" Height="31" Margin="0,201,315,0" VerticalAlignment="Top" Width="89" RenderTransformOrigin="1.797,0.643"/>
-        <TextBox TextWrapping="Wrap" IsReadOnly="True" Text="" Margin="179,244,140,197" Grid.RowSpan="2"/>
-        <Label Content="Root Directory:" HorizontalAlignment="Right" Height="31" Margin="0,244,320,0" VerticalAlignment="Top" Width="89" Grid.RowSpan="2"/>
-        <Button Content="Search" HorizontalAlignment="Left" Margin="223,8,0,0" VerticalAlignment="Top" Width="75" Height="31" Grid.Row="1"/>
-        <ListView Name="ResultReports" HorizontalAlignment="Left" Height="150" Margin="34,44,0,0" VerticalAlignment="Top" Width="450" Grid.Row="1">
+        <TextBox TextWrapping="Wrap" Text="{Binding EditorName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="173,156,70,81"/>
+        <Label Content="Editor Name:" HorizontalAlignment="Right" Height="31" Margin="0,156,359,0" VerticalAlignment="Top" Width="89"/>
+        <Label Content="Date:" HorizontalAlignment="Right" Height="31" Margin="0,199,359,0" VerticalAlignment="Top" Width="89" RenderTransformOrigin="1.797,0.643"/>
+        <TextBox Text="{Binding PathFile}" IsReadOnly="True" Margin="171,242,72,193" Grid.RowSpan="2"  />
+        <Label Content="Root Directory:" HorizontalAlignment="Right" Height="31" Margin="0,244,369,0" VerticalAlignment="Top" Width="89" Grid.RowSpan="2"/>
+        <Button Content="Search" HorizontalAlignment="Left" Margin="251,16,0,0" VerticalAlignment="Top" Width="75" Height="31" Grid.Row="1" Command="{Binding SearchFiles}"/>
+        <ListView Name="ResultReports" HorizontalAlignment="Left" Height="136" Margin="35,57,0,0" VerticalAlignment="Top" Width="478" Grid.Row="1" ItemsSource="{Binding LastSearchResults}">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Editor Name"/>
-                    <GridViewColumn/>
-                    <GridViewColumn Header="Date"/>
-                    <GridViewColumn/>
-                    <GridViewColumn Header="Path"/>
-                    <GridViewColumn/>
+                    <GridViewColumn Header="Editor Name" DisplayMemberBinding="{Binding UserName}"/>
+                    <GridViewColumn Header="Date" DisplayMemberBinding="{Binding Date}"/>
+                    <GridViewColumn Header="File Name" DisplayMemberBinding="{Binding XmlPath}"/>
                 </GridView>
             </ListView.View>
         </ListView>
-        <CheckBox  Name="EditorNameCheckBox" Content="" HorizontalAlignment="Left" Margin="63,161,0,0" VerticalAlignment="Top" IsChecked="True" RenderTransformOrigin="16.689,1.486"/>
-        <CheckBox Name="DateCheckBox" Content="" HorizontalAlignment="Left" Margin="63,206,0,0" VerticalAlignment="Top"/>
-        <Button ToolTip="Browse..."  Style="{DynamicResource IconButtonStyle}"  HorizontalAlignment="Left"  VerticalAlignment="Top" Width="61" Height="45" RenderTransformOrigin="0.507,1.375" Margin="354,233,0,0" Grid.RowSpan="2">
+        <CheckBox  Name="EditorNameCheckBox" Content="" HorizontalAlignment="Left" Margin="63,161,0,0" VerticalAlignment="Top" IsChecked="{Binding Path=IsEditorSearch, Mode=TwoWay}" RenderTransformOrigin="16.689,1.486"/>
+        <CheckBox Name="DateCheckBox" Content="" HorizontalAlignment="Left" Margin="63,206,0,0" VerticalAlignment="Top" IsChecked="{Binding Path=IsDateSearch, Mode=TwoWay}"/>
+        <Button ToolTip="Browse..."  Style="{DynamicResource IconButtonStyle}"  HorizontalAlignment="Left"  VerticalAlignment="Top" Width="61" Height="45" RenderTransformOrigin="0.507,1.375" Margin="462,237,0,0" Grid.RowSpan="2" Click="Browse_Click">
             <Image Source="../Images/OpenFileIcon.png"  />
         </Button>
-        <DatePicker Name="datePick" SelectedDate="{x:Static sys:DateTime.Now}" DisplayDateEnd="{x:Static sys:DateTime.Now}" HorizontalAlignment="Left" Margin="179,206,0,0" VerticalAlignment="Top" Width="165"/>
+        <DatePicker Name="datePickStart" SelectedDate="{Binding StartDate}" DisplayDateEnd="{x:Static sys:DateTime.Now}" HorizontalAlignment="Left" Margin="185,208,0,0" VerticalAlignment="Top" Width="113"/>
+        <Label Content="Between:" HorizontalAlignment="Right" Height="31" Margin="0,206,156,0" VerticalAlignment="Top" Width="60" RenderTransformOrigin="1.797,0.643"/>
+        <DatePicker x:Name="datePickEnd" SelectedDate="{Binding EndDate}" DisplayDateEnd="{x:Static sys:DateTime.Now}" HorizontalAlignment="Left" Margin="383,208,0,0" VerticalAlignment="Top" Width="113"/>
     </Grid>
 </Window>

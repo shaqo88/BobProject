@@ -27,6 +27,7 @@ namespace BobProject
 
         public Login()
         {
+            //check if read value from registry Succeeded
             if (Permission.Instance.IsErrorLoading || ConfigurationData.Instance.IsErrorLoadingSchema ||
                 ConfigurationData.Instance.IsErrorLoadingColors)
             {
@@ -36,7 +37,7 @@ namespace BobProject
             InitializeComponent();
 
             /////////////DEBUG
-            Send_Click(this, null);
+            //Send_Click(this, null);
             ////////////END DEBUG
         }
 
@@ -73,6 +74,7 @@ namespace BobProject
         {
             bool okPermission = Permission.Instance.CheckPermission(userNameTxt.Text, passwordTxt.Password);
 
+            //check permission for entering to mainwindow
             if (okPermission && ConfigurationData.Instance.SchemaPath == "" && Permission.Instance.CurrPermission != Permission.PermissionType.Manager)
             {
                 MessageBox.Show("Schema Path Empty. Please Contact Manager.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -94,6 +96,7 @@ namespace BobProject
 
         private void Clear_Click(object sender, RoutedEventArgs e)
         {
+            //clear last text
             userNameTxt.Clear();
             passwordTxt.Clear();
             failLogin.Visibility = Visibility.Hidden;
@@ -101,6 +104,7 @@ namespace BobProject
 
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
+            //enter click - login
             if (e.Key == Key.Enter)
             {
                 Send_Click(sender, e);

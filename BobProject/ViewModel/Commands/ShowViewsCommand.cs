@@ -13,7 +13,7 @@ namespace BobProject.ViewModel.Commands
         #region Fields
 
         // Member variables
-        private readonly MainWindowViewModel viewModel;
+        private readonly MainWindowViewModel m_viewModel;
         private string[] views = { "Login", "Configuration", "Reports", "SaveXML", "About" };
 
         #endregion
@@ -22,7 +22,7 @@ namespace BobProject.ViewModel.Commands
 
         public ShowViewsCommand(MainWindowViewModel _viewModel)
         {
-            viewModel = _viewModel;
+            m_viewModel = _viewModel;
         }
 
         #endregion
@@ -69,20 +69,20 @@ namespace BobProject.ViewModel.Commands
             else if (viewName.Equals("Configuration"))
                 windowToShow = new Configuration();
             else if (viewName.Equals("Reports"))
-                windowToShow = new Reports();
+                windowToShow = new Reports(m_viewModel.SchemaDescriber);
             else if (viewName.Equals("SaveXML"))
             {
-               if (viewModel.SchemaDescriber.RootElement != null)
+               if (m_viewModel.SchemaDescriber.RootElement != null)
                {
-                   //check if all child attribute filled
-                    bool isAllAttRootFill = viewModel.SchemaDescriber.RootElement.AllChildAttributesFilled;
+                   //check if all child attributes filled
+                    bool isAllAttRootFill = m_viewModel.SchemaDescriber.RootElement.AllChildAttributesFilled;
                     if (isAllAttRootFill == false)
                     {
                         MessageBox.Show("Could not export XML because not all required attributes filled yet", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                         return;
                     }
                     else
-                        windowToShow = new SaveXML(viewModel.SchemaDescriber);
+                        windowToShow = new SaveXML(m_viewModel.SchemaDescriber);
                }
             }
             else if (viewName.Equals("About"))
@@ -93,8 +93,10 @@ namespace BobProject.ViewModel.Commands
             windowToShow.Owner = MainWindow.Instance;
 
             //DEBUG
-            if (!viewName.Equals("Login")) //END DEBUG
+            //if (!viewName.Equals("Login")) //END DEBUG
                 windowToShow.ShowDialog();
+
+               
 
         }
 

@@ -11,11 +11,18 @@ namespace BobProject.ViewModel.Commands
 {
     public class DeleteSeqItemCommand : ICommand
     {
+        #region Fields
+
+        // Member variables
+        private readonly MainWindowViewModel m_viewModel;
+
+        #endregion
 
         #region Constructor
 
-        public DeleteSeqItemCommand()
+        public DeleteSeqItemCommand(MainWindowViewModel _viewModel)
         {
+            m_viewModel = _viewModel;
         }
 
         #endregion
@@ -27,6 +34,11 @@ namespace BobProject.ViewModel.Commands
         /// </summary>
         public bool CanExecute(object parameter)
         {
+            //check permission
+            if (m_viewModel.Permit.Equals("Viewer"))
+                return false;
+
+            //convert parameter
             XmlSchemaWrapper scWr = (XmlSchemaWrapper)parameter;
 
             //check if parameter is XmlSchemaWrapper type

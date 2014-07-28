@@ -13,7 +13,7 @@
         x:Class="BobProject.MainWindow"  
         x:Name="_this"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
-        Title="Bob" Height="350" Width="525" WindowState="Maximized" Icon="../Images/mainIcon.png" WindowStartupLocation="CenterScreen" Closed="OnExit">
+        Title="Bob" Height="350" Width="525" WindowState="Maximized" Icon="../Images/mainIcon.png" WindowStartupLocation="CenterScreen" Closed="OnExit" PreviewKeyDown="Search_PreviewKeyDown" Style="{DynamicResource BackgroundStyle}">
     <Window.Resources>
         <ValueConverter:ColorToBrushConverter x:Key="colorToBrushConverter"/>
         <ValueConverter:ColorLegendConverter x:Key="colorLegendConverter"/>
@@ -22,7 +22,8 @@
         <ValueConverter:PermissionToVisibilityConverter x:Key="permissionToVisibilityConverter"/>
         <ValueConverter:IndexToTextConverter x:Key="indexToTextConverter"/>
         <ValueConverter:SelectedItemToArrayConverter x:Key="selectToArrayConverter"/>
-        <ValueConverter:ElementsToVisibilityConverter x:Key="elementsToVisibilityConverter"/>                
+        <ValueConverter:ElementsToVisibilityConverter x:Key="elementsToVisibilityConverter"/>
+        <ValueConverter:PermissionToEnableConverter x:Key="permissionToEnableConverter"/>
         
         <Helper:HierarchyDataTemplateSelector x:Key="hierarchyDataTemplateSelector" />
         <Style x:Key="MyButtonStyle" TargetType="Button">
@@ -46,10 +47,28 @@
                                                                         Color="Black" />
             </Style.Resources>
             <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-        </Style>       
+        </Style>
+         <!--<Style x:Key="BackgroundStyle" TargetType="{x:Type Window}">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <VisualBrush Viewbox="0, 0,1280,1024" ViewboxUnits="Absolute" >
+                        <VisualBrush.Visual>
+                            <Image Source="/BobProject;component/Images/backgroundMain.png">
+                                <Image.Effect>
+                                    <BlurEffect Radius="20"/>
+                                </Image.Effect>
+                            </Image>
+                        </VisualBrush.Visual>
+                    </VisualBrush>
+                </Setter.Value>
+            </Setter>
+        </Style>-->
     </Window.Resources>
+    <Window.Background>
+        <ImageBrush ImageSource="/BobProject;component/Images/backgroundMain.png" Stretch="Fill" />
+    </Window.Background>
 
-    <DockPanel>
+    <DockPanel >
         <Menu DockPanel.Dock="Top" HorizontalAlignment="Left" BorderBrush="Black">
             <MenuItem Header="File">
                 <MenuItem Header="New" Command="{Binding LoadNewFile}" CommandParameter="local" Visibility="{Binding Path=Permit, Converter={StaticResource permissionToVisibilityConverter},ConverterParameter=Editor}"/>
@@ -77,8 +96,7 @@
             </MenuItem>
         </Menu>
         <ToolBar DockPanel.Dock="Top" Height="35" Visibility="{Binding Path=IsShowSearchBar, Converter={StaticResource BoolToVisConverter}}">
-            <l:SearchTextBox Height="35" VerticalAlignment="Top" Name="SearchBar" Background="AliceBlue" Width="263" Margin="0,0,0,-5" PreviewKeyDown="Window_PreviewKeyDown">
-            </l:SearchTextBox>
+            <l:SearchTextBox Height="35" VerticalAlignment="Top" Name="SearchBar" Background="AliceBlue" Width="263" Margin="0,0,0,-5"/>
             <Button Name="NextResult" Style="{DynamicResource IconButtonStyle}" ToolTip="View Next Result" Click="OnShowNextResult"  >
                 <Image Source="../Images/RightArrow.png" Width="25" Height="16" />
             </Button>
@@ -111,7 +129,7 @@
                 <StackPanel Grid.Column="0" VerticalAlignment="Stretch">
                     <Label FontSize="16" FontWeight="Bold" Content="Types:"/>
                     
-                    <TreeView Name="HierarchyTreeTypesView" FontSize="14" TreeViewItem.MouseRightButtonUp="OnExpandCollapseNode"   TreeViewItem.Expanded="TreeViewItem_Expanded" ItemTemplateSelector="{StaticResource hierarchyDataTemplateSelector}" ItemsSource="{Binding}" >
+                    <TreeView Name="HierarchyTreeTypesView" FontSize="14" TreeViewItem.MouseRightButtonUp="OnExpandCollapseNode" TreeViewItem.Expanded="TreeViewItem_Expanded" ItemTemplateSelector="{StaticResource hierarchyDataTemplateSelector}" ItemsSource="{Binding}" >
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="SelectedItemChanged">
                                 <i:InvokeCommandAction Command="{Binding ShowProperties}" CommandParameter="{Binding ElementName=HierarchyTreeTypesView,Path=SelectedItem}"/>
@@ -120,7 +138,9 @@
                         <TreeView.ItemContainerStyle>
                             <Style TargetType="{x:Type TreeViewItem}">
                                 <!--<Setter Property="ContextMenu" Value="{DynamicResource TreeViewMenu}" />-->
-                                <Setter Property="IsExpanded" Value="{Binding IsDrillable}" />                                 
+                                <Setter Property="IsExpanded" Value="{Binding IsDrillable}" /> 
+                                <!--<Setter Property="IsExpanded" Value="{Binding HasBeenDrilled}" /> -->
+                                
                                 <Setter Property="FontWeight" Value="Normal" />                                
                                 <Setter Property="Foreground">
                                     <Setter.Value>
@@ -154,8 +174,8 @@
                                 <StackPanel Orientation="Horizontal" >
                                     <TextBlock Text="{Binding Index,Converter={StaticResource indexToTextConverter}, Mode=OneWay}" />
                                     <TextBlock Text=" " />
-                                    <Button  Style="{DynamicResource IconButtonStyle}" ToolTip="Delete Item" Command="{Binding  ElementName=_this, Path=DataContext.DeleteSeqItem}" CommandParameter="{Binding}">
-                                        <Image Source="../Images/Resycle.png" Width="14" Height="14" />
+                                    <Button  Style="{DynamicResource IconButtonStyle}" ToolTip="Delete Item" Command="{Binding  ElementName=_this, Path=DataContext.DeleteSeqItem}" CommandParameter="{Binding}" IsEnabled="{Binding Path=Permit, Converter={StaticResource permissionToEnableConverter},ConverterParameter=Editor}">
+                                        <Image Source="../Images/Resycle.png" Width="14" Height="14" IsEnabled="{Binding Path=Permit, Converter={StaticResource permissionToEnableConverter},ConverterParameter=Editor}" />
                                     </Button>
                                     <Image Source="../Images/ChildOKIcon.png" ToolTip="All child node attributes are filled" Width="20" Height="20" Visibility="{Binding Path=AllChildAttributesFilled, Converter={StaticResource BoolToVisConverter}}" />
                                 </StackPanel>
@@ -192,7 +212,7 @@
                     </TreeView>
                     <Line></Line>
                     <Label FontSize="16" FontWeight="Bold" Content="Legend:"/>
-                    <ListBox x:Name="LstColors" FontSize="14" Grid.Row="0" ItemsSource="{Binding}" Style="{StaticResource MyListItemStyle}">
+                    <ListBox x:Name="LstColors" FontSize="14" Grid.Row="0" ItemsSource="{Binding}" Style="{StaticResource MyListItemStyle}" >
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Path=Key}" Foreground="{Binding Path=Value, Converter={StaticResource colorToBrushConverter}}"/>
@@ -212,7 +232,7 @@
                     <StackPanel x:Name="PropertiesPanel" Grid.Column="2" Orientation="Vertical" Grid.Row="0" >
 
                         <Label FontSize="16" FontWeight="Bold" Content="Properties:"/>
-                        <Grid x:Name="ElementPanel" Visibility="{Binding Path=SelectedItem.NodeType, Converter={StaticResource selectionPropertyToVisibilityConverter},ConverterParameter=Element}">
+                        <Grid x:Name="ElementPanel" Visibility="{Binding Path=SelectedItem.NodeType, Converter={StaticResource selectionPropertyToVisibilityConverter},ConverterParameter=Element}" IsEnabled="{Binding Path=Permit, Converter={StaticResource permissionToEnableConverter},ConverterParameter=Editor}">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -240,7 +260,7 @@
                                                 </Grid.ColumnDefinitions>
                                                 <TextBlock Text="{Binding Path=Name}" Width="100" DataContext="{Binding}" Grid.Column="0" />
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1">
-                                                    <TextBox Name="AttributeValue" Text="{Binding Path=Value,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" DataContext="{Binding}" Width="200" TextChanged="PropertiesChanged"  />
+                                                    <TextBox Name="AttributeValue" Text="{Binding Path=Value,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" DataContext="{Binding}" Width="200" TextChanged="PropertiesChanged"  IsEnabled="{Binding Path=Permit, Converter={StaticResource permissionToEnableConverter},ConverterParameter=Editor}"/>
                                                     <Label Content="*" Foreground="Red" Visibility="{Binding IsRequired, Converter={StaticResource BoolToVisConverter}}"/>
                                                 </StackPanel>
                                             </Grid>
@@ -248,15 +268,15 @@
                                     </ListBox.ItemTemplate>
                                 </ListBox>
                                 <Label  Name="InnerTextLabel" Content="Inner Text:" FontSize="14" Grid.Row="2" Visibility="{Binding Path=SelectedItem, Converter={StaticResource elementsToVisibilityConverter},ConverterParameter=Inner}" />
-                                <TextBox Name="InnerTextBlock" Text="{Binding Path=InnerText,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" FontSize="14" DataContext="{Binding}"  VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" Visibility="{Binding Path=SelectedItem, Converter={StaticResource elementsToVisibilityConverter},ConverterParameter=Inner}" TextChanged="PropertiesChanged" />
+                                <TextBox Name="InnerTextBlock" Text="{Binding Path=InnerText,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" FontSize="14" DataContext="{Binding}"  VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" Visibility="{Binding Path=SelectedItem, Converter={StaticResource elementsToVisibilityConverter},ConverterParameter=Inner}" TextChanged="PropertiesChanged" IsEnabled="{Binding Path=Permit, Converter={StaticResource permissionToEnableConverter},ConverterParameter=Editor}" />
                                 
                             </Grid>
                         </Grid>
-                        <Grid x:Name="ChoicePanel" Visibility="{Binding Path=SelectedItem.NodeType, Converter={StaticResource selectionPropertyToVisibilityConverter},ConverterParameter=Choice}">
+                        <Grid x:Name="ChoicePanel" Visibility="{Binding Path=SelectedItem.NodeType, Converter={StaticResource selectionPropertyToVisibilityConverter},ConverterParameter=Choice}" IsEnabled="{Binding Path=Permit, Converter={StaticResource permissionToEnableConverter},ConverterParameter=Editor}">
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="Choice:" FontSize="14" />
                                 <StackPanel>
-                                    <ComboBox Name="ChoiceComboBox" FontSize="14" DataContext="{Binding}" ItemsSource="{Binding Path=Children}" SelectedItem="{Binding Path=Selected}" SelectionChanged="PropertiesChanged">
+                                    <ComboBox Name="ChoiceComboBox" FontSize="14" DataContext="{Binding}" ItemsSource="{Binding Path=Children}" SelectedItem="{Binding Path=Selected}" SelectionChanged="PropertiesChanged" IsEnabled="{Binding Path=Permit, Converter={StaticResource permissionToEnableConverter},ConverterParameter=Editor}">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="SelectionChanged">
                                                 <i:InvokeCommandAction x:Name="SelectComboChange" Command="{Binding ElementName=_this, Path=DataContext.SelectedChoiceChange}" />
@@ -273,13 +293,13 @@
                                 </StackPanel>
                             </StackPanel>
                         </Grid>
-                        <Grid x:Name="SequencePanel" Visibility="{Binding Path=SelectedItem.NodeType, Converter={StaticResource selectionPropertyToVisibilityConverter},ConverterParameter=Sequence}">
+                        <Grid x:Name="SequencePanel" Visibility="{Binding Path=SelectedItem.NodeType, Converter={StaticResource selectionPropertyToVisibilityConverter},ConverterParameter=Sequence}" IsEnabled="{Binding Path=Permit, Converter={StaticResource permissionToEnableConverter},ConverterParameter=Editor}">
                             <StackPanel Orientation="Vertical">
                                 <Label Content="Sequence:" FontSize="14" />
                                 <StackPanel Orientation="Horizontal" Margin="3,0,-3,0">
                                     <TextBlock Text="Array Size:  " FontSize="14" />
-                                    <nb:NumericBox Name="SequenceSize" Value="{Binding}"  Minimum="0" Maximum="10000" Margin="5" Height="28" />
-                                    <Button Name="UpdateSequenceSize" Content="Update" Command="{Binding UpdateSeqNumItems}" CommandParameter="{Binding SelectedItem}" Height="30" Click="PropertiesChanged" />
+                                    <nb:NumericBox Name="SequenceSize" Value="{Binding}"  Minimum="0" Maximum="1000" Margin="5" Height="28" IsEnabled="{Binding Path=Permit, Converter={StaticResource permissionToEnableConverter},ConverterParameter=Editor}"/>
+                                    <Button Name="UpdateSequenceSize" Content="Update" Command="{Binding UpdateSeqNumItems}" CommandParameter="{Binding SelectedItem}" Height="30" Click="PropertiesChanged" IsEnabled="{Binding Path=Permit, Converter={StaticResource permissionToEnableConverter},ConverterParameter=Editor}"/>
                                 </StackPanel>
                             </StackPanel>
                         </Grid>

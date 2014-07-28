@@ -11,10 +11,14 @@ namespace BobProject
     /// </summary>
     public static class Splasher
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        private static Window mSplash;
+
+        #region Fields
+
+        private static Window m_Splash;
+
+        #endregion
+
+        #region Window Splash Instance
 
         /// <summary>
         /// Get or set the splash screen window
@@ -23,22 +27,26 @@ namespace BobProject
         {
             get
             {
-                return mSplash;
+                return m_Splash;
             }
             set
             {
-                mSplash = value;
+                m_Splash = value;
             }
         }
+
+        #endregion
+
+        #region public methods
 
         /// <summary>
         /// Show splash screen
         /// </summary>
         public static void ShowSplash()
         {
-            if (mSplash != null)
+            if (m_Splash != null)
             {
-                mSplash.Show();
+                m_Splash.Show();
             }
         }
         /// <summary>
@@ -46,13 +54,15 @@ namespace BobProject
         /// </summary>
         public static void CloseSplash()
         {
-            if (mSplash != null)
+            if (m_Splash != null)
             {
-                mSplash.Close();
+                m_Splash.Close();
 
-                if (mSplash is IDisposable)
-                    (mSplash as IDisposable).Dispose();
+                if (m_Splash is IDisposable)
+                    (m_Splash as IDisposable).Dispose();
             }
         }
+
+        #endregion
     }
 }
