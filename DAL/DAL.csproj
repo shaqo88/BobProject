@@ -44,7 +44,6 @@
     <Compile Include="XmlWrapper\XElementExtensions.cs" />
     <Compile Include="XmlWrapper\XmlLoaderWrapper.cs" />
     <Compile Include="XmlWrapper\XmlSearcher.cs" />
-    <Compile Include="XmlWrapper\XmlReaderWrapper.cs" />
     <Compile Include="XmlWrapper\XmlWriterWrapper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
