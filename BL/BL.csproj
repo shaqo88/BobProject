@@ -60,6 +60,7 @@
     <Compile Include="UtilityClasses\DateRange.cs" />
     <Compile Include="UtilityClasses\PropertyNotifyObject.cs" />
     <Compile Include="UtilityClasses\ObservableDictionary.cs" />
+    <Compile Include="XmlLogic\XmlMetaData.cs" />
     <Compile Include="XmlLogic\XmlExportLogic.cs" />
     <Compile Include="XmlLogic\XmlImportLogic.cs" />
     <Compile Include="XmlLogic\XmlWrappersSearcher.cs" />
@@ -70,9 +71,8 @@
       <Name>DAL</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <None Include="BLClassDiagram.cd" />
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

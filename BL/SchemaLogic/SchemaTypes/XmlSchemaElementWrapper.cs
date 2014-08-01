@@ -12,6 +12,8 @@ namespace BL.SchemaLogic.SchemaTypes
 {
     public class XmlSchemaElementWrapper : XmlSchemaWrapper
     {
+        #region Properties
+
         private XmlSchemaElement ElementObject { get; set; }
 
         private IXmlSchemaTypeWrapper Type { get; set; }
@@ -48,7 +50,6 @@ namespace BL.SchemaLogic.SchemaTypes
             }
         }
 
-        // TODO : doesn't work yet
         public override bool AllChildAttributesFilled
         {
             get
@@ -67,6 +68,10 @@ namespace BL.SchemaLogic.SchemaTypes
             return Name;
         }
 
+        #endregion
+
+        #region Constructor
+
         public XmlSchemaElementWrapper(XmlSchemaElement element, XmlSchemaWrapper parent) :
             base(element.Name, NodeType.Element, parent)
         {
@@ -81,14 +86,11 @@ namespace BL.SchemaLogic.SchemaTypes
             Attributes.ToList().ForEach((attr) => attr.HighLevelPropertyChanged += attr_HighLevelPropertyChanged);
         }
 
-        void attr_HighLevelPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "IsAttributeValid")
-            {
-                RaisePropertyChangedEvent("AllAttributesFilled");
-                RaisePropertyChangedEvent("AllChildAttributesFilled");
-            }
-        }
+
+        #endregion
+
+        #region Methods
+
 
         protected override void RaiseAllProperties()
         {
@@ -122,5 +124,20 @@ namespace BL.SchemaLogic.SchemaTypes
 
             return null;
         }
+
+        #endregion
+
+        #region Handlers
+
+        void attr_HighLevelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "IsAttributeValid")
+            {
+                RaisePropertyChangedEvent("AllAttributesFilled");
+                RaisePropertyChangedEvent("AllChildAttributesFilled");
+            }
+        }
+
+        #endregion
     }
 }

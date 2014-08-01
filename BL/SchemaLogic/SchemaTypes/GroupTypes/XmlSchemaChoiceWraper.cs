@@ -8,12 +8,18 @@ using System.Xml.Schema;
 
 namespace BL.SchemaLogic.SchemaTypes
 {
-
     public class XmlSchemaChoiceWrapper : XmlSchemaGroupBaseWrapper
     {
+        #region Members
+
         private XmlSchemaChoice m_choice;
 
         private XmlSchemaWrapper m_selected;
+
+
+        #endregion
+
+        #region Properties
 
         public XmlSchemaWrapper Selected
         {
@@ -37,14 +43,6 @@ namespace BL.SchemaLogic.SchemaTypes
             }
         }
 
-        void Selected_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "AllChildAttributesFilled" || e.PropertyName == "AllChildrenDrilled")
-            {
-                RaisePropertyChangedEvent(e.PropertyName);
-            }
-        }
-
         public override bool AllChildAttributesFilled
         {
             get
@@ -61,6 +59,21 @@ namespace BL.SchemaLogic.SchemaTypes
             }
         }
 
+        #endregion
+
+        #region Constructor
+
+        public XmlSchemaChoiceWrapper(XmlSchemaChoice choice, XmlSchemaWrapper parent)
+            : base(choice, NodeType.Choice, parent)
+        {
+            m_choice = choice;
+            OnGroupDrill += XmlSchemaChoiceWrapper_OnGroupDrill;
+        }
+
+        #endregion
+
+        #region Methods
+
         protected override void InternalDrill()
         {
             // Check if this choice is optional, if so - add NULL by default
@@ -70,11 +83,21 @@ namespace BL.SchemaLogic.SchemaTypes
             base.InternalDrill();
         }
 
-        public XmlSchemaChoiceWrapper(XmlSchemaChoice choice, XmlSchemaWrapper parent)
-            : base(choice, NodeType.Choice, parent)
+        public override string ToString()
         {
-            m_choice = choice;
-            OnGroupDrill += XmlSchemaChoiceWrapper_OnGroupDrill;
+            return base.ToString() + "->" + Selected;
+        }
+
+        #endregion
+
+        #region Handlers
+
+        void Selected_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "AllChildAttributesFilled" || e.PropertyName == "AllChildrenDrilled")
+            {
+                RaisePropertyChangedEvent(e.PropertyName);
+            }
         }
 
         private void XmlSchemaChoiceWrapper_OnGroupDrill()
@@ -83,26 +106,35 @@ namespace BL.SchemaLogic.SchemaTypes
                 Selected = Children[0];
         }
 
-        public override string ToString()
-        {
-            return base.ToString() + "->" + Selected;
-        }
+        #endregion
     }
 
     public class XmlSchemaNullChoice : XmlSchemaWrapper
     {
+        #region Constructor
+
         public XmlSchemaNullChoice(XmlSchemaChoiceWrapper parent)
             : base("NULL", NodeType.NULL, parent, true)
         {
         }
+
+        #endregion
+
+        #region Properties
 
         public override bool IsDrillable
         {
             get { return false; }
         }
 
+        #endregion
+
+        #region Methods
+
         protected override void InternalDrill()
         {
         }
+
+        #endregion
     }
 }

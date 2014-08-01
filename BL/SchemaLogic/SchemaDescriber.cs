@@ -20,14 +20,14 @@ namespace BL.SchemaLogic
     {
         #region Public Properties
 
+        /// <summary>
+        /// List of elements that are in the root of the XSD schema
+        /// </summary>
         public ObservableCollection<XmlSchemaElementWrapper> Elements { get; private set; }
 
-        public Version XmlVersion { get; private set; }
-
-        public string UserName { get; private set; }
-
-        public DateTime LastEditDate { get; private set; }
-
+        /// <summary>
+        /// The root element in the XSD
+        /// </summary>
         public XmlSchemaElementWrapper RootElement
         {
             get
@@ -39,8 +39,26 @@ namespace BL.SchemaLogic
             }
         }
 
+        /// <summary>
+        /// The version of the current edited XML
+        /// </summary>
+        public Version XmlVersion { get; private set; }
+
+        /// <summary>
+        /// The current User that edits the XML
+        /// </summary>
+        public string UserName { get; private set; }
+
+        /// <summary>
+        /// Last edit date of the XML before current edit
+        /// </summary>
+        public DateTime LastEditDate { get; private set; }
+
         private XmlDocument m_currentXmlDocument;
 
+        /// <summary>
+        /// The current edited XML document object
+        /// </summary>
         public XmlDocument CurrentXmlDocument
         {
             get
@@ -70,12 +88,6 @@ namespace BL.SchemaLogic
             XmlVersion = new Version(1, 0);
             UserName = userName;
             LoadSchema(schemaPath);
-
-        }
-
-        void RootElement_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            this.CurrentXmlDocument = GetCurrentXmlDocument();
         }
 
         #endregion
@@ -118,6 +130,12 @@ namespace BL.SchemaLogic
             }
         }
 
+        /// <summary>
+        /// Validate that the given schema is legal
+        /// </summary>
+        /// <param name="schemaPath">Path of the schema to validate</param>
+        /// <param name="throwException">Whether to throw exception if the schema is invalid</param>
+        /// <returns>True if the schema is valid, false (or throws exception) if schema is invalid</returns>
         public bool ValidateSchema(string schemaPath, bool throwException = false)
         {
             return XsdReader.ValidateSchema(schemaPath, throwException);
@@ -152,25 +170,6 @@ namespace BL.SchemaLogic
 
             return result;
         }
-
-        //public bool LoadExistingXml(string xmlPath)
-        //{
-        //    var doc = XmlLoaderWrapper.LoadXml(xmlPath, XsdReader.Schema);
-        //    //string errorMessage;
-
-        //    //if (!XsdReader.IsXmlMatchSchema(doc, out errorMessage))
-        //    //    throw new Exception(string.Format("Given XML doesn't match the loaded schema (XSD). Path: {0}, Details: {1}", xmlPath, errorMessage));
-
-        //    this.ClearXml();
-
-        //    XmlVersion = XmlImportLogic.GetVersionOfXml(doc);
-        //    UserName = XmlImportLogic.GetUserName(doc);
-        //    LastEditDate = XmlImportLogic.GetDateTime(doc);
-
-        //    //Elements.Add(XmlImportLogic.XmlDocumentToSchemaWrapper(doc));
-
-        //    return true;
-        //}
 
         /// <summary>
         /// Exports the current situation of the tree to XML
@@ -293,6 +292,15 @@ namespace BL.SchemaLogic
             {
                 ClearWrapper(child);
             }
+        }
+
+        #endregion
+
+        #region Handlers
+
+        void RootElement_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            this.CurrentXmlDocument = GetCurrentXmlDocument();
         }
 
         #endregion

@@ -1,0 +1,178 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="BL.RegistryConfig.ConfigurationData" Collapsed="true">
+    <Position X="18.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAACAAAAAAAAAAEAgAACIABAEIAASCAAAAAAAEA=</HashCode>
+      <FileName>Registry\ConfigurationData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BL.RegistryConfig.Permission" Collapsed="true">
+    <Position X="18.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UAAAAAQAAABAAQAJAAQAAQBAAABAAAAAQQACAAAAAAA=</HashCode>
+      <FileName>Registry\Permission.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BL.SchemaLogic.SchemaDescriber" Collapsed="true">
+    <Position X="14" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAggAAAAAADAAgQAAQVAAAQQABBAAAAQAAABAAAAA=</HashCode>
+      <FileName>SchemaLogic\SchemaDescriber.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BL.SchemaLogic.SchemaTypes.XmlSchemaChoiceWrapper" Collapsed="true">
+    <Position X="11.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAABAAAAAgEACAAAAAAAAAAAIAAABAAAAQAAAI=</HashCode>
+      <FileName>SchemaLogic\SchemaTypes\GroupTypes\XmlSchemaChoiceWraper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BL.SchemaLogic.SchemaTypes.XmlSchemaNullChoice" Collapsed="true">
+    <Position X="2.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAA=</HashCode>
+      <FileName>SchemaLogic\SchemaTypes\GroupTypes\XmlSchemaChoiceWraper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BL.SchemaLogic.SchemaTypes.XmlSchemaGroupBaseWrapper" Collapsed="true">
+    <Position X="9.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAgAACgAAAAAAAAAAAAAAAAAAAAAAQAAAA=</HashCode>
+      <FileName>SchemaLogic\SchemaTypes\GroupTypes\XmlSchemaGroupsWrapper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BL.SchemaLogic.SchemaTypes.XmlSchemaSequenceArray" Collapsed="true">
+    <Position X="7.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QEIAgEAAAAAAABAQCAAABAQAAAAAAAAECAAAIARQIAA=</HashCode>
+      <FileName>SchemaLogic\SchemaTypes\GroupTypes\XmlSchemaSequenceArray.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BL.SchemaLogic.SchemaTypes.XmlSchemaSequenceWrapper" Collapsed="true">
+    <Position X="9.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAEAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>SchemaLogic\SchemaTypes\GroupTypes\XmlSchemaSequenceWrapper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BL.SchemaLogic.SchemaTypes.XmlSchemaAttributeInfo" Collapsed="true">
+    <Position X="16.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAABAAAAAAAAAQgGAQEIAAAACQgAAAAAAA=</HashCode>
+      <FileName>SchemaLogic\SchemaTypes\XmlSchemaAttributeInfo.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BL.SchemaLogic.SchemaTypes.XmlSchemaElementWrapper" Collapsed="true">
+    <Position X="5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABQAAAAACIAgAAAEAQAAAAAYAAAAAAIgAwABCAQgAAA=</HashCode>
+      <FileName>SchemaLogic\SchemaTypes\XmlSchemaElementWrapper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BL.SchemaLogic.SchemaTypes.XmlSchemaWrapper" Collapsed="true">
+    <Position X="7.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAQAiCAAAAAgAAgEAAAEQARAAAACEAAEAgAAAAQAAAA=</HashCode>
+      <FileName>SchemaLogic\SchemaTypes\XmlSchemaWrapper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BL.SchemaLogic.SchemaTypes.XmlSchemaTypeComposite.XmlSchemaComplexTypeWrapper" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAABAAAAAAAAAAAAAAAAQAAAAAgAAAAAAAIAAAAAA=</HashCode>
+      <FileName>SchemaLogic\SchemaTypes\XmlSchemaTypeComposite\XmlSchemaComplexTypeWrapper.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BL.SchemaLogic.SchemaTypes.XmlSchemaTypeComposite.XmlSchemaSimpleTypeWrapper" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="23" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAABAAAAAAAAAAEAAAAAQQAAEAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>SchemaLogic\SchemaTypes\XmlSchemaTypeComposite\XmlSchemaSimpleTypeWrapper.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BL.UtilityClasses.DateRange" Collapsed="true">
+    <Position X="20.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAIAAACAAAAAEBAAAAAAAAAEAAAAAAAAAAAAAAAg=</HashCode>
+      <FileName>UtilityClasses\DateRange.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BL.UtilityClasses.ObservableDictionary&lt;TKey, TValue&gt;" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="22.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CSIChgAAWBxMoFAAOJcEjgQggAAEgxAGABAoIOxAARI=</HashCode>
+      <FileName>UtilityClasses\ObservableDictionary.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BL.UtilityClasses.PropertyNotifyObject" Collapsed="true">
+    <Position X="8.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAQAAAAAAAAgAEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UtilityClasses\PropertyNotifyObject.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BL.XmlLogic.XmlExportLogic" Collapsed="true">
+    <Position X="20.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAAACAAAAICAAAAAAABAAAIAABAAAAAAA=</HashCode>
+      <FileName>XmlLogic\XmlExportLogic.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BL.XmlLogic.XmlImportLogic" Collapsed="true">
+    <Position X="22.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQoAAAAAAAAEAAAABAAAAAAAAAA=</HashCode>
+      <FileName>XmlLogic\XmlImportLogic.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BL.XmlLogic.XmlWrappersSearcher" Collapsed="true">
+    <Position X="22.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAAgAAAAAAAAABAAAAAAAAABAAAAAAAAA=</HashCode>
+      <FileName>XmlLogic\XmlWrappersSearcher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BL.XmlLogic.XmlMetaData" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAAEAIAAAIAAAAAAAAQBAUAAAAAAAAA=</HashCode>
+      <FileName>XmlLogic\XmlMetaData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="BL.SchemaLogic.INotifyHighLevelPropertyChanged" Collapsed="true">
+    <Position X="18.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SchemaLogic\INotifyHighLevelPropertyChanged.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BL.SchemaLogic.SchemaTypes.XmlSchemaTypeComposite.IXmlSchemaTypeWrapper" Collapsed="true">
+    <Position X="24.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SchemaLogic\SchemaTypes\XmlSchemaTypeComposite\IXmlSchemaTypeWrapper.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="BL.SchemaLogic.SchemaTypes.NodeType" Collapsed="true">
+    <Position X="18.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAACgAAAAAAAAACIAAAAAAAAEAAAA=</HashCode>
+      <FileName>SchemaLogic\SchemaTypes\XmlSchemaWrapper.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="BL.XmlLogic.SearchEnum" Collapsed="true">
+    <Position X="20.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAE=</HashCode>
+      <FileName>XmlLogic\XmlWrappersSearcher.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

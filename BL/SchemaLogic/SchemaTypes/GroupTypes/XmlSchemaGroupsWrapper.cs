@@ -16,15 +16,30 @@ namespace BL.SchemaLogic.SchemaTypes
     /// </summary>
     public abstract class XmlSchemaGroupBaseWrapper : XmlSchemaWrapper
     {
+        #region Events
+
         protected event Action OnGroupDrill;
-        private XmlSchemaGroupBase Group { get; set; }
+
+        #endregion
+
+        #region Properties
+
         public override bool IsDrillable { get { return true; } }
+        private XmlSchemaGroupBase Group { get; set; }
+
+        #endregion
+
+        #region Constructor
 
         public XmlSchemaGroupBaseWrapper(XmlSchemaGroupBase group, NodeType nodeType, XmlSchemaWrapper parent)
             : base(nodeType.ToString(), nodeType, parent)
         {
             Group = group;
         }
+
+        #endregion
+
+        #region Methods
 
         public static XmlSchemaGroupBaseWrapper SchemaGroupWrappersFactory(XmlSchemaGroupBase group, XmlSchemaWrapper parent)
         {
@@ -67,6 +82,8 @@ namespace BL.SchemaLogic.SchemaTypes
             if (OnGroupDrill != null)
                 OnGroupDrill();
         }
+
+        #endregion
     }
 
 

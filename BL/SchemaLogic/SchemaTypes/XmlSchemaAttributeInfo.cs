@@ -11,7 +11,13 @@ namespace BL.SchemaLogic.SchemaTypes
 {
     public class XmlSchemaAttributeInfo : PropertyNotifyObject, INotifyHighLevelPropertyChanged
     {
+        #region Events
+
         public event PropertyChangedEventHandler HighLevelPropertyChanged;
+
+        #endregion
+
+        #region Properties
 
         private string m_name;
 
@@ -45,10 +51,28 @@ namespace BL.SchemaLogic.SchemaTypes
             set { SetProperty(ref m_value, value); }
         }
 
+        #endregion
+
+        #region Constructor
+
         public XmlSchemaAttributeInfo()
         {
             PropertyChanged += XmlSchemaAttributeInfo_PropertyChanged;
         }
+
+        #endregion
+        
+        #region Methods
+
+        protected void RaiseHighLevelPropertyChanged(string propertyName)
+        {
+            if (HighLevelPropertyChanged != null)
+                HighLevelPropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        #endregion
+
+        #region Handlers
 
         void XmlSchemaAttributeInfo_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -64,10 +88,6 @@ namespace BL.SchemaLogic.SchemaTypes
                 RaiseHighLevelPropertyChanged("IsAttributeFilled");
         }
 
-        protected void RaiseHighLevelPropertyChanged(string propertyName)
-        {
-            if (HighLevelPropertyChanged != null)
-                HighLevelPropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-        }
+        #endregion
     }
 }

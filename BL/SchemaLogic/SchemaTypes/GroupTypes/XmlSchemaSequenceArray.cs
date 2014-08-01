@@ -10,8 +10,14 @@ namespace BL.SchemaLogic.SchemaTypes
 {
     public class XmlSchemaSequenceArray : XmlSchemaGroupBaseWrapper, IList<XmlSchemaSequenceWrapper>
     {
+        #region Members
+
         private XmlSchemaSequence m_sequence;
         private int m_count;
+
+        #endregion
+
+        #region Constructor
 
         public XmlSchemaSequenceArray(XmlSchemaSequence sequence, XmlSchemaWrapper parent)
             : base(sequence, NodeType.Sequence, parent)
@@ -21,14 +27,7 @@ namespace BL.SchemaLogic.SchemaTypes
             Count = Children.Count;
         }
 
-        void Children_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            Count = Children.Count;
-            for (int i = 0; i < Children.Count; i++)
-            {
-                ((XmlSchemaSequenceWrapper)Children[i]).Index = i;
-            }
-        }
+        #endregion
 
         #region IList<> Interface
 
@@ -108,6 +107,8 @@ namespace BL.SchemaLogic.SchemaTypes
 
         #endregion
 
+        #region Methods
+
         protected override void InternalDrill()
         {
             foreach (var seq in Children)
@@ -122,5 +123,20 @@ namespace BL.SchemaLogic.SchemaTypes
             this.Add(newSeq);
             newSeq.DrillOnce();
         }
+        
+        #endregion
+
+        #region Handlers
+
+        void Children_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            Count = Children.Count;
+            for (int i = 0; i < Children.Count; i++)
+            {
+                ((XmlSchemaSequenceWrapper)Children[i]).Index = i;
+            }
+        }
+
+        #endregion
     }
 }

@@ -10,22 +10,29 @@ namespace BL.SchemaLogic.SchemaTypes.XmlSchemaTypeComposite
 {
     public class XmlSchemaComplexTypeWrapper : IXmlSchemaTypeWrapper
     {
+        #region Properties
+
         public string Name { get; private set; }
 
         public XmlSchemaComplexType SchemaType { get; private set; }
 
         public Type DotNetType { get; private set; } // The restriction base, relevant only for simple type
 
-        public XmlSchemaComplexType ComplexType { get; set; }
-
         public IXmlSchemaTypeWrapper InnerType { get; set; }
+
+        #endregion
+
+        #region Constructor
 
         public XmlSchemaComplexTypeWrapper(XmlSchemaComplexType complexType)
         {
             this.Name = complexType.Name;
             this.SchemaType = complexType;
-            this.ComplexType = complexType;
         }
+
+        #endregion
+
+        #region Methods
 
         public static ObservableCollection<XmlSchemaAttributeInfo> GetAllAttributes(IXmlSchemaTypeWrapper type)
         {
@@ -66,5 +73,7 @@ namespace BL.SchemaLogic.SchemaTypes.XmlSchemaTypeComposite
 
             return result;
         }
+
+        #endregion
     }
 }

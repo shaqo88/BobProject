@@ -10,10 +10,16 @@ namespace BL.SchemaLogic.SchemaTypes.XmlSchemaTypeComposite
 {
     public class XmlSchemaSimpleTypeWrapper : IXmlSchemaTypeWrapper
     {
+        #region Properties
+
         public string Name { get; private set; }
         public XmlSchemaSimpleType SchemaType { get; private set; }
         public Type DotNetType { get; private set; } // The restriction base, relevant only for simple type
         public string Pattern { get; private set; }
+
+        #endregion
+
+        #region Constructor
 
         public XmlSchemaSimpleTypeWrapper(XmlSchemaSimpleType type)
         {
@@ -22,6 +28,10 @@ namespace BL.SchemaLogic.SchemaTypes.XmlSchemaTypeComposite
             this.DotNetType = SchemaType.Datatype.ValueType;
             GetPattern();
         }
+
+        #endregion
+
+        #region Methods
 
         public static IXmlSchemaTypeWrapper SchemaWrappersFactory(XmlSchemaType baseType)
         {
@@ -51,5 +61,7 @@ namespace BL.SchemaLogic.SchemaTypes.XmlSchemaTypeComposite
 
             return null;
         }
+
+        #endregion
     }
 }
