@@ -1,0 +1,284 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="BobProject.DispatcherHelper" Collapsed="true">
+    <Position X="10.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UtilityClasses\DispatcherHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BobProject.MessageListener" Collapsed="true">
+    <Position X="12" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAACAAAAAIQAAAIAAQAAA=</HashCode>
+      <FileName>UtilityClasses\MessageListener.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BobProject.Splasher" Collapsed="true">
+    <Position X="13.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAIAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>UtilityClasses\Splasher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BobProject.About" Collapsed="true">
+    <Position X="8.5" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>View\About.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BobProject.Configuration" Collapsed="true">
+    <Position X="13.75" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>View\Configuration.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BobProject.Login" Collapsed="true">
+    <Position X="10.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAAAAAQIAAAAAAAAAQAAAAAAAAAAAAACA=</HashCode>
+      <FileName>View\Login.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BobProject.MainWindow" Collapsed="true">
+    <Position X="12" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAMEAEQMAQAAAQAAAACEEAAwCAAIQiACCAAIAAE=</HashCode>
+      <FileName>View\MainWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BobProject.Reports" Collapsed="true">
+    <Position X="15.5" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>View\Reports.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BobProject.SaveXML" Collapsed="true">
+    <Position X="6.5" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>View\SaveXML.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BobProject.SplashScreen" Collapsed="true">
+    <Position X="4.75" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>View\SplashScreen.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BobProject.UtilityClasses.HierarchyDataTemplateSelector" Collapsed="true">
+    <Position X="7.5" Y="5.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UtilityClasses\HierarchyDataTemplateSelector.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BobProject.UtilityClasses.TreeViewHelper" Collapsed="true">
+    <Position X="15.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAACgAACAACAAAAAAAAAAAAAAAAAAAAAAQAAAAAIEA=</HashCode>
+      <FileName>UtilityClasses\TreeViewHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BobProject.UtilityClasses.ViewModelBase" Collapsed="true">
+    <Position X="7" Y="0.5" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAQAAAAAAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UtilityClasses\ViewModelBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BobProject.ViewModel.Commands.DeleteSeqItemCommand" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="25.75" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAACAAQAAEAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModel\Commands\DeleteSeqItemCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BobProject.ViewModel.Commands.ExportXmlCommand" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="20.5" Y="2.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAACAAQAAEAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModel\Commands\ExportXmlCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BobProject.ViewModel.Commands.LoadNewSchemaCommand" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="25" Y="1.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAQAAEAAAAAAAAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>ViewModel\Commands\LoadNewSchemaCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BobProject.ViewModel.Commands.PickerColorCommand" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="20.75" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAQAAEAAAAAAAAAAAAAAAQAAAAAAAgA=</HashCode>
+      <FileName>ViewModel\Commands\PickerColorCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BobProject.ViewModel.Commands.SaveConfigCommand" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="20.25" Y="1.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAQAAEAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModel\Commands\SaveConfigCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BobProject.ViewModel.Commands.SearchReportsCommand" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="22.75" Y="2.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAACAAQAAEAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModel\Commands\SearchReportsCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BobProject.ViewModel.Commands.SelectedChoiceChangeCommand" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="23" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAACAAQAAEAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModel\Commands\SelectedChoiceChangeCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BobProject.ViewModel.Commands.SelectXmlExportFileCommand" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="18" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAACAAQAAEAAAAAAAAEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModel\Commands\SelectXmlExportFileCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BobProject.ViewModel.Commands.ShowPropertiesCommand" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="18" Y="2.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAACAAQAAEAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModel\Commands\ShowPropertiesCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BobProject.ViewModel.Commands.ShowViewsCommand" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="18" Y="1.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAACAAQAAEAAAAAAAAAAAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>ViewModel\Commands\ShowViewsCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BobProject.ViewModel.Commands.UpdateSeqNumItemsCommand" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="22.25" Y="1.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAQAAEAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModel\Commands\UpdateSeqNumItemsCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BobProject.ViewModel.ConfigurationViewModel" Collapsed="true">
+    <Position X="0.5" Y="2.75" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAABEAwAAgAAAAhAAAABAAAAAAAAA=</HashCode>
+      <FileName>ViewModel\ConfigurationViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BobProject.ViewModel.MainWindowViewModel" Collapsed="true">
+    <Position X="4.75" Y="2.75" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAACCAQgIATEAAAAGIQAABBAAKBAQAAAQACA=</HashCode>
+      <FileName>ViewModel\MainWindowViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BobProject.ViewModel.ReportsViewModel" Collapsed="true">
+    <Position X="9.5" Y="2.75" Width="4" />
+    <TypeIdentifier>
+      <HashCode>DAAAAIAAAAAAARAABSAAAAAkAAAAKAAIUAAAAEABAAA=</HashCode>
+      <FileName>ViewModel\ReportsViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BobProject.ViewModel.SaveXmlViewModel" Collapsed="true">
+    <Position X="14.25" Y="2.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAAAAAARAAACAAgAAEAAAAIAAAAAAAIAAAAAA=</HashCode>
+      <FileName>ViewModel\SaveXmlViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BobProject.ViewModel.ValueConverters.BooleanToVisibilityConverter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="23.5" Y="3.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModel\ValueConverters\BooleanToVisibilityConverter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BobProject.ViewModel.ValueConverters.ColorLegendConverter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="24.5" Y="5.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModel\ValueConverters\ColorLegendConverter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BobProject.ViewModel.ValueConverters.ColorToBrushConverter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="18" Y="4.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModel\ValueConverters\ColorToBrushConverter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BobProject.ViewModel.ValueConverters.ElementsToVisibilityConverter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="22.5" Y="4.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModel\ValueConverters\ElementsToVisibilityConverter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BobProject.ViewModel.ValueConverters.IndexToTextConverter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="20.25" Y="4.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModel\ValueConverters\IndexToTextConverter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BobProject.ViewModel.ValueConverters.PermissionToEnableConverter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="18" Y="3.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModel\ValueConverters\PermissionToEnableConverter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BobProject.ViewModel.ValueConverters.PermissionToVisibilityConverter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="18" Y="5.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModel\ValueConverters\PermissionToVisibilityConverter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BobProject.ViewModel.ValueConverters.SelectedItemToArrayConverter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="20.75" Y="3.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModel\ValueConverters\SelectedItemToArrayConverter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BobProject.ViewModel.ValueConverters.SelectionPropertyToVisibilityConverter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="21.25" Y="5.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModel\ValueConverters\SelectionPropertyToVisibilityConverter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Font Name="Tahoma" Size="9" />
+</ClassDiagram>

@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="DAL.SchemaDataAccess.XsdReader" Collapsed="true">
+    <Position X="4.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAAAIAAAAAAAAEAAAIAAAAAAAAABAAAAA=</HashCode>
+      <FileName>SchemaDataAccess\XsdReader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DAL.XmlWrapper.XElementExtensions" Collapsed="true">
+    <Position X="1.25" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAACAAAAAAAgAAAAAAAAAAAAA=</HashCode>
+      <FileName>XmlWrapper\XElementExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DAL.XmlWrapper.XmlLoaderWrapper" Collapsed="true">
+    <Position X="3" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>XmlWrapper\XmlLoaderWrapper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DAL.XmlWrapper.XmlSearcher" Collapsed="true">
+    <Position X="1.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>XmlWrapper\XmlSearcher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DAL.XmlWrapper.XmlQueryPartType" Collapsed="true">
+    <Position X="4.75" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAAIAAAQAAAAAAAAEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>XmlWrapper\XmlSearcher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DAL.XmlWrapper.XmlWriterWrapper" Collapsed="true">
+    <Position X="3" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>XmlWrapper\XmlWriterWrapper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Tahoma" Size="9" />
+</ClassDiagram>

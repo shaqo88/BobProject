@@ -12,7 +12,7 @@ namespace BobProject.ViewModel.ValueConverters
 {
     public class ColorLegendConverter : IMultiValueConverter
     {
-        #region IValueConverter Members
+        #region IMultiValueConverter Members
 
         public object Convert(object[] value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {

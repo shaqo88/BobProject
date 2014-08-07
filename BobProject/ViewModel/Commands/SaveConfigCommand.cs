@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using BL.RegistryConfig;
 
@@ -46,6 +47,7 @@ namespace BobProject.ViewModel.Commands
         {
             //call save config  - in registry
             ConfigurationData.Instance.SaveConfig();
+            MessageBox.Show("Save Succeeded!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         #endregion

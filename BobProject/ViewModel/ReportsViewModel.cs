@@ -139,8 +139,6 @@ namespace BobProject.ViewModel
         }
          
 
-        public ICommand SelectRootDir { get; private set; }
-
         public ICommand SearchFiles { get; private set; }
         
 
