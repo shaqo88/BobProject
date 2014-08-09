@@ -8,30 +8,30 @@ using System.Threading.Tasks;
 using System.Xml;
 
 namespace BL.XmlLogic
-{    public static class XmlImportLogic
+{
+    public static class XmlImportLogic
     {
-        //public static XmlSchemaElementWrapper XmlDocumentToSchemaWrapper(XmlDocument xmlDoc, XmlSchemaElementWrapper rootSchema)
-        //{
-        //    if (rootSchema.Name == xmlDoc.DocumentElement.Name)
-        //    {
-        //        foreach (XmlAttribute attr in xmlDoc.DocumentElement.Attributes)
-        //        {
-        //            var attrToFill = rootSchema.Attributes.First(a => a.Name == attr.Name);
+        // TODO : Not implemented yet
+        public static XmlSchemaElementWrapper XmlDocumentToSchemaWrapper(XmlDocument xmlDoc, XmlSchemaElementWrapper rootSchema)
+        {
+            //    if (rootSchema.Name == xmlDoc.DocumentElement.Name)
+            //    {
+            //        foreach (XmlAttribute attr in xmlDoc.DocumentElement.Attributes)
+            //        {
+            //            var attrToFill = rootSchema.Attributes.First(a => a.Name == attr.Name);
 
-        //            if (attrToFill != null)
-        //                attrToFill.Value = attr.Value;
-        //        }
-        //    }
-        //    //XmlSchemaElementWrapper root = new XmlSchemaElementWrapper(xmlDoc.DocumentElement, null);
-        //    foreach (XmlNode xmlNode in xmlDoc.DocumentElement.ChildNodes)
-        //    {
+            //            if (attrToFill != null)
+            //                attrToFill.Value = attr.Value;
+            //        }
+            //    }
+            //    //XmlSchemaElementWrapper root = new XmlSchemaElementWrapper(xmlDoc.DocumentElement, null);
+            //    foreach (XmlNode xmlNode in xmlDoc.DocumentElement.ChildNodes)
+            //    {
 
-        //    }
+            //    }
 
-        //    return null;
-        //}
-
-        //private static 
+            return null;
+        }
 
         #region Getting Properties from XML
 
