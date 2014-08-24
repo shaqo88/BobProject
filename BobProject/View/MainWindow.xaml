@@ -72,7 +72,7 @@
         <Menu DockPanel.Dock="Top" HorizontalAlignment="Left" BorderBrush="Black">
             <MenuItem Header="File">
                 <MenuItem Header="New" Command="{Binding LoadNewFile}" CommandParameter="local" Visibility="{Binding Path=Permit, Converter={StaticResource permissionToVisibilityConverter},ConverterParameter=Editor}"/>
-                <MenuItem Header="Open"/>
+                <MenuItem Header="Open" Visibility="Collapsed"/>
                 <Separator Visibility="{Binding Path=Permit, Converter={StaticResource permissionToVisibilityConverter},ConverterParameter=Editor}"/>
                 <MenuItem Header="Save As..." Command="{Binding ShowViews}" CommandParameter="SaveXML" Visibility="{Binding Path=Permit, Converter={StaticResource permissionToVisibilityConverter},ConverterParameter=Editor}"/>
                 <Separator/>
