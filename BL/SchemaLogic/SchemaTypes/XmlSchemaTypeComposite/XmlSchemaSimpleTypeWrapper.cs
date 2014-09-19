@@ -33,6 +33,11 @@ namespace BL.SchemaLogic.SchemaTypes.XmlSchemaTypeComposite
 
         #region Methods
 
+        /// <summary>
+        /// Factory create type
+        /// </summary>
+        /// <param name="baseType"></param>
+        /// <returns></returns>
         public static IXmlSchemaTypeWrapper SchemaWrappersFactory(XmlSchemaType baseType)
         {
             if (baseType is XmlSchemaComplexType)

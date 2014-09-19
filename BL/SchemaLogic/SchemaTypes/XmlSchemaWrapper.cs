@@ -95,7 +95,6 @@ namespace BL.SchemaLogic.SchemaTypes
 
         void Children_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            // TODO : need to use Reset or Move or Replace?
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
@@ -149,6 +148,9 @@ namespace BL.SchemaLogic.SchemaTypes
 
         #region Methods
 
+        /// <summary>
+        /// Derrived classes implement the internal logic of drilling
+        /// </summary>
         protected abstract void InternalDrill();
 
         public override string ToString()
@@ -156,6 +158,9 @@ namespace BL.SchemaLogic.SchemaTypes
             return Name;
         }
 
+        /// <summary>
+        /// Decorator main method, InternalDrill calls derrived classes' logic
+        /// </summary>
         public void DrillOnce()
         {
             if (HasBeenDrilled)

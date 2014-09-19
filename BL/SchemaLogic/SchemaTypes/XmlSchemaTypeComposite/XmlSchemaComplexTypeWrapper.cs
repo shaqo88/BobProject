@@ -34,6 +34,11 @@ namespace BL.SchemaLogic.SchemaTypes.XmlSchemaTypeComposite
 
         #region Methods
 
+        /// <summary>
+        /// Static method to get all attributes recursively
+        /// </summary>
+        /// <param name="type">Type to milk the attributes from</param>
+        /// <returns>List of milked attributes</returns>
         public static ObservableCollection<XmlSchemaAttributeInfo> GetAllAttributes(IXmlSchemaTypeWrapper type)
         {
             var result = new ObservableCollection<XmlSchemaAttributeInfo>();

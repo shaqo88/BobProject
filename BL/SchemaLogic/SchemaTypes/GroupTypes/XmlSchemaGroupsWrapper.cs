@@ -51,6 +51,9 @@ namespace BL.SchemaLogic.SchemaTypes
             throw new Exception(string.Format("Group factory failed! Group could not be created, unknown type: {0}", group.GetType()));
         }
 
+        /// <summary>
+        /// Internal implementation of the Decorator
+        /// </summary>
         protected override void InternalDrill()
         {
             foreach (var item in Group.Items)

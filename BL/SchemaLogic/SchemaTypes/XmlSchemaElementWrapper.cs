@@ -98,6 +98,9 @@ namespace BL.SchemaLogic.SchemaTypes
             base.RaiseAllProperties();
         }
 
+        /// <summary>
+        /// Implemented internal logic of Decorator
+        /// </summary>
         protected override void InternalDrill()
         {
             var groupBase = GetDrillableComplexType();
